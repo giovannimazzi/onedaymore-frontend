@@ -4,7 +4,7 @@ export default function HomePage() {
       <div className=" col-10 col-sm-8 col-lg-6">
         <img
           src="https://www.distrettobiologicofiesole.it/wp-content/uploads/2026/02/Newsletter-013_2026.png"
-          className=" d-block mx-lg-auto img-fluid"
+          className=" d-block mx-lg-auto img-fluid rounded"
           alt="Bootstrap Themes"
           width="700"
           height="500"
@@ -26,6 +26,73 @@ export default function HomePage() {
           >
             Scopri i prodotti
           </button>
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <div className="container">
+          <div className="row">
+            <div>
+              <h2 className="h1 text-center">Prodotti più venduti</h2>
+              <p className="text-center fs-3">
+                le soluzioni più apprezzate per prepararsi agli imprevisti
+              </p>
+            </div>
+          </div>
+
+          <div className="row g-5 py-4 " style={{ placeContent: 'center' }}>
+            <div className="card mr-5" style={{ width: '20rem' }}>
+              <img
+                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
+                className="card-img-top"
+                alt="Cibo"
+              />
+              <div className="card-body">
+                <h5 className="card-title">Card title</h5>
+                <p className="card-text">
+                  Some quick example text to build on the card title and make up
+                  the bulk of the card’s content.
+                </p>
+                <a href="#" className="btn btn-primary mb-4">
+                  Vai al prodotto
+                </a>
+              </div>
+            </div>
+            <div className="card ms-5" style={{ width: '20rem' }}>
+              <img
+                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
+                className="card-img-top"
+                alt="..."
+              />
+              <div className="card-body">
+                <h5 className="card-title">Card title</h5>
+                <p className="card-text">
+                  Some quick example text to build on the card title and make up
+                  the bulk of the card’s content.
+                </p>
+                <a href="#" className="btn btn-primary mb-4">
+                  Vai al prodotto
+                </a>
+              </div>
+            </div>
+            <div className="card ms-5" style={{ width: '20rem' }}>
+              <img
+                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
+                className="card-img-top"
+                alt="..."
+              />
+              <div className="card-body">
+                <h5 className="card-title">Card title</h5>
+                <p className="card-text">
+                  Some quick example text to build on the card title and make up
+                  the bulk of the card’s content.
+                </p>
+                <a href="#" className="btn btn-primary mb-4">
+                  Vai al prodotto
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
