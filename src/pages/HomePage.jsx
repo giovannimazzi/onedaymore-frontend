@@ -9,11 +9,23 @@ export default function HomePage() {
         <button className="btn btn-primary">Call To Action</button>
       </section>
 
-      <section className="splash-products">
+      <section className="splash-products my-5 p-4">
+        <h2>Nuovi prodotti</h2>
         <div>
-          <div className="row row-cols-2">
-            <div className="col"></div>
-            <div className="col"></div>
+          <div className="row row-cols-4 text-center my-5">
+            <div className="col">CARD COMPONENT</div>
+            <div className="col">CARD COMPONENT</div>
+            <div className="col">CARD COMPONENT</div>
+            <div className="col">CARD COMPONENT</div>
+          </div>
+        </div>
+        <h2>Prodotti più venduti</h2>
+        <div>
+          <div className="row row-cols-4 text-center my-5">
+            <div className="col">CARD COMPONENT</div>
+            <div className="col">CARD COMPONENT</div>
+            <div className="col">CARD COMPONENT</div>
+            <div className="col">CARD COMPONENT</div>
           </div>
         </div>
       </section>
