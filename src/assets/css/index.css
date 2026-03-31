@@ -1,3 +1,4 @@
+/* Utils and generics */ 
 .overlay-loading {
   position: fixed;
   inset: 0;
@@ -8,4 +9,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Homepage */ 
+.hero {
+  min-height: 300px;
+  background-color: aqua;
 }
