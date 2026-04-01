@@ -2,7 +2,7 @@ import { Link, NavLink, Outlet } from "react-router";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { useNotificationContext } from "../contexts/NotificationContext";
 
-export default function DefaultTemplate() {
+export default function DefaultLayout() {
   const { isLoading } = useLoaderContext();
   const { notification, hideNotification } = useNotificationContext();
 
