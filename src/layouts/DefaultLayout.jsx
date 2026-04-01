@@ -48,7 +48,7 @@ export default function DefaultTemplate() {
           </div>
         )}
 
-        <div className="container py-5">
+        <div>
           {notification.visible && (
             <div>
               <div

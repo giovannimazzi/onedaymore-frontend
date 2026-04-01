@@ -19,6 +19,7 @@
 /* TODO: sostituire hero-bg.png con l'immagine definitiva in public/ */
 .hero {
   min-height: 400px;
+  padding: 30px 60px;
   color: white;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   background-color: #2d6a4f;
