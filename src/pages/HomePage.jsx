@@ -33,9 +33,24 @@ export default function HomePage() {
             className="row row-cols-3 g-5 py-4"
             style={{ placeContent: "center" }}
           >
-            <ProductCard badgeText={"Best Seller"} />
-            <ProductCard badgeText={"Best Seller"} />
-            <ProductCard badgeText={"Best Seller"} />
+            <ProductCard
+              productName={"Nome Prodotto"}
+              productPrice={"50€"}
+              productShortDescr={"Descrizione prodotto"}
+              badgeText={"Best Seller"}
+            />
+            <ProductCard
+              productName={"Nome Prodotto"}
+              productPrice={"50€"}
+              productShortDescr={"Descrizione prodotto"}
+              badgeText={"Best Seller"}
+            />
+            <ProductCard
+              productName={"Nome Prodotto"}
+              productPrice={"50€"}
+              productShortDescr={"Descrizione prodotto"}
+              badgeText={"Best Seller"}
+            />
           </div>
           <div className="text-center">
             <button className="btn btn-success text-center py-3" type="button">
@@ -60,9 +75,24 @@ export default function HomePage() {
             className="row row-cols-3 g-5 py-4 "
             style={{ placeContent: "center" }}
           >
-            <ProductCard badgeText={"Nuovo Prodotto"} />
-            <ProductCard badgeText={"Nuovo Prodotto"} />
-            <ProductCard badgeText={"Nuovo Prodotto"} />
+            <ProductCard
+              productName={"Nome Prodotto"}
+              productPrice={"50€"}
+              productShortDescr={"Descrizione prodotto"}
+              badgeText={"Nuovo Prodotto"}
+            />
+            <ProductCard
+              productName={"Nome Prodotto"}
+              productPrice={"50€"}
+              productShortDescr={"Descrizione prodotto"}
+              badgeText={"Nuovo Prodotto"}
+            />
+            <ProductCard
+              productName={"Nome Prodotto"}
+              productPrice={"50€"}
+              productShortDescr={"Descrizione prodotto"}
+              badgeText={"Nuovo Prodotto"}
+            />
           </div>
           <div className="text-center">
             <button className="btn btn-dark text-center py-3" type="button">

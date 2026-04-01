@@ -1,15 +1,15 @@
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
 
 const OneDayMoreProductsEndpoint = "http://localhost:3000/products";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
+
   const fetchProducts = () => {
     axios.get(OneDayMoreProductsEndpoint).then((res) => {
-      setProducts(res.data);
+      setProducts(res.data.result);
     });
   };
 
@@ -17,11 +17,20 @@ export default function ProductsPage() {
 
   return (
     <>
-      <h1>I nostri prodotti</h1>
-      <div className="row row-cols-6">
-        {products.map((product, index) => {
-          <ProductCard key={index} />;
-        })}
+      <div className="container my-4">
+        <h1>I nostri prodotti</h1>
+
+        <div className="row row-cols-6 my-4">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              productName={product.name}
+              productImage={product.image_url}
+              productPrice={product.price}
+              productShortDescr={product.short_description}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
