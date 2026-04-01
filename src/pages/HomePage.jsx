@@ -45,7 +45,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="mt-5 py-5 bg-success full-width">
+      <div className="mt-5 py-5 bg-success">
         <div className="container ">
           <div className="row">
             <div className="text-light">
