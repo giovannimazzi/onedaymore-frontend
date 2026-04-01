@@ -1,3 +1,5 @@
+import ProductCard from "../components/ProductCard";
+
 export default function HomePage() {
   return (
     <>
@@ -27,65 +29,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="row g-5 py-4 " style={{ placeContent: "center" }}>
-            <div className="card" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="Cibo"
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">Best seller</span>
-                <h5 className="h3 mb-3">€50,00</h5>
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-                <a href="#" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </a>
-              </div>
-            </div>
-            <div className="card ms-5" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">Best seller</span>
-                <h5 className="h3 mb-3">€50,00</h5>
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-                <a href="#" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </a>
-              </div>
-            </div>
-            <div className="card ms-5" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">Best seller</span>
-                <h5 className="h3 mb-3">€50,00</h5>
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-
-                <a href="#" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </a>
-              </div>
-            </div>
+          <div
+            className="row row-cols-3 g-5 py-4"
+            style={{ placeContent: "center" }}
+          >
+            <ProductCard badgeText={"Best Seller"} />
+            <ProductCard badgeText={"Best Seller"} />
+            <ProductCard badgeText={"Best Seller"} />
           </div>
           <div className="text-center">
             <button className="btn btn-success text-center py-3" type="button">
@@ -106,71 +56,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="row g-5 py-4 " style={{ placeContent: "center" }}>
-            <div className="card" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="Cibo"
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">
-                  Nuoovo prodotto
-                </span>
-                <h5 className="h3 mb-3">€50,00</h5>
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-                <a href="#" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </a>
-              </div>
-            </div>
-            <div className="card ms-5" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">
-                  Nuovo prodotto
-                </span>
-                <h5 className="h3 mb-3">€50,00</h5>
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-                <a href="#" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </a>
-              </div>
-            </div>
-            <div className="card ms-5" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">
-                  Nuovo prodotto
-                </span>
-                <h5 className="h3 mb-3">€50,00</h5>
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card’s content.
-                </p>
-
-                <a href="#" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </a>
-              </div>
-            </div>
+          <div
+            className="row row-cols-3 g-5 py-4 "
+            style={{ placeContent: "center" }}
+          >
+            <ProductCard badgeText={"Nuovo Prodotto"} />
+            <ProductCard badgeText={"Nuovo Prodotto"} />
+            <ProductCard badgeText={"Nuovo Prodotto"} />
           </div>
           <div className="text-center">
             <button className="btn btn-dark text-center py-3" type="button">
