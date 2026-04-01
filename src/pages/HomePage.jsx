@@ -8,9 +8,9 @@ export default function HomePage() {
           </h1>
           <p className="fs-5">
             Siamo quello che mangiamo. <br />
-            Preparati con prodotti essenziali per <br /> resistere, adattarti e{" "}
-            <br />
-            continuare ad andare avanti.
+            Preparati con prodotti essenziali per <br /> resistere, adattarti e
+            continuare <br />
+            ad andare avanti.
           </p>
         </div>
         <button className="btn btn-primary">Call To Action</button>
