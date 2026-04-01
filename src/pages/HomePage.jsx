@@ -1,7 +1,7 @@
 export default function HomePage() {
   return (
     <>
-      <section className="hero p-4 d-flex flex-column justify-content-between align-items-start">
+      <section className="hero d-flex flex-column justify-content-between align-items-start">
         <div>
           <h1>
             Quando tutto crolla <br /> resta ciò che sei.
