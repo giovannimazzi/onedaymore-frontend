@@ -5,6 +5,7 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import ProductsPage from "./pages/ProductsPage";
 
 import { LoaderContextProvider } from "./contexts/LoaderContext";
 import { NotificationContextProvider } from "./contexts/NotificationContext";
@@ -21,10 +22,7 @@ export default function App() {
 
               {/* PRODUCT ROUTES */}
               <Route path="products">
-                {/* se vuoi lista prodotti */}
-                <Route index element={<h1>Lista prodotti</h1>} />
-
-                {/* DETTAGLIO PRODOTTO */}
+                <Route index element={<ProductsPage />} />
                 <Route path=":slug" element={<ProductDetailPage />} />
               </Route>
 
