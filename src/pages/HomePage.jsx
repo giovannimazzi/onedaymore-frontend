@@ -1,3 +1,5 @@
+import ProductCard from "../components/ProductCard";
+
 export default function HomePage() {
   return (
     <>
@@ -13,19 +15,19 @@ export default function HomePage() {
         <h2>Nuovi prodotti</h2>
         <div>
           <div className="row row-cols-4 text-center my-5">
-            <div className="col">CARD COMPONENT</div>
-            <div className="col">CARD COMPONENT</div>
-            <div className="col">CARD COMPONENT</div>
-            <div className="col">CARD COMPONENT</div>
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
           </div>
         </div>
         <h2>Prodotti più venduti</h2>
         <div>
           <div className="row row-cols-4 text-center my-5">
-            <div className="col">CARD COMPONENT</div>
-            <div className="col">CARD COMPONENT</div>
-            <div className="col">CARD COMPONENT</div>
-            <div className="col">CARD COMPONENT</div>
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
           </div>
         </div>
       </section>
