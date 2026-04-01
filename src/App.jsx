@@ -7,6 +7,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 import { LoaderContextProvider } from "./contexts/LoaderContext";
 import { NotificationContextProvider } from "./contexts/NotificationContext";
+import ProductsPage from "./pages/ProductsPage";
 
 export default function App() {
   return (
@@ -20,7 +21,7 @@ export default function App() {
 
               {/* PRODUCT ROUTES*/}
               <Route path="products">
-                <Route index /* Component={} */ />
+                <Route index Component={ProductsPage} />
                 <Route path=":slug" /* Component={}  */ />
               </Route>
 
