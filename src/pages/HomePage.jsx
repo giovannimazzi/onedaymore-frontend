@@ -1,6 +1,42 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import ProductCard from "../components/ProductCard";
+
+const OneDayMoreProductsEndpoint = "http://localhost:3000/products";
+const homepageEndpoint = `${OneDayMoreProductsEndpoint}/homepage`;
 
 export default function HomePage() {
+  const [bestSellers, setBestSellers] = useState([]);
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [isLoadingSections, setIsLoadingSections] = useState(true);
+  const [hasSectionsError, setHasSectionsError] = useState(false);
+
+  useEffect(() => {
+    setIsLoadingSections(true);
+    setHasSectionsError(false);
+
+    axios
+      .get(homepageEndpoint)
+      .then((res) => {
+        const homepageData = res?.data?.result ?? {};
+        setBestSellers(homepageData.best_sellers ?? []);
+        setNewArrivals(homepageData.latest_arrivals ?? []);
+
+        if (!homepageData.best_sellers && !homepageData.latest_arrivals) {
+          setHasSectionsError(true);
+        }
+      })
+      .catch(() => {
+        setBestSellers([]);
+        setNewArrivals([]);
+        setHasSectionsError(true);
+      })
+      .finally(() => {
+        setIsLoadingSections(false);
+      });
+  }, []);
+
   return (
     <>
       <section className="hero d-flex flex-column justify-content-between align-items-start">
@@ -30,71 +66,43 @@ export default function HomePage() {
           </div>
 
           <div className="row g-5 py-4 " style={{ placeContent: "center" }}>
-            {/* PRODOTTO 1 */}
-            <div className="card" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="Cibo"
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">Best seller</span>
-                <h5 className="h3 mb-3">€50,00</h5>
-                <h5 className="card-title">Kit Sopravvivenza Base</h5>
-                <p className="card-text">
-                  Kit essenziale per affrontare emergenze di base.
-                </p>
-                <Link to="/products/1" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </Link>
-              </div>
-            </div>
-
-            {/* PRODOTTO 2 */}
-            <div className="card ms-5" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">Best seller</span>
-                <h5 className="h3 mb-3">€80,00</h5>
-                <h5 className="card-title">Kit Avanzato</h5>
-                <p className="card-text">
-                  Più completo per affrontare situazioni difficili.
-                </p>
-                <Link to="/products/2" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </Link>
-              </div>
-            </div>
-
-            {/* PRODOTTO 3 */}
-            <div className="card ms-5" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">Best seller</span>
-                <h5 className="h3 mb-3">€120,00</h5>
-                <h5 className="card-title">Kit Estremo</h5>
-                <p className="card-text">
-                  Per sopravvivere anche nelle condizioni più estreme.
-                </p>
-                <Link to="/products/3" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </Link>
-              </div>
-            </div>
+            {isLoadingSections && (
+              <p className="text-center fs-5 mb-0">Caricamento prodotti...</p>
+            )}
+            {!isLoadingSections && hasSectionsError && (
+              <p className="text-center fs-5 mb-0">
+                Non siamo riusciti a caricare i best seller.
+              </p>
+            )}
+            {!isLoadingSections && !hasSectionsError && bestSellers.length === 0 && (
+              <p className="text-center fs-5 mb-0">
+                Nessun best seller disponibile al momento.
+              </p>
+            )}
+            {!isLoadingSections &&
+              !hasSectionsError &&
+              bestSellers.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  productName={product.name}
+                  productImage={product.image_url}
+                  productCategorySlug={product.category_slug}
+                  productPrice={product.price}
+                  productShortDescr={
+                    product.short_description || product.description
+                  }
+                  badgeText="Best seller"
+                  productLink={
+                    product.slug ? `/products/${product.slug}` : "/products"
+                  }
+                />
+              ))}
           </div>
 
           <div className="text-center">
-            <button className="btn btn-success text-center py-3" type="button">
+            <Link to="/products" className="btn btn-success text-center py-3">
               Visualizza tutti i prodotti
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -112,75 +120,43 @@ export default function HomePage() {
           </div>
 
           <div className="row g-5 py-4 " style={{ placeContent: "center" }}>
-            {/* PRODOTTO 4 */}
-            <div className="card" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="Cibo"
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">
-                  Nuovo prodotto
-                </span>
-                <h5 className="h3 mb-3">€60,00</h5>
-                <h5 className="card-title">Kit Fresh Start</h5>
-                <p className="card-text">
-                  Nuova soluzione per iniziare a prepararsi.
-                </p>
-                <Link to="/products/4" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </Link>
-              </div>
-            </div>
-
-            {/* PRODOTTO 5 */}
-            <div className="card ms-5" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">
-                  Nuovo prodotto
-                </span>
-                <h5 className="h3 mb-3">€90,00</h5>
-                <h5 className="card-title">Kit Survival Pro</h5>
-                <p className="card-text">Pensato per utenti più esperti.</p>
-                <Link to="/products/5" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </Link>
-              </div>
-            </div>
-
-            {/* PRODOTTO 6 */}
-            <div className="card ms-5" style={{ width: "20rem" }}>
-              <img
-                src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
-                className="card-img-top"
-                alt="..."
-              />
-              <div className="card-body">
-                <span className="badge bg-success p-2 mb-3">
-                  Nuovo prodotto
-                </span>
-                <h5 className="h3 mb-3">€150,00</h5>
-                <h5 className="card-title">Kit Apocalypse</h5>
-                <p className="card-text">
-                  Il massimo per ogni scenario estremo.
-                </p>
-                <Link to="/products/6" className="btn btn-primary mb-4">
-                  Vai al prodotto
-                </Link>
-              </div>
-            </div>
+            {isLoadingSections && (
+              <p className="text-center fs-5 mb-0">Caricamento prodotti...</p>
+            )}
+            {!isLoadingSections && hasSectionsError && (
+              <p className="text-center fs-5 mb-0">
+                Non siamo riusciti a caricare i nuovi arrivi.
+              </p>
+            )}
+            {!isLoadingSections && !hasSectionsError && newArrivals.length === 0 && (
+              <p className="text-center fs-5 mb-0">
+                Nessun nuovo arrivo disponibile al momento.
+              </p>
+            )}
+            {!isLoadingSections &&
+              !hasSectionsError &&
+              newArrivals.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  productName={product.name}
+                  productImage={product.image_url}
+                  productCategorySlug={product.category_slug}
+                  productPrice={product.price}
+                  productShortDescr={
+                    product.short_description || product.description
+                  }
+                  badgeText="Nuovo prodotto"
+                  productLink={
+                    product.slug ? `/products/${product.slug}` : "/products"
+                  }
+                />
+              ))}
           </div>
 
           <div className="text-center">
-            <button className="btn btn-dark text-center py-3" type="button">
+            <Link to="/products" className="btn btn-dark text-center py-3">
               Visualizza tutti i prodotti
-            </button>
+            </Link>
           </div>
         </div>
       </div>
