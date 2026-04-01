@@ -1,19 +1,33 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
+import { getCategoryFallbackImage } from "../utils/productImage";
+
 export default function ProductCard({
   productName,
   productImage,
+  productCategorySlug,
   badgeText,
   productPrice,
   productShortDescr,
+  productLink,
 }) {
-  const defaultImage = "https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg";
+  const fallbackImage = getCategoryFallbackImage(productCategorySlug);
+  const [imageSrc, setImageSrc] = useState(productImage || fallbackImage);
+
+  useEffect(() => {
+    setImageSrc(productImage || fallbackImage);
+  }, [productImage, fallbackImage]);
 
   return (
     <div className="col" style={{ width: "20rem" }}>
       <div className="card my-2">
         <img
-          src={productImage || defaultImage}
+          src={imageSrc}
           className="card-img-top"
           alt={productName || "immagine-prodotto"}
+          onError={() => {
+            setImageSrc(fallbackImage);
+          }}
         />
 
         <div className="card-body">
@@ -29,9 +43,9 @@ export default function ProductCard({
             <p className="card-text text-truncate">{productShortDescr}</p>
           )}
 
-          <a href="#" className="btn btn-primary mb-4">
+          <Link to={productLink || "/products"} className="btn btn-primary mb-4">
             Vai al prodotto
-          </a>
+          </Link>
         </div>
       </div>
     </div>
