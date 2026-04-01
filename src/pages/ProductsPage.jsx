@@ -25,11 +25,13 @@ export default function ProductsPage() {
             <ProductCard
               key={product.id}
               productName={product.name}
-              productImage={
-                "https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg" //TODO Sostituire con product.image_url
-              }
+              productImage={product.image_url}
+              productCategorySlug={product.category_slug}
               productPrice={product.price}
               productShortDescr={product.short_description}
+              productLink={
+                product.slug ? `/products/${product.slug}` : "/products"
+              }
             />
           ))}
         </div>
