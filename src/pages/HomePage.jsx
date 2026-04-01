@@ -3,8 +3,15 @@ export default function HomePage() {
     <>
       <section className="hero p-4 d-flex flex-column justify-content-between align-items-start">
         <div>
-          <h1>Titolo Hero provvisorio</h1>
-          <p>Sottotitolo hero provvisorio</p>
+          <h1>
+            Quando tutto crolla <br /> resta ciò che sei.
+          </h1>
+          <p className="fs-5">
+            Siamo quello che mangiamo. <br />
+            Preparati con prodotti essenziali per <br /> resistere, adattarti e{" "}
+            <br />
+            continuare ad andare avanti.
+          </p>
         </div>
         <button className="btn btn-primary">Call To Action</button>
       </section>
@@ -20,8 +27,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="row g-5 py-4 " style={{ placeContent: 'center' }}>
-            <div className="card" style={{ width: '20rem' }}>
+          <div className="row g-5 py-4 " style={{ placeContent: "center" }}>
+            <div className="card" style={{ width: "20rem" }}>
               <img
                 src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
                 className="card-img-top"
@@ -40,7 +47,7 @@ export default function HomePage() {
                 </a>
               </div>
             </div>
-            <div className="card ms-5" style={{ width: '20rem' }}>
+            <div className="card ms-5" style={{ width: "20rem" }}>
               <img
                 src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
                 className="card-img-top"
@@ -59,7 +66,7 @@ export default function HomePage() {
                 </a>
               </div>
             </div>
-            <div className="card ms-5" style={{ width: '20rem' }}>
+            <div className="card ms-5" style={{ width: "20rem" }}>
               <img
                 src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
                 className="card-img-top"
@@ -99,8 +106,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="row g-5 py-4 " style={{ placeContent: 'center' }}>
-            <div className="card" style={{ width: '20rem' }}>
+          <div className="row g-5 py-4 " style={{ placeContent: "center" }}>
+            <div className="card" style={{ width: "20rem" }}>
               <img
                 src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
                 className="card-img-top"
@@ -121,7 +128,7 @@ export default function HomePage() {
                 </a>
               </div>
             </div>
-            <div className="card ms-5" style={{ width: '20rem' }}>
+            <div className="card ms-5" style={{ width: "20rem" }}>
               <img
                 src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
                 className="card-img-top"
@@ -142,7 +149,7 @@ export default function HomePage() {
                 </a>
               </div>
             </div>
-            <div className="card ms-5" style={{ width: '20rem' }}>
+            <div className="card ms-5" style={{ width: "20rem" }}>
               <img
                 src="https://m.media-amazon.com/images/I/71Udwbkn3VL.jpg"
                 className="card-img-top"
