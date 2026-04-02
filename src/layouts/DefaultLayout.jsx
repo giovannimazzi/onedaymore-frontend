@@ -8,10 +8,10 @@ export default function DefaultLayout() {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
         <div className="container">
           <Link to="/" className="navbar-brand">
-            OneDayMore
+            OneDay<span style={{ color: "var(--odm-gold)" }}>More</span>
           </Link>
           <button
             className="navbar-toggler"
