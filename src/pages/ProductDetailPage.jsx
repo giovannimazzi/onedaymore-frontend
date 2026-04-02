@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
 import { useLoaderContext } from "../contexts/LoaderContext";
-
-const OneDayMoreProductsEndpoint = "http://localhost:3000/products";
+import { productsEndpoint } from "../utils/api";
 
 export default function ProductDetailPage() {
   const { startLoading, endLoading } = useLoaderContext();
@@ -19,7 +18,7 @@ export default function ProductDetailPage() {
     setIsLoading(true);
 
     axios
-      .get(`${OneDayMoreProductsEndpoint}/${slug}`)
+      .get(`${productsEndpoint}/${slug}`)
       .then((res) => {
         const payload = res?.data?.result ?? res?.data ?? null;
         const resolvedProduct = Array.isArray(payload) ? payload[0] : payload;

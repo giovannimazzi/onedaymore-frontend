@@ -2,8 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import { useLoaderContext } from "../contexts/LoaderContext";
-
-const OneDayMoreProductsEndpoint = "http://localhost:3000/products";
+import { productsEndpoint } from "../utils/api";
 
 export default function ProductsPage() {
   const { startLoading, endLoading } = useLoaderContext();
@@ -15,7 +14,7 @@ export default function ProductsPage() {
     setHasError(false);
 
     axios
-      .get(OneDayMoreProductsEndpoint)
+      .get(productsEndpoint)
       .then((res) => {
         setProducts(res.data.result);
       })

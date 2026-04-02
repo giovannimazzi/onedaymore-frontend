@@ -27,16 +27,12 @@ export default function DefaultLayout() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <NavLink to="/" className="nav-link" aria-current="page">
+                <NavLink to="/" className="nav-link">
                   Home
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink
-                  to="/products"
-                  className="nav-link"
-                  aria-current="page"
-                >
+                <NavLink to="/products" className="nav-link">
                   Prodotti
                 </NavLink>
               </li>
@@ -48,35 +44,29 @@ export default function DefaultLayout() {
       <main>
         {isLoading && (
           <div className="overlay-loading">
-            <h1>Loading...</h1>
+            <p>Caricamento...</p>
           </div>
         )}
 
-        <div>
-          {notification.visible && (
-            <div>
-              <div
-                className={`alert alert-${notification.type} alert-dismissible fade show mb-4`}
-                role="alert"
-              >
-                {notification.message}
+        {notification.visible && (
+          <div
+            className={`alert alert-${notification.type} alert-dismissible fade show mb-4`}
+            role="alert"
+          >
+            {notification.message}
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+              onClick={() => {
+                setTimeout(hideNotification, 800);
+              }}
+            ></button>
+          </div>
+        )}
 
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="alert"
-                  aria-label="Close"
-                  onClick={() => {
-                    setTimeout(() => {
-                      hideNotification();
-                    }, 800);
-                  }}
-                ></button>
-              </div>
-            </div>
-          )}
-          <Outlet />
-        </div>
+        <Outlet />
       </main>
     </>
   );

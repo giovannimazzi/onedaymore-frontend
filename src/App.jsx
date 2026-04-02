@@ -26,12 +26,6 @@ export default function App() {
                 <Route path=":slug" element={<ProductDetailPage />} />
               </Route>
 
-              {/* ALTRE ROUTE */}
-              <Route path="---">
-                <Route index element={<h1>Pagina ---</h1>} />
-                <Route path=":slug" element={<h1>Dettaglio ---</h1>} />
-              </Route>
-
               {/* NOT FOUND */}
               <Route path="*" element={<NotFoundPage />} />
             </Route>
