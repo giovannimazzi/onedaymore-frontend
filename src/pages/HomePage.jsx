@@ -2,17 +2,20 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import ProductCard from "../components/ProductCard";
+import { useLoaderContext } from "../contexts/LoaderContext";
 
 const OneDayMoreProductsEndpoint = "http://localhost:3000/products";
 const homepageEndpoint = `${OneDayMoreProductsEndpoint}/homepage`;
 
 export default function HomePage() {
+  const { startLoading, endLoading } = useLoaderContext();
   const [bestSellers, setBestSellers] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [isLoadingSections, setIsLoadingSections] = useState(true);
   const [hasSectionsError, setHasSectionsError] = useState(false);
 
   useEffect(() => {
+    startLoading();
     setIsLoadingSections(true);
     setHasSectionsError(false);
 
@@ -34,6 +37,7 @@ export default function HomePage() {
       })
       .finally(() => {
         setIsLoadingSections(false);
+        endLoading();
       });
   }, []);
 
