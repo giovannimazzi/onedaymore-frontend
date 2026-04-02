@@ -2,10 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
-
-const OneDayMoreProductsEndpoint = "http://localhost:3000/products";
+import { useLoaderContext } from "../contexts/LoaderContext";
+import { productsEndpoint } from "../utils/api";
 
 export default function ProductDetailPage() {
+  const { startLoading, endLoading } = useLoaderContext();
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,10 +14,11 @@ export default function ProductDetailPage() {
   const [imageSrc, setImageSrc] = useState(fallbackImage);
 
   useEffect(() => {
+    startLoading();
     setIsLoading(true);
 
     axios
-      .get(`${OneDayMoreProductsEndpoint}/${slug}`)
+      .get(`${productsEndpoint}/${slug}`)
       .then((res) => {
         const payload = res?.data?.result ?? res?.data ?? null;
         const resolvedProduct = Array.isArray(payload) ? payload[0] : payload;
@@ -27,6 +29,7 @@ export default function ProductDetailPage() {
       })
       .finally(() => {
         setIsLoading(false);
+        endLoading();
       });
   }, [slug]);
 

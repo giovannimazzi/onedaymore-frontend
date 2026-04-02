@@ -1,19 +1,30 @@
 import axios from "axios";
-import ProductCard from "../components/ProductCard";
 import { useState, useEffect } from "react";
-
-const OneDayMoreProductsEndpoint = "http://localhost:3000/products";
+import ProductCard from "../components/ProductCard";
+import { useLoaderContext } from "../contexts/LoaderContext";
+import { productsEndpoint } from "../utils/api";
 
 export default function ProductsPage() {
+  const { startLoading, endLoading } = useLoaderContext();
   const [products, setProducts] = useState([]);
+  const [hasError, setHasError] = useState(false);
 
-  const fetchProducts = () => {
-    axios.get(OneDayMoreProductsEndpoint).then((res) => {
-      setProducts(res.data.result);
-    });
-  };
+  useEffect(() => {
+    startLoading();
+    setHasError(false);
 
-  useEffect(fetchProducts, []);
+    axios
+      .get(productsEndpoint)
+      .then((res) => {
+        setProducts(res.data.result);
+      })
+      .catch(() => {
+        setHasError(true);
+      })
+      .finally(() => {
+        endLoading();
+      });
+  }, []);
 
   return (
     <>
@@ -21,6 +32,11 @@ export default function ProductsPage() {
         <h1>I nostri prodotti</h1>
 
         <div className="row row-cols-6 my-4">
+          {hasError && (
+            <p className="text-center fs-5">
+              Non siamo riusciti a caricare i prodotti.
+            </p>
+          )}
           {products.map((product) => (
             <ProductCard
               key={product.id}

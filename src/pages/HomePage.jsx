@@ -2,17 +2,20 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import ProductCard from "../components/ProductCard";
+import { useLoaderContext } from "../contexts/LoaderContext";
+import { productsEndpoint } from "../utils/api";
 
-const OneDayMoreProductsEndpoint = "http://localhost:3000/products";
-const homepageEndpoint = `${OneDayMoreProductsEndpoint}/homepage`;
+const homepageEndpoint = `${productsEndpoint}/homepage`;
 
 export default function HomePage() {
+  const { startLoading, endLoading } = useLoaderContext();
   const [bestSellers, setBestSellers] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [isLoadingSections, setIsLoadingSections] = useState(true);
   const [hasSectionsError, setHasSectionsError] = useState(false);
 
   useEffect(() => {
+    startLoading();
     setIsLoadingSections(true);
     setHasSectionsError(false);
 
@@ -34,6 +37,7 @@ export default function HomePage() {
       })
       .finally(() => {
         setIsLoadingSections(false);
+        endLoading();
       });
   }, []);
 
@@ -65,7 +69,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="row g-5 py-4 " style={{ placeContent: "center" }}>
+          <div className="row g-5 py-4" style={{ placeContent: "center" }}>
             {isLoadingSections && (
               <p className="text-center fs-5 mb-0">Caricamento prodotti...</p>
             )}
@@ -109,7 +113,7 @@ export default function HomePage() {
 
       {/* NUOVI ARRIVI */}
       <div className="mt-5 py-5 bg-success full-width">
-        <div className="container ">
+        <div className="container">
           <div className="row">
             <div className="text-light">
               <h2 className="h1 text-center">Nuovi arrivi</h2>
@@ -119,7 +123,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="row g-5 py-4 " style={{ placeContent: "center" }}>
+          <div className="row g-5 py-4" style={{ placeContent: "center" }}>
             {isLoadingSections && (
               <p className="text-center fs-5 mb-0">Caricamento prodotti...</p>
             )}
