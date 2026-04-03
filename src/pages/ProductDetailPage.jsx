@@ -78,7 +78,20 @@ export default function ProductDetailPage() {
           </span>
 
           <h1 className="mb-0">{product.name}</h1>
-          <small className="text-muted my-2">{product.category_name}</small>
+          <div className="my-2">
+            {/* BADGE CATEGORIA */}
+            <span className="badge bg-secondary mb-2">
+              {product.category_name}
+            </span>
+
+            {/* DESCRIZIONE CATEGORIA */}
+            {product.category_description && (
+              <p className="small text-muted mb-0">
+                {" "}
+                <em>{product.category_description}</em>
+              </p>
+            )}
+          </div>
           <h3 className="mb-3">€{product.price}</h3>
 
           <p className="mb-4">

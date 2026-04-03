@@ -39,8 +39,6 @@ export default function ProductCard({
 
           {productName && <h5 className="card-title">{productName}</h5>}
 
-          {productCategory && <small>{productCategory}</small>}
-
           {productShortDescr && (
             <p className="card-text text-truncate">{productShortDescr}</p>
           )}
