@@ -69,11 +69,9 @@ export default function DefaultLayout() {
         <Outlet />
       </main>
       <footer className="bg-dark text-light py-4">
-        <div className="container text-center">
+        <div className="text-center">
           {/* BRAND */}
-          <h5 className="fw-bold mb-2">
-            OneDay<span style={{ color: "var(--odm-gold)" }}>More</span>
-          </h5>
+          <h5 className="fw-bold mb-2">OneDayMore</h5>
 
           <p className="mb-3 small">Un giorno in più. Sempre.</p>
 

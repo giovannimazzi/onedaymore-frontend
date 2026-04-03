@@ -39,11 +39,16 @@ export default function ProductCard({
 
           {productName && <h5 className="card-title">{productName}</h5>}
 
+          {productCategory && <small>{productCategory}</small>}
+
           {productShortDescr && (
             <p className="card-text text-truncate">{productShortDescr}</p>
           )}
 
-          <Link to={productLink || "/products"} className="btn btn-primary mb-4">
+          <Link
+            to={productLink || "/products"}
+            className="btn btn-primary mb-4"
+          >
             Vai al prodotto
           </Link>
         </div>

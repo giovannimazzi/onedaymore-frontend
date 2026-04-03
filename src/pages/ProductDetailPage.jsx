@@ -57,7 +57,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container my-5">
       <div className="row">
         {/* IMMAGINE */}
         <div className="col-md-6">
@@ -77,8 +77,8 @@ export default function ProductDetailPage() {
             {product.badge || "Prodotto"}
           </span>
 
-          <h1 className="mb-3">{product.name}</h1>
-
+          <h1 className="mb-0">{product.name}</h1>
+          <small className="text-muted my-2">{product.category_name}</small>
           <h3 className="mb-3">€{product.price}</h3>
 
           <p className="mb-4">

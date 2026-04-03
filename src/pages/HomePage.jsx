@@ -46,10 +46,9 @@ export default function HomePage() {
       <section className="hero d-flex flex-column justify-content-between align-items-start">
         <div>
           <h1>
-            Quando tutto crolla <br /> resta ciò che sei.
+            Per ogni giorno che <br /> non avevi previsto.
           </h1>
           <p className="fs-5">
-            Siamo quello che mangiamo. <br />
             Preparati con prodotti essenziali per <br /> resistere, adattarti e
             continuare <br />
             ad andare avanti.
@@ -78,11 +77,13 @@ export default function HomePage() {
                 Non siamo riusciti a caricare i best seller.
               </p>
             )}
-            {!isLoadingSections && !hasSectionsError && bestSellers.length === 0 && (
-              <p className="text-center fs-5 mb-0">
-                Nessun best seller disponibile al momento.
-              </p>
-            )}
+            {!isLoadingSections &&
+              !hasSectionsError &&
+              bestSellers.length === 0 && (
+                <p className="text-center fs-5 mb-0">
+                  Nessun best seller disponibile al momento.
+                </p>
+              )}
             {!isLoadingSections &&
               !hasSectionsError &&
               bestSellers.map((product) => (
@@ -132,11 +133,13 @@ export default function HomePage() {
                 Non siamo riusciti a caricare i nuovi arrivi.
               </p>
             )}
-            {!isLoadingSections && !hasSectionsError && newArrivals.length === 0 && (
-              <p className="text-center fs-5 mb-0">
-                Nessun nuovo arrivo disponibile al momento.
-              </p>
-            )}
+            {!isLoadingSections &&
+              !hasSectionsError &&
+              newArrivals.length === 0 && (
+                <p className="text-center fs-5 mb-0">
+                  Nessun nuovo arrivo disponibile al momento.
+                </p>
+              )}
             {!isLoadingSections &&
               !hasSectionsError &&
               newArrivals.map((product) => (
