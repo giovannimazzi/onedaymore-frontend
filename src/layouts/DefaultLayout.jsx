@@ -1,10 +1,18 @@
 import { Link, NavLink, Outlet } from "react-router";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { useNotificationContext } from "../contexts/NotificationContext";
+import { useCartContext } from "../contexts/CartContext";
 
 export default function DefaultLayout() {
   const { isLoading } = useLoaderContext();
   const { notification, hideNotification } = useNotificationContext();
+  const { cart } = useCartContext();
+
+  // Somma dei prodotti nel carrello
+  const cartItemCount = cart.reduce(
+    (total, item) => total + (item.quantity || 1),
+    0,
+  );
 
   return (
     <>
@@ -36,9 +44,26 @@ export default function DefaultLayout() {
                   Prodotti
                 </NavLink>
               </li>
-              <li className="nav-item">
+              <li className="nav-item position-relative">
                 <NavLink to="/cart" className="nav-link">
                   Carrello
+                  {cartItemCount > 0 && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "-5px",
+                        right: "-10px",
+                        background: "red",
+                        color: "white",
+                        borderRadius: "50%",
+                        padding: "2px 6px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {cartItemCount}
+                    </span>
+                  )}
                 </NavLink>
               </li>
             </ul>
@@ -64,9 +89,7 @@ export default function DefaultLayout() {
               className="btn-close"
               data-bs-dismiss="alert"
               aria-label="Close"
-              onClick={() => {
-                setTimeout(hideNotification, 800);
-              }}
+              onClick={() => setTimeout(hideNotification, 800)}
             ></button>
           </div>
         )}
