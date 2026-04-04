@@ -1,7 +1,8 @@
 import { useCartContext } from "../contexts/CartContext";
 
 export default function CartPage() {
-  const { cart, removeFromCart } = useCartContext();
+  const { cart, removeFromCart, increaseQuantity, decreaseQuantity } =
+    useCartContext();
 
   if (cart.length === 0) {
     return <h2 className="text-center mt-5">Carrello vuoto</h2>;
@@ -31,6 +32,25 @@ export default function CartPage() {
             </div>
 
             {/* AZIONI */}
+
+            <div className="d-flex align-items-center gap-2">
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => decreaseQuantity(item.id)}
+              >
+                -
+              </button>
+
+              <span>{item.quantity}</span>
+
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => increaseQuantity(item.id)}
+              >
+                +
+              </button>
+            </div>
+
             <div className="col-md-3">
               <button
                 className="btn btn-danger"

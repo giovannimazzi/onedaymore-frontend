@@ -19,12 +19,39 @@ export function CartContextProvider({ children }) {
     });
   };
 
+  const increaseQuantity = (id) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
+      ),
+    );
+  };
+
+  const decreaseQuantity = (id) => {
+    setCart(
+      (prev) =>
+        prev
+          .map((item) =>
+            item.id === id ? { ...item, quantity: item.quantity - 1 } : item,
+          )
+          .filter((item) => item.quantity > 0), // se arriva a 0 lo rimuove
+    );
+  };
+
   const removeFromCart = (id) => {
     setCart((prev) => prev.filter((p) => p.id !== id));
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        increaseQuantity,
+        decreaseQuantity,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
