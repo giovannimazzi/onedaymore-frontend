@@ -36,6 +36,11 @@ export default function DefaultLayout() {
                   Prodotti
                 </NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink to="/cart" className="nav-link">
+                  Carrello
+                </NavLink>
+              </li>
             </ul>
           </div>
         </div>

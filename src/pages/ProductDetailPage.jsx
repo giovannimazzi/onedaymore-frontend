@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { productsEndpoint } from "../utils/api";
+import { useCartContext } from "../contexts/CartContext";
 
 export default function ProductDetailPage() {
   const { startLoading, endLoading } = useLoaderContext();
@@ -12,7 +13,7 @@ export default function ProductDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const fallbackImage = getCategoryFallbackImage(product?.category_slug);
   const [imageSrc, setImageSrc] = useState(fallbackImage);
-
+  const { addToCart } = useCartContext();
   useEffect(() => {
     startLoading();
     setIsLoading(true);
@@ -87,7 +88,12 @@ export default function ProductDetailPage() {
               "Nessuna descrizione disponibile."}
           </p>
 
-          <button className="btn btn-success mb-3">Aggiungi al carrello</button>
+          <button
+            className="btn btn-success mb-3"
+            onClick={() => addToCart(product)}
+          >
+            Aggiungi al carrello
+          </button>
 
           <Link to="/" className="btn btn-outline-secondary">
             Torna alla home
