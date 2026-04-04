@@ -5,7 +5,7 @@ import ProductCard from "../components/ProductCard";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { productsEndpoint } from "../utils/api";
 
-const homepageEndpoint = `${productsEndpoint}/homepage`;
+const homepageEndpoint = `${productsEndpoint}/u/homepage`;
 
 export default function HomePage() {
   const { startLoading, endLoading } = useLoaderContext();
@@ -78,11 +78,13 @@ export default function HomePage() {
                 Non siamo riusciti a caricare i best seller.
               </p>
             )}
-            {!isLoadingSections && !hasSectionsError && bestSellers.length === 0 && (
-              <p className="text-center fs-5 mb-0">
-                Nessun best seller disponibile al momento.
-              </p>
-            )}
+            {!isLoadingSections &&
+              !hasSectionsError &&
+              bestSellers.length === 0 && (
+                <p className="text-center fs-5 mb-0">
+                  Nessun best seller disponibile al momento.
+                </p>
+              )}
             {!isLoadingSections &&
               !hasSectionsError &&
               bestSellers.map((product) => (
@@ -132,11 +134,13 @@ export default function HomePage() {
                 Non siamo riusciti a caricare i nuovi arrivi.
               </p>
             )}
-            {!isLoadingSections && !hasSectionsError && newArrivals.length === 0 && (
-              <p className="text-center fs-5 mb-0">
-                Nessun nuovo arrivo disponibile al momento.
-              </p>
-            )}
+            {!isLoadingSections &&
+              !hasSectionsError &&
+              newArrivals.length === 0 && (
+                <p className="text-center fs-5 mb-0">
+                  Nessun nuovo arrivo disponibile al momento.
+                </p>
+              )}
             {!isLoadingSections &&
               !hasSectionsError &&
               newArrivals.map((product) => (
