@@ -148,6 +148,7 @@ export default function HomePage() {
                   key={product.id}
                   productName={product.name}
                   productImage={product.image_url}
+                  productCategoryId={product.category_id}
                   productCategorySlug={product.category_slug}
                   productPrice={product.price}
                   productShortDescr={
