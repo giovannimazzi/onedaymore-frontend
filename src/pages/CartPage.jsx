@@ -31,7 +31,6 @@ export default function CartPage() {
               <h5>{item.name}</h5>
               <p>Prezzo: €{item.price}</p>
               <p>Quantità: {item.quantity}</p>
-              <h3 className="mt-4">Totale: €{total.toFixed(2)}</h3>
             </div>
 
             {/* AZIONI */}
@@ -65,6 +64,12 @@ export default function CartPage() {
           </div>
         </div>
       ))}
+
+      <div>
+        {" "}
+        <h3 className="mt-4">Totale: €{total.toFixed(2)}</h3>
+        <button className="btn btn-primary"> completa il pagamento</button>
+      </div>
     </div>
   );
 }

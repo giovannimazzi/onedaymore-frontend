@@ -90,7 +90,14 @@ export default function ProductDetailPage() {
 
           <button
             className="btn btn-success mb-3"
-            onClick={() => addToCart(product)}
+            onClick={() =>
+              addToCart({
+                id: product.slug,
+                name: product.name,
+                price: product.price,
+                image_url: product.image_url,
+              })
+            }
           >
             Aggiungi al carrello
           </button>
