@@ -14,6 +14,10 @@ export default function ProductDetailPage() {
   const fallbackImage = getCategoryFallbackImage(product?.category_slug);
   const [imageSrc, setImageSrc] = useState(fallbackImage);
   const { addToCart } = useCartContext();
+
+  // Stato per il pop-up di conferma
+  const [showToast, setShowToast] = useState(false);
+
   useEffect(() => {
     startLoading();
     setIsLoading(true);
@@ -38,6 +42,18 @@ export default function ProductDetailPage() {
     setImageSrc(product?.image_url || fallbackImage);
   }, [product, fallbackImage]);
 
+  // Funzione per aggiungere al carrello con pop-up
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.slug,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url,
+    });
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2500); // sparisce dopo 2,5s
+  };
+
   if (isLoading) {
     return (
       <div className="container mt-5">
@@ -58,7 +74,7 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 position-relative">
       <div className="row">
         {/* IMMAGINE */}
         <div className="col-md-6">
@@ -66,9 +82,7 @@ export default function ProductDetailPage() {
             src={imageSrc}
             alt={product.name}
             className="img-fluid rounded"
-            onError={() => {
-              setImageSrc(fallbackImage);
-            }}
+            onError={() => setImageSrc(fallbackImage)}
           />
         </div>
 
@@ -88,17 +102,7 @@ export default function ProductDetailPage() {
               "Nessuna descrizione disponibile."}
           </p>
 
-          <button
-            className="btn btn-success mb-3"
-            onClick={() =>
-              addToCart({
-                id: product.slug,
-                name: product.name,
-                price: product.price,
-                image_url: product.image_url,
-              })
-            }
-          >
+          <button className="btn btn-success mb-3" onClick={handleAddToCart}>
             Aggiungi al carrello
           </button>
 
@@ -107,6 +111,25 @@ export default function ProductDetailPage() {
           </Link>
         </div>
       </div>
+
+      {/* TOAST POP-UP */}
+      {showToast && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            backgroundColor: "#28a745",
+            color: "white",
+            padding: "12px 20px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+            zIndex: 9999,
+          }}
+        >
+          Prodotto aggiunto al carrello!
+        </div>
+      )}
     </div>
   );
 }
