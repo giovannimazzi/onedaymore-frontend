@@ -4,6 +4,8 @@ export default function CartPage() {
   const { cart, removeFromCart, increaseQuantity, decreaseQuantity } =
     useCartContext();
 
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
   if (cart.length === 0) {
     return <h2 className="text-center mt-5">Carrello vuoto</h2>;
   }
@@ -29,6 +31,7 @@ export default function CartPage() {
               <h5>{item.name}</h5>
               <p>Prezzo: €{item.price}</p>
               <p>Quantità: {item.quantity}</p>
+              <h3 className="mt-4">Totale: €{total.toFixed(2)}</h3>
             </div>
 
             {/* AZIONI */}
