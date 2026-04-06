@@ -10,28 +10,34 @@ import ProductsPage from "./pages/ProductsPage";
 import { LoaderContextProvider } from "./contexts/LoaderContext";
 import { NotificationContextProvider } from "./contexts/NotificationContext";
 
+import { CartContextProvider } from "./contexts/CartContext";
+import CartPage from "./pages/CartPage";
+
 export default function App() {
   return (
-    <NotificationContextProvider>
-      <LoaderContextProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<DefaultLayout />}>
-              {/* HOME */}
-              <Route index element={<HomePage />} />
+    <CartContextProvider>
+      <NotificationContextProvider>
+        <LoaderContextProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<DefaultLayout />}>
+                {/* HOME */}
+                <Route index element={<HomePage />} />
 
-              {/* PRODUCT ROUTES */}
-              <Route path="products">
-                <Route index element={<ProductsPage />} />
-                <Route path=":slug" element={<ProductDetailPage />} />
+                {/* PRODUCT ROUTES */}
+                <Route path="products">
+                  <Route index element={<ProductsPage />} />
+                  <Route path=":slug" element={<ProductDetailPage />} />
+                </Route>
+                {/* cart */}
+                <Route path="cart" element={<CartPage />} />
+                {/* NOT FOUND */}
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
-
-              {/* NOT FOUND */}
-              <Route path="*" element={<NotFoundPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </LoaderContextProvider>
-    </NotificationContextProvider>
+            </Routes>
+          </BrowserRouter>
+        </LoaderContextProvider>
+      </NotificationContextProvider>
+    </CartContextProvider>
   );
 }
