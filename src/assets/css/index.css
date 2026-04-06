@@ -149,6 +149,18 @@ h6,
 /* ================================================
    UTILITÀ
    ================================================ */
+/* per footer in basso */
+.odm-layout {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.odm-layout-main {
+  flex: 1 0 auto;
+}
+
 main {
   margin: 0;
   padding: 0;

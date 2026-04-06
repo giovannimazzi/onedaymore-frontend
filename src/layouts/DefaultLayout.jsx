@@ -15,7 +15,7 @@ export default function DefaultLayout() {
   );
 
   return (
-    <>
+    <div className="odm-layout">
       <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
         <div className="container">
           <Link to="/" className="navbar-brand">
@@ -71,7 +71,7 @@ export default function DefaultLayout() {
         </div>
       </nav>
 
-      <main>
+      <main className="odm-layout-main">
         {isLoading && (
           <div className="overlay-loading">
             <p>Caricamento...</p>
@@ -157,6 +157,6 @@ export default function DefaultLayout() {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
