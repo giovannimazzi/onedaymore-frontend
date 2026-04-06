@@ -14,56 +14,57 @@ export default function CartPage() {
     <div className="container mt-5">
       <h1>Carrello</h1>
 
-      {cart.map((item) => (
-        <div key={item.id} className="card mb-3 p-3">
-          <div className="row align-items-center">
-            {/* IMMAGINE */}
-            <div className="col-md-3">
-              <img
-                src={item.image_url || "https://via.placeholder.com/300"}
-                alt={item.name}
-                className="img-fluid rounded"
-              />
-            </div>
+      {cart.map((item) => {
+        console.log(item);
 
-            {/* INFO */}
-            <div className="col-md-6">
-              <h5>{item.name}</h5>
-              <p>Prezzo: €{item.price}</p>
-              <p>Quantità: {item.quantity}</p>
-            </div>
+        return (
+          <div key={item.id} className="card mb-3 p-3">
+            <div className="row align-items-center">
+              <div className="col-md-3">
+                <img
+                  src={item.image_url || "https://via.placeholder.com/300"}
+                  alt={item.name}
+                  className="img-fluid rounded"
+                  style={{ maxHeight: "120px", objectFit: "cover" }}
+                />
+              </div>
 
-            {/* AZIONI */}
+              <div className="col-md-6">
+                <h5>{item.name}</h5>
+                <p>Prezzo: €{item.price}</p>
+                <p>Quantità: {item.quantity}</p>
+              </div>
 
-            <div className="d-flex align-items-center gap-2">
-              <button
-                className="btn btn-outline-secondary"
-                onClick={() => decreaseQuantity(item.id)}
-              >
-                -
-              </button>
+              <div className="d-flex align-items-center gap-2">
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={() => decreaseQuantity(item.id)}
+                >
+                  -
+                </button>
 
-              <span>{item.quantity}</span>
+                <span>{item.quantity}</span>
 
-              <button
-                className="btn btn-outline-secondary"
-                onClick={() => increaseQuantity(item.id)}
-              >
-                +
-              </button>
-            </div>
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={() => increaseQuantity(item.id)}
+                >
+                  +
+                </button>
+              </div>
 
-            <div className="col-md-3">
-              <button
-                className="btn btn-danger"
-                onClick={() => removeFromCart(item.id)}
-              >
-                Rimuovi
-              </button>
+              <div className="col-md-3">
+                <button
+                  className="btn btn-danger"
+                  onClick={() => removeFromCart(item.id)}
+                >
+                  Rimuovi
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       <div>
         {" "}

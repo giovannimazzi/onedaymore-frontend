@@ -46,7 +46,7 @@ export default function ProductDetailPage() {
       id: product.slug,
       name: product.name,
       price: product.price,
-      image_url: product.image_url,
+      image_url: imageSrc,
     });
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2500);
