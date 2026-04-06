@@ -3,10 +3,27 @@ import { useEffect } from "react";
 
 const CartContext = createContext();
 
+function migrateCartLinesFromStorage(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((line) => {
+      const slug = line.slug ?? line.id;
+      if (slug == null || slug === "") return null;
+      const { id: _legacyId, ...rest } = line;
+      return { ...rest, slug };
+    })
+    .filter(Boolean);
+}
+
 export function CartContextProvider({ children }) {
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem("cart");
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+    try {
+      return migrateCartLinesFromStorage(JSON.parse(saved));
+    } catch {
+      return [];
+    }
   });
 
   useEffect(() => {
@@ -15,11 +32,13 @@ export function CartContextProvider({ children }) {
 
   const addToCart = (product) => {
     setCart((prev) => {
-      const existing = prev.find((p) => p.id === product.id);
+      const existingLine = prev.find((line) => line.slug === product.slug);
 
-      if (existing) {
-        return prev.map((p) =>
-          p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p,
+      if (existingLine) {
+        return prev.map((line) =>
+          line.slug === product.slug
+            ? { ...line, quantity: line.quantity + 1 }
+            : line,
         );
       }
 
@@ -27,27 +46,36 @@ export function CartContextProvider({ children }) {
     });
   };
 
-  const increaseQuantity = (id) => {
+  const increaseQuantity = (productSlug) => {
     setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
-      ),
+      prev.map((item) => {
+        if (item.slug !== productSlug) return item;
+        if (
+          item.quantity_available != null &&
+          item.quantity >= item.quantity_available
+        ) {
+          return item;
+        }
+        return { ...item, quantity: item.quantity + 1 };
+      }),
     );
   };
 
-  const decreaseQuantity = (id) => {
+  const decreaseQuantity = (productSlug) => {
     setCart(
       (prev) =>
         prev
           .map((item) =>
-            item.id === id ? { ...item, quantity: item.quantity - 1 } : item,
+            item.slug === productSlug
+              ? { ...item, quantity: item.quantity - 1 }
+              : item,
           )
-          .filter((item) => item.quantity > 0), // se arriva a 0 lo rimuove
+          .filter((item) => item.quantity > 0),
     );
   };
 
-  const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((p) => p.id !== id));
+  const removeFromCart = (productSlug) => {
+    setCart((prev) => prev.filter((line) => line.slug !== productSlug));
   };
 
   return (
