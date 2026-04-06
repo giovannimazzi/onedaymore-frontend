@@ -4,8 +4,11 @@ import { Link } from "react-router";
 import ProductCard from "../components/ProductCard";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { productsEndpoint } from "../utils/api";
+import { getProductBadges } from "../utils/productBadges";
 
 const homepageEndpoint = `${productsEndpoint}/u/homepage`;
+
+const HOME_SECTION_LIMIT = 5;
 
 export default function HomePage() {
   const { startLoading, endLoading } = useLoaderContext();
@@ -21,10 +24,14 @@ export default function HomePage() {
 
     axios
       .get(homepageEndpoint)
-      .then((res) => {
-        const homepageData = res?.data?.result ?? {};
-        setBestSellers(homepageData.best_sellers ?? []);
-        setNewArrivals(homepageData.latest_arrivals ?? []);
+      .then((response) => {
+        const homepageData = response?.data?.result ?? {};
+        setBestSellers(
+          (homepageData.best_sellers ?? []).slice(0, HOME_SECTION_LIMIT),
+        );
+        setNewArrivals(
+          (homepageData.latest_arrivals ?? []).slice(0, HOME_SECTION_LIMIT),
+        );
 
         if (!homepageData.best_sellers && !homepageData.latest_arrivals) {
           setHasSectionsError(true);
@@ -56,8 +63,7 @@ export default function HomePage() {
         </div>
         <Link
           to="/products"
-          className="btn btn-primary btn-lg px-5 py-3"
-          style={{ alignSelf: "flex-start" }}
+          className="btn btn-primary btn-lg px-5 py-3 align-self-start"
         >
           Scopri i prodotti
         </Link>
@@ -72,7 +78,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4 justify-content-center">
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-4 justify-content-center">
             {isLoadingSections && (
               <p className="text-center">Caricamento prodotti...</p>
             )}
@@ -92,16 +98,12 @@ export default function HomePage() {
               !hasSectionsError &&
               bestSellers.map((product) => (
                 <ProductCard
-                  key={product.id}
+                  key={product.slug}
                   productName={product.name}
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
                   productPrice={product.price}
-                  productShortDescr={
-                    product.short_description || product.description
-                  }
-                  badgeText="Best seller"
-                  badgeVariant="gold"
+                  badges={getProductBadges(product)}
                   productLink={
                     product.slug ? `/products/${product.slug}` : "/products"
                   }
@@ -121,15 +123,12 @@ export default function HomePage() {
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="section-heading text-white">Nuovi arrivi</h2>
-            <p
-              className="section-subtitle text-white"
-              style={{ opacity: 0.75 }}
-            >
+            <p className="section-subtitle text-white text-dim">
               Appena arrivati, pronti per ogni domani
             </p>
           </div>
 
-          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4 justify-content-center">
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-4 justify-content-center">
             {isLoadingSections && (
               <p className="text-center">Caricamento prodotti...</p>
             )}
@@ -149,15 +148,12 @@ export default function HomePage() {
               !hasSectionsError &&
               newArrivals.map((product) => (
                 <ProductCard
-                  key={product.id}
+                  key={product.slug}
                   productName={product.name}
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
                   productPrice={product.price}
-                  productShortDescr={
-                    product.short_description || product.description
-                  }
-                  badgeText="Nuovo arrivo"
+                  badges={getProductBadges(product)}
                   productLink={
                     product.slug ? `/products/${product.slug}` : "/products"
                   }

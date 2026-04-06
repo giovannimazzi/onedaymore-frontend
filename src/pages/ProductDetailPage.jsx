@@ -1,20 +1,56 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { productsEndpoint } from "../utils/api";
 import { categoryIconHandler } from "../utils/categoryIconHandler";
 import { useCartContext } from "../contexts/CartContext";
+import { useAvailability } from "../hooks/useAvailability";
+import { getProductBadges } from "../utils/productBadges";
+import AvailabilityIndicator from "../components/AvailabilityIndicator";
+import ProductBadges from "../components/ProductBadges";
+import QtyControls from "../components/QtyControls";
+
+const CATEGORY_LABEL = {
+  "pasti-liofilizzati": "Pasti liofilizzati",
+  "colazioni-e-snack": "Colazioni e snack",
+  "razioni-alta-densita-calorica": "Alta densità calorica",
+  "bevande-e-reintegro": "Bevande e reintegro",
+};
+
+const PREP_LABEL = {
+  hot: "Calda",
+  cold: "Fredda",
+  ready: "Pronto all'uso",
+  mixed: "Mista",
+  add_cold_water: "Aggiungere acqua fredda",
+  add_hot_water: "Aggiungere acqua calda",
+  no_prep: "Pronto all'uso",
+};
+
+function formatPrepType(value) {
+  if (!value) return null;
+  if (PREP_LABEL[value]) return PREP_LABEL[value];
+  return value.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function formatWeight(grams) {
+  if (!grams) return null;
+  return grams >= 1000
+    ? `${(grams / 1000).toFixed(grams % 1000 === 0 ? 0 : 1)} kg`
+    : `${grams} g`;
+}
 
 export default function ProductDetailPage() {
   const { startLoading, endLoading } = useLoaderContext();
+  const navigate = useNavigate();
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const fallbackImage = getCategoryFallbackImage(product?.category_slug);
   const [imageSrc, setImageSrc] = useState(fallbackImage);
-  const { addToCart } = useCartContext();
+  const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCartContext();
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
@@ -23,10 +59,13 @@ export default function ProductDetailPage() {
 
     axios
       .get(`${productsEndpoint}/${slug}`)
-      .then((res) => {
-        const payload = res?.data?.result ?? res?.data ?? null;
-        const resolvedProduct = Array.isArray(payload) ? payload[0] : payload;
-        setProduct(resolvedProduct || null);
+      .then((response) => {
+        const payload =
+          response?.data?.result ?? response?.data ?? null;
+        const productFromResponse = Array.isArray(payload)
+          ? payload[0]
+          : payload;
+        setProduct(productFromResponse || null);
       })
       .catch(() => {
         setProduct(null);
@@ -41,16 +80,38 @@ export default function ProductDetailPage() {
     setImageSrc(product?.image_url || fallbackImage);
   }, [product, fallbackImage]);
 
+  const cartItem = cart.find((line) => line.slug === product?.slug);
+
+  const quantityInCart = cartItem?.quantity ?? 0;
+  const { remaining, isOutOfStock } = useAvailability(
+    product?.quantity_available ?? null,
+    quantityInCart,
+  );
+
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     addToCart({
-      id: product.slug,
+      slug: product.slug,
       name: product.name,
       price: product.price,
-      image_url: imageSrc,
+      image_url: product.image_url || imageSrc,
+      category_slug: product.category_slug,
+      quantity_available: product.quantity_available,
     });
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2500);
   };
+
+  const badgesForDetail = getProductBadges(product);
+
+  const stats = product
+    ? [
+        product.calories != null && { label: "Calorie", value: `${product.calories} kcal` },
+        product.weight_grams != null && { label: "Peso netto", value: formatWeight(product.weight_grams) },
+        product.servings != null && { label: "Porzioni", value: product.servings },
+        product.preparation_type && { label: "Preparazione", value: formatPrepType(product.preparation_type) },
+      ].filter(Boolean)
+    : [];
 
   if (isLoading) {
     return (
@@ -72,74 +133,117 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="container my-5">
-      <div className="row">
-        <div className="col-md-6">
-          <img
-            src={imageSrc}
-            alt={product.name}
-            className="img-fluid rounded"
-            onError={() => setImageSrc(fallbackImage)}
-          />
+    <div className="container product-detail-page py-4 py-lg-5">
+      <button
+        type="button"
+        className="btn btn-link product-detail-back text-decoration-none p-0 mb-3"
+        onClick={() => navigate(-1)}
+      >
+        <i className="bi bi-arrow-left me-2" aria-hidden />
+        Torna indietro
+      </button>
+
+      <div className="row g-4 align-items-start">
+        <div className="col-12 col-md-5 col-lg-5">
+          <div className="product-detail-media">
+            <img
+              src={imageSrc}
+              alt={product.name}
+              className="product-detail-img"
+              onError={() => setImageSrc(fallbackImage)}
+            />
+          </div>
         </div>
 
-        <div className="col-md-6 d-flex flex-column justify-content-center">
-          <span className="badge bg-primary mb-3 px-3 py-2">
-            {product.badge || "Prodotto"}
-          </span>
+        <div className="col-12 col-md-7 col-lg-4 product-detail-body">
+          <ProductBadges badges={badgesForDetail} className="product-detail-badges" />
 
-          <h1 className="mb-0">
-            {product.name}{" "}
+          <h1 className="product-detail-heading mb-1">{product.name}</h1>
+
+          <div className="product-detail-category-row">
             <i
-              className={`bi ${categoryIconHandler(product.category_slug)}`}
+              className={`bi ${categoryIconHandler(product.category_slug)} product-detail-category-icon`}
               aria-hidden
             />
-          </h1>
-
-          <div className="my-2">
-            {product.category_description && (
-              <p className="small text-muted mb-0">
-                <em>{product.category_description}</em>
-              </p>
-            )}
+            <span className="product-detail-category-name">
+              {CATEGORY_LABEL[product.category_slug] ?? product.category_slug}
+            </span>
           </div>
+          {product.category_description && (
+            <p className="product-detail-category-desc">{product.category_description}</p>
+          )}
 
-          <p className="card-price mb-3">€{product.price}</p>
-
-          <p className="mb-4">
-            {product.description ||
-              product.short_description ||
-              "Nessuna descrizione disponibile."}
+          <p className="product-detail-desc mt-3 mb-3">
+            {product.description || product.short_description || "Nessuna descrizione disponibile."}
           </p>
 
-          <button
-            type="button"
-            className="btn btn-primary w-100 py-3 mb-3"
-            onClick={handleAddToCart}
-          >
-            Aggiungi al carrello
-          </button>
+          {stats.length > 0 && (
+            <ul className="product-detail-stats">
+              {stats.map((statRow) => (
+                <li key={statRow.label} className="product-detail-stat">
+                  <span className="product-detail-stat-label">{statRow.label}</span>
+                  <span className="product-detail-stat-value">{statRow.value}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
-          <Link to="/" className="btn btn-outline-dark w-100">
-            Torna alla home
-          </Link>
+        <div className="col-12 col-md-12 col-lg-3">
+          <div className="product-detail-purchase">
+            <p className="product-detail-purchase-price">€{product.price}</p>
+
+            {product.total_sold > 0 && (
+              <p className="product-detail-purchase-sold">
+                <i className="bi bi-bag-check-fill me-1" aria-hidden />
+                {product.total_sold} già acquistati
+              </p>
+            )}
+
+            <AvailabilityIndicator remaining={remaining} />
+
+            <hr className="product-detail-purchase-separator" />
+
+            {cartItem ? (
+              <div className="mb-3">
+                <p className="product-detail-purchase-quantity-label">Nel carrello</p>
+                <QtyControls
+                  quantity={cartItem.quantity}
+                  quantityAvailable={product.quantity_available}
+                  onIncrease={() => increaseQuantity(product.slug)}
+                  onDecrease={() => decreaseQuantity(product.slug)}
+                />
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-primary w-100 product-add-btn product-detail-add-btn mb-3"
+                onClick={handleAddToCart}
+                disabled={isOutOfStock}
+              >
+                {isOutOfStock ? "Prodotto esaurito" : "Aggiungi al carrello"}
+              </button>
+            )}
+
+            {cartItem && (
+              <Link to="/cart" className="btn btn-outline-secondary w-100 product-detail-goto-cart mb-3">
+                Vai al carrello
+              </Link>
+            )}
+
+            <ul className="product-detail-purchase-trust">
+              <li><i className="bi bi-shield-check me-2" aria-hidden />Qualità garantita</li>
+              <li><i className="bi bi-arrow-counterclockwise me-2" aria-hidden />Reso semplificato</li>
+              <li><i className="bi bi-lock me-2" aria-hidden />Pagamento sicuro</li>
+            </ul>
+
+          </div>
         </div>
       </div>
 
       {showToast && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "20px",
-            right: "20px",
-            backgroundColor: "#28a745",
-            color: "white",
-            padding: "12px 20px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-            zIndex: 9999,
-          }}
-        >
+        <div className="product-detail-toast" role="status" aria-live="polite">
+          <i className="bi bi-cart-check me-2" aria-hidden />
           Prodotto aggiunto al carrello!
         </div>
       )}
