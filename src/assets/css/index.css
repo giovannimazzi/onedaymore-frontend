@@ -1,84 +1,79 @@
-/*PALETTE*/
-:root {
-  /* sfondo pagina — più chiaro e desaturato */
-  --odm-sandstone: #e2ddd0;
-  /* area immagine card */
-  --odm-card-bg: #f8f4ec;
-  /* area testo card — beige scuro */
-  --odm-card-body: #b8ad8a;
-  --odm-olive: #5f7c3b;
-  --odm-midnight: #1f2b38;
-  --odm-gold: #e8bd2e;
-}
-
-/*SCALA TIPOGRAFICA*/
-:root {
-  /* badge, label, nav link, bottone */
-  --text-xs: 12px;
-  /* descrizioni, testo secondario */
-  --text-sm: 14px;
-  /* corpo */
-  --text-base: 16px;
-  /* lead, sottotitoli*/
-  --text-md: 18px;
-  /* prezzo card, loader */
-  --text-lg: 24px;
-  /* brand navbar */
-  --text-xl: 32px;
-  /* section heading */
-  --text-2xl: 40px;
-  /* hero h1 responsive*/
-  --text-hero: clamp(48px, 7vw, 88px);
-}
-
 /* ================================================
-   BOOTSTRAP OVERRIDE
+   DESIGN TOKENS  (unico blocco :root)
    ================================================ */
 :root {
+  /* Palette */
+  --odm-sandstone: #e2ddd0;
+  --odm-card-bg: #f8f4ec;
+  --odm-olive: #5f7c3b;
+  --odm-midnight: #1f2b38;
+  --odm-midnight-soft: #283545;
+  --odm-gold: #e8bd2e;
+  --odm-gold-hover: #d4ab27;
+  --odm-gold-active: #c9a224;
+  --odm-sage: #a8c882;
+  --odm-availability-ok: #8ec459;
+  --odm-availability-low: #e8a22e;
+  --odm-availability-out: #e05555;
+
+  /* Font */
+  --odm-font-body: 'Inter', system-ui, sans-serif;
+  --odm-font-condensed: 'Barlow Condensed', system-ui, sans-serif;
+
+  /* Scala tipografica */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-md: 18px;
+  --text-lg: 24px;
+  --text-xl: 32px;
+  --text-2xl: 40px;
+  --text-hero: clamp(48px, 7vw, 88px);
+
+  /* Raggio angoli */
+  --odm-radius: 2px;
+
+  /* Bootstrap overrides */
   --bs-primary: var(--odm-gold);
   --bs-primary-rgb: 232, 189, 46;
   --bs-success: var(--odm-olive);
-  /* usato da bg-success nella sezione Nuovi arrivi */
   --bs-success-rgb: 95, 124, 59;
   --bs-dark: var(--odm-midnight);
   --bs-dark-rgb: 31, 43, 56;
   --bs-body-bg: var(--odm-sandstone);
   --bs-body-color: var(--odm-midnight);
-  --bs-body-font-family: 'Inter', system-ui, sans-serif;
+  --bs-body-font-family: var(--odm-font-body);
   --bs-link-color: var(--odm-olive);
   --bs-link-hover-color: var(--odm-midnight);
 }
 
-/* Gold è chiaro: testo midnight sui bottoni primari */
+/* ================================================
+   BOOTSTRAP COMPONENT OVERRIDES
+   ================================================ */
+.btn {
+  font-family: var(--odm-font-condensed);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--odm-radius);
+}
+
+/* Primary: oro chiaro, testo scuro */
 .btn-primary {
   --bs-btn-bg: var(--odm-gold);
   --bs-btn-border-color: var(--odm-gold);
   --bs-btn-color: var(--odm-midnight);
-  --bs-btn-hover-bg: #d4ab27;
-  --bs-btn-hover-border-color: #d4ab27;
+  --bs-btn-hover-bg: var(--odm-gold-hover);
+  --bs-btn-hover-border-color: var(--odm-gold-hover);
   --bs-btn-hover-color: var(--odm-midnight);
-  --bs-btn-active-bg: #c9a224;
-  --bs-btn-active-border-color: #c9a224;
+  --bs-btn-active-bg: var(--odm-gold-active);
+  --bs-btn-active-border-color: var(--odm-gold-active);
   --bs-btn-active-color: var(--odm-midnight);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  border-radius: 2px;
-}
-
-.btn-outline-light,
-.btn-outline-dark,
-.btn-outline-secondary {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  border-radius: 2px;
 }
 
 /* ================================================
-   TIPOGRAFIA
+   TIPOGRAFIA GLOBALE
    ================================================ */
 h1,
 h2,
@@ -92,64 +87,15 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-family: var(--odm-font-condensed);
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--odm-midnight);
 }
 
-/* NAVBAR */
-.navbar {
-  border-bottom: 2px solid var(--odm-gold);
-}
-
-.navbar-brand {
-  font-family: 'Barlow Condensed', system-ui, sans-serif;
-  font-size: var(--text-xl);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: white !important;
-}
-
-.navbar-dark .nav-link {
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7) !important;
-  transition: color 0.2s;
-}
-
-.navbar-dark .nav-link:hover,
-.navbar-dark .nav-link.active {
-  color: rgba(255, 255, 255, 0.95) !important;
-}
-
 /* ================================================
-   LOADER OVERLAY
+   UTILITIES
    ================================================ */
-.overlay-loading {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background-color: rgba(31, 43, 56, 0.55);
-  backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--odm-sandstone);
-  font-family: 'Barlow Condensed', system-ui, sans-serif;
-  font-size: var(--text-lg);
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-/* ================================================
-   UTILITÀ
-   ================================================ */
-/* per footer in basso */
 .odm-layout {
   min-height: 100vh;
   min-height: 100dvh;
@@ -171,8 +117,234 @@ main {
   margin-left: calc(-50vw + 50%);
 }
 
+.odm-brand-gold {
+  color: var(--odm-gold) !important;
+}
 
-/* HERO */
+.text-dim {
+  opacity: 0.75;
+}
+
+/* ================================================
+   LOADER OVERLAY
+   ================================================ */
+.overlay-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgba(31, 43, 56, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--odm-sandstone);
+  font-family: var(--odm-font-condensed);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ================================================
+   NAVBAR
+   ================================================ */
+.navbar {
+  border-bottom: 2px solid var(--odm-gold);
+  font-family: var(--odm-font-condensed);
+}
+
+/* Navbar senza padding verticale: la striscia carrello va a filo */
+.odm-navbar {
+  --bs-navbar-padding-y: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  align-items: stretch;
+}
+
+.navbar-brand {
+  font-family: var(--odm-font-condensed);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: white !important;
+}
+
+.navbar-dark .nav-link {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7) !important;
+  transition: color 0.2s;
+}
+
+.navbar-dark .nav-link:hover,
+.navbar-dark .nav-link.active {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.odm-navbar-inner {
+  min-height: 3.5rem;
+}
+
+.odm-navbar .navbar-brand {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+}
+
+@media (min-width: 992px) {
+  .odm-navbar .navbar-brand {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}
+
+.odm-navbar .navbar-nav .nav-link {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.odm-navbar .navbar-toggler {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 992px) {
+  .odm-navbar-inner {
+    flex-wrap: nowrap !important;
+  }
+
+  .navbar-expand-lg .odm-navbar-collapse {
+    justify-content: flex-end;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .odm-navbar-collapse {
+    flex-basis: 100%;
+  }
+}
+
+.navbar-expand-lg .navbar-nav {
+  align-items: center;
+}
+
+.navbar-dark .navbar-cart-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 2.75rem;
+  min-height: 2.375rem;
+  padding: 0.4rem 0.65rem !important;
+  margin-left: 0.15rem;
+  background-color: var(--odm-gold) !important;
+  color: var(--odm-midnight) !important;
+  border-radius: var(--odm-radius);
+  line-height: 1;
+}
+
+.navbar-dark .navbar-cart-link--edge {
+  margin-left: 0;
+  padding: 0 !important;
+  border-left: 1px solid rgba(31, 43, 56, 0.32);
+}
+
+@media (min-width: 992px) {
+  .navbar-dark .navbar-cart-link--edge {
+    align-self: stretch;
+    width: 3.5rem;
+    min-width: 3.5rem;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .navbar-dark .navbar-cart-link--edge {
+    --odm-navbar-cart-link-size: 3.125rem;
+    align-self: center;
+    width: var(--odm-navbar-cart-link-size);
+    min-width: var(--odm-navbar-cart-link-size);
+    height: var(--odm-navbar-cart-link-size);
+    min-height: var(--odm-navbar-cart-link-size);
+    max-height: var(--odm-navbar-cart-link-size);
+    flex-shrink: 0;
+    border-radius: var(--odm-radius);
+    margin-right: 0;
+  }
+}
+
+.navbar-dark .navbar-cart-link:hover {
+  background-color: var(--odm-gold-hover) !important;
+  color: var(--odm-midnight) !important;
+}
+
+.navbar-dark .navbar-cart-link.active {
+  background-color: var(--odm-gold-active) !important;
+  color: var(--odm-midnight) !important;
+}
+
+.navbar-dark .navbar-cart-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+.navbar-dark .navbar-cart-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--odm-midnight) !important;
+  transform: translateY(1px);
+}
+
+.navbar-dark .navbar-cart-badge {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  transform: none;
+  z-index: 1;
+  min-width: 1.35rem;
+  min-height: 1.2rem;
+  padding: 0 0.22rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background-color: var(--odm-midnight);
+  color: #fff;
+  font-family: var(--odm-font-body);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  border: 2px solid var(--odm-gold);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+}
+
+/* ================================================
+   FOOTER
+   ================================================ */
+/* Footer: l'h5 eredita il colore titoli (midnight), qui serve il bianco */
+.site-footer-brand {
+  font-family: var(--odm-font-condensed);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff !important;
+}
+
+/* ================================================
+   HERO & SEZIONI HOME
+   ================================================ */
 .hero {
   min-height: 88vh;
   padding: 60px 60px 80px;
@@ -207,7 +379,6 @@ main {
   margin-bottom: 2.5rem;
 }
 
-/* SEZIONI PRODOTTI */
 .section-heading {
   font-size: var(--text-2xl);
   text-transform: uppercase;
