@@ -97,44 +97,64 @@ export default function DefaultLayout() {
         <Outlet />
       </main>
       <footer className="bg-dark text-light py-4">
-        <div className="text-center">
-          {/* BRAND */}
-          <h5 className="fw-bold mb-2">OneDayMore</h5>
+        <div className="container">
+          <div className="d-flex justify-content-between align-items-center flex-wrap">
+            {/* LOGO SINISTRA */}
+            <img
+              src="/ecommerce-logo.webp"
+              alt="Ecommerce Logo"
+              style={{ height: "100px" }}
+            />
 
-          <p className="mb-3 small">Un giorno in più. Sempre.</p>
+            {/* CONTENUTO CENTRALE */}
+            <div className="text-center flex-grow-1">
+              <h5 className="fw-bold mb-2">OneDayMore</h5>
 
-          {/* SOCIAL */}
-          <div className="mb-3">
-            <a href="#" className="text-light mx-2 fs-5">
-              <i className="bi bi-instagram"></i>
-            </a>
-            <a href="#" className="text-light mx-2 fs-5">
-              <i className="bi bi-facebook"></i>
-            </a>
-            <a href="#" className="text-light mx-2 fs-5">
-              <i className="bi bi-twitter-x"></i>
-            </a>
-            <a href="#" className="text-light mx-2 fs-5">
-              <i className="bi bi-youtube"></i>
-            </a>
+              <p className="mb-3 small">Un giorno in più. Sempre.</p>
+
+              {/* SOCIAL */}
+              <div className="mb-3">
+                <a href="#" className="text-light mx-2 fs-5">
+                  <i className="bi bi-instagram"></i>
+                </a>
+                <a href="#" className="text-light mx-2 fs-5">
+                  <i className="bi bi-facebook"></i>
+                </a>
+                <a href="#" className="text-light mx-2 fs-5">
+                  <i className="bi bi-twitter-x"></i>
+                </a>
+                <a href="#" className="text-light mx-2 fs-5">
+                  <i className="bi bi-youtube"></i>
+                </a>
+              </div>
+
+              {/* CONTATTI */}
+              <p className="small mb-2 text-secondary">
+                Via Appia Nuova 742, 00179 Roma (RM)
+              </p>
+              <p className="small mb-3 text-secondary">
+                Tel: +39 06 9876 5432 · info@onedaymore.it
+              </p>
+
+              {/* COPYRIGHT */}
+              <small className="d-block text-secondary">
+                © {new Date().getFullYear()} OneDayMore · Tutti i diritti
+                riservati
+              </small>
+
+              <small className="d-block text-secondary">
+                Crafted by{" "}
+                <span className="fw-semibold text-light">Last Byte</span>
+              </small>
+            </div>
+
+            {/* LOGO DESTRA */}
+            <img
+              src="/team-logo.webp"
+              alt="Team Logo"
+              style={{ height: "100px" }}
+            />
           </div>
-
-          {/* CONTATTI */}
-          <p className="small mb-2 text-secondary">
-            Via Appia Nuova 742, 00179 Roma (RM)
-          </p>
-          <p className="small mb-3 text-secondary">
-            Tel: +39 06 9876 5432 · info@onedaymore.it
-          </p>
-
-          {/* COPYRIGHT */}
-          <small className="d-block text-secondary">
-            © {new Date().getFullYear()} OneDayMore · Tutti i diritti riservati
-          </small>
-
-          <small className="d-block text-secondary">
-            Crafted by <span className="fw-semibold text-light">Last Byte</span>
-          </small>
         </div>
       </footer>
     </>
