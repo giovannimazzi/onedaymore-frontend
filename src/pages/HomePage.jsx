@@ -46,10 +46,9 @@ export default function HomePage() {
       <section className="hero d-flex flex-column justify-content-between align-items-start">
         <div>
           <h1>
-            Quando tutto crolla <br /> resta ciò che sei.
+            Per ogni giorno che <br /> non avevi previsto.
           </h1>
           <p className="fs-5">
-            Siamo quello che mangiamo. <br />
             Preparati con prodotti essenziali per <br /> resistere, adattarti e
             continuare <br />
             ad andare avanti.

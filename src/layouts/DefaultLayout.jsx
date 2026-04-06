@@ -8,10 +8,10 @@ export default function DefaultLayout() {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
         <div className="container">
           <Link to="/" className="navbar-brand">
-            OneDayMore
+            OneDay<span style={{ color: "var(--odm-gold)" }}>More</span>
           </Link>
           <button
             className="navbar-toggler"
@@ -68,6 +68,47 @@ export default function DefaultLayout() {
 
         <Outlet />
       </main>
+      <footer className="bg-dark text-light py-4">
+        <div className="text-center">
+          {/* BRAND */}
+          <h5 className="fw-bold mb-2">OneDayMore</h5>
+
+          <p className="mb-3 small">Un giorno in più. Sempre.</p>
+
+          {/* SOCIAL */}
+          <div className="mb-3">
+            <a href="#" className="text-light mx-2 fs-5">
+              <i className="bi bi-instagram"></i>
+            </a>
+            <a href="#" className="text-light mx-2 fs-5">
+              <i className="bi bi-facebook"></i>
+            </a>
+            <a href="#" className="text-light mx-2 fs-5">
+              <i className="bi bi-twitter-x"></i>
+            </a>
+            <a href="#" className="text-light mx-2 fs-5">
+              <i className="bi bi-youtube"></i>
+            </a>
+          </div>
+
+          {/* CONTATTI */}
+          <p className="small mb-2 text-secondary">
+            Via Appia Nuova 742, 00179 Roma (RM)
+          </p>
+          <p className="small mb-3 text-secondary">
+            Tel: +39 06 9876 5432 · info@onedaymore.it
+          </p>
+
+          {/* COPYRIGHT */}
+          <small className="d-block text-secondary">
+            © {new Date().getFullYear()} OneDayMore · Tutti i diritti riservati
+          </small>
+
+          <small className="d-block text-secondary">
+            Crafted by <span className="fw-semibold text-light">Last Byte</span>
+          </small>
+        </div>
+      </footer>
     </>
   );
 }
