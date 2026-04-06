@@ -391,22 +391,30 @@ main {
 }
 
 /* ================================================
-   CARDS
+   CARD PRODOTTO
    ================================================ */
 .card {
-  background-color: var(--odm-card-bg);
+  background-color: var(--odm-midnight);
   border: none;
-  border-radius: 2px;
+  border-radius: var(--odm-radius);
   min-height: 300px;
+  color: var(--odm-sandstone);
+  overflow: hidden;
 }
 
-/* Link immagine — cursore pointer già di default su <a>, nessuno stile extra */
 .card-img-link {
   display: block;
   cursor: pointer;
 }
 
-/* Link nome prodotto */
+.card .card-img-top {
+  display: block;
+  width: 100%;
+  border-radius: 0;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
 .card-name-link {
   text-decoration: none;
   color: inherit;
@@ -421,57 +429,215 @@ main {
 .card-img-wrapper {
   position: relative;
   overflow: hidden;
+  background-color: var(--odm-midnight-soft);
 }
 
-/* Badge default — beige scuro (stesso colore del card-body, discreto) */
-.card-badge {
+.card-badges {
   position: absolute;
-  top: 12px;
+  top: 0;
   left: 0;
-  background-color: var(--odm-card-body);
-  color: var(--odm-midnight);
-  font-family: 'Barlow Condensed', system-ui, sans-serif;
-  font-size: var(--text-xs);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 5px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 2;
 }
 
-/* Badge gold — per Best seller e simili */
+.card-badge {
+  display: inline-block;
+  font-family: var(--odm-font-condensed);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 4px 9px;
+  border: none;
+  color: var(--odm-midnight);
+  background: rgba(226, 221, 208, 0.55);
+  border-radius: 0;
+  width: fit-content;
+}
+
 .card-badge--gold {
   background-color: var(--odm-gold);
-  color: var(--odm-midnight);
+}
+
+.card-badge--latest {
+  background-color: var(--odm-sage);
 }
 
 .card-body {
-  background-color: var(--odm-card-body);
+  background-color: var(--odm-midnight);
 }
 
 .card-price {
-  font-family: 'Barlow Condensed', system-ui, sans-serif;
-  font-size: var(--text-lg);
+  font-family: var(--odm-font-condensed);
+  font-size: var(--text-xl);
   font-weight: 700;
-  color: var(--odm-midnight);
-  margin-bottom: 0.2rem;
+  color: var(--odm-gold);
+  margin-bottom: 0.25rem;
   line-height: 1;
 }
 
 .card-title {
-  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-family: var(--odm-font-condensed);
   font-size: var(--text-md);
   font-weight: 600;
   letter-spacing: 0.02em;
   margin-bottom: 0.5rem;
-  color: var(--odm-midnight);
+  color: var(--odm-sandstone);
 }
 
 .card-text {
   font-size: var(--text-sm);
-  color: rgba(31, 43, 56, 0.65);
+  color: rgba(226, 221, 208, 0.72);
+}
+
+.card-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.35rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--odm-radius);
+  background-color: rgba(226, 221, 208, 0.07);
+  border: 1px solid rgba(226, 221, 208, 0.13);
+  width: fit-content;
+  line-height: 1;
+}
+
+.card-stat-label {
+  font-family: var(--odm-font-condensed);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(226, 221, 208, 0.42);
+}
+
+.card-stat-separator {
+  font-size: 0.65rem;
+  color: rgba(226, 221, 208, 0.25);
+  line-height: 1;
+}
+
+.card-stat-value {
+  font-family: var(--odm-font-condensed);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: rgba(226, 221, 208, 0.72);
+  letter-spacing: 0.02em;
+  line-height: 1;
 }
 
 /* ================================================
+   CONTROLLI QUANTITÀ
+   ================================================ */
+.product-quantity-controls {
+  --product-quantity-control-height: 2.5rem;
+  --product-quantity-button-size: 2.65rem;
+  display: grid;
+  grid-template-columns: var(--product-quantity-button-size) minmax(2.75rem, 1fr)
+    var(--product-quantity-button-size);
+  align-items: stretch;
+  gap: 0;
+  border-radius: var(--odm-radius);
+  overflow: hidden;
+  border: 1px solid rgba(226, 221, 208, 0.32);
+  background: rgba(226, 221, 208, 0.03);
+  box-shadow: none;
+}
+
+.product-quantity-button {
+  min-height: var(--product-quantity-control-height);
+  min-width: var(--product-quantity-button-size);
+  width: 100%;
+  padding: 0;
+  border-radius: 0 !important;
+  line-height: 1;
+  font-size: 1rem;
+  font-weight: 800;
+  border: 0 !important;
+  background-color: rgba(226, 221, 208, 0.1) !important;
+  color: var(--odm-midnight) !important;
+  display: grid;
+  place-items: center;
+}
+
+.product-quantity-button:hover {
+  background-color: rgba(226, 221, 208, 0.16) !important;
+  color: var(--odm-midnight) !important;
+}
+
+.product-quantity-button:active {
+  transform: translateY(0.5px);
+}
+
+.product-quantity-value {
+  min-height: var(--product-quantity-control-height);
+  display: grid;
+  place-items: center;
+  font-family: var(--odm-font-condensed);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--odm-midnight);
+  text-align: center;
+  user-select: none;
+  background-color: rgba(255, 255, 255, 0.55);
+  border-left: 1px solid rgba(31, 43, 56, 0.16);
+  border-right: 1px solid rgba(31, 43, 56, 0.16);
+}
+
+.product-quantity-controls--gold {
+  width: 100%;
+  border-color: rgba(232, 189, 46, 0.38);
+  background: rgba(232, 189, 46, 0.06);
+}
+
+.product-quantity-controls--gold .product-quantity-button {
+  background-color: var(--odm-gold) !important;
+  color: var(--odm-midnight) !important;
+}
+
+.product-quantity-controls--gold .product-quantity-button:hover {
+  background-color: var(--odm-gold-hover) !important;
+}
+
+.product-quantity-controls--gold .product-quantity-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.product-quantity-controls--gold .product-quantity-value {
+  background-color: rgba(31, 43, 56, 0.72);
+  color: var(--odm-sandstone);
+  border-left-color: rgba(232, 189, 46, 0.28);
+  border-right-color: rgba(232, 189, 46, 0.28);
+}
+
+/* ================================================
+   INDICATORE DISPONIBILITÀ
+   ================================================ */
+.availability-indicator {
+  font-size: var(--text-sm);
+  color: var(--odm-availability-ok);
+  margin-bottom: 0;
+}
+
+.availability-indicator--low {
+  color: var(--odm-availability-low);
+}
+
+.availability-indicator--out {
+  color: var(--odm-availability-out);
+}
+
+.cart-line-availability {
+  font-size: var(--text-xs) !important;
+}
+
    FORM
    ================================================ */
 .form-control,
