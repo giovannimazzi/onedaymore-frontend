@@ -1,111 +1,123 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
-import { categoryIconHandler } from "../utils/categoryIconHandler";
 import { useCartContext } from "../contexts/CartContext";
+import { useNotificationContext } from "../contexts/NotificationContext";
+import { useAvailability } from "../hooks/useAvailability";
+import QtyControls from "./QtyControls";
+import ProductBadges from "./ProductBadges";
+
+function getProductSlugFromLink(productLink) {
+  const slugMatch = String(productLink || "").match(/\/products\/([^/?#]+)/);
+  return slugMatch ? slugMatch[1] : null;
+}
 
 export default function ProductCard({
   productName,
   productImage,
   productCategorySlug,
-  badgeText,
-  badgeVariant,
+  badges,
   productPrice,
-  productShortDescr,
   productLink,
+  statLabel,
+  statValue,
+  productQuantityAvailable,
 }) {
+  const { cart, addToCart, increaseQuantity, decreaseQuantity } =
+    useCartContext();
+  const { showNotification } = useNotificationContext();
+
   const fallbackImage = getCategoryFallbackImage(productCategorySlug);
   const [imageSrc, setImageSrc] = useState(productImage || fallbackImage);
-  const icon = categoryIconHandler(productCategorySlug);
 
-  const { addToCart } = useCartContext();
-
-  const [showToast, setShowToast] = useState(false);
-
-  const handleAddToCart = () => {
-    addToCart({
-      id: productLink?.split("/").pop(),
-      name: productName,
-      price: productPrice,
-      image_url: imageSrc,
-    });
-
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
-  };
+  const destination = productLink || "/products";
+  const productSlugForCart = useMemo(
+    () => getProductSlugFromLink(productLink),
+    [productLink],
+  );
+  const cartItem = useMemo(
+    () => cart.find((line) => line.slug === productSlugForCart),
+    [cart, productSlugForCart],
+  );
 
   useEffect(() => {
     setImageSrc(productImage || fallbackImage);
   }, [productImage, fallbackImage]);
 
-  const destination = productLink || "/products";
+  const availableStock =
+    productQuantityAvailable ?? cartItem?.quantity_available ?? null;
+  const quantityInCart = cartItem?.quantity ?? 0;
+  const { isOutOfStock } = useAvailability(availableStock, quantityInCart);
+
+  const handleAddToCart = () => {
+    if (!productSlugForCart || productName == null || isOutOfStock) return;
+    addToCart({
+      slug: productSlugForCart,
+      name: productName,
+      price: Number(productPrice),
+      image_url: productImage || imageSrc,
+      category_slug: productCategorySlug,
+      quantity_available: availableStock,
+    });
+    showNotification("Prodotto aggiunto al carrello!", "success");
+  };
+
+  const canAddToCart =
+    Boolean(productSlugForCart && productName != null) && !isOutOfStock;
 
   return (
-    <>
-      <div className="col">
-        <div className="card my-2 h-100">
-          <div className="card-img-wrapper">
-            <Link to={destination} className="card-img-link">
-              <img
-                src={imageSrc}
-                className="card-img-top"
-                alt={productName || "immagine-prodotto"}
-                onError={() => setImageSrc(fallbackImage)}
-              />
+    <div className="col">
+      <div className="card h-100">
+        <div className="card-img-wrapper">
+          <Link to={destination} className="card-img-link">
+            <img
+              src={imageSrc}
+              className="card-img-top"
+              alt={productName || "immagine-prodotto"}
+              onError={() => setImageSrc(fallbackImage)}
+            />
+          </Link>
+          <ProductBadges badges={badges} />
+        </div>
+
+        <div className="card-body d-flex flex-column p-3">
+          {productName && (
+            <Link to={destination} className="card-name-link">
+              <h5 className="card-title">{productName}</h5>
             </Link>
-            {badgeText && (
-              <span
-                className={`card-badge${
-                  badgeVariant === "gold" ? " card-badge--gold" : ""
-                }`}
+          )}
+          {productPrice != null && productPrice !== "" && (
+            <p className="card-price">€{productPrice}</p>
+          )}
+          {statLabel != null && statValue != null && (
+            <p className="card-stat">
+              <span className="card-stat-label">{statLabel}</span>
+              <span className="card-stat-separator">·</span>
+              <span className="card-stat-value">{statValue}</span>
+            </p>
+          )}
+
+          <div className="product-card-cart mt-auto w-100">
+            {cartItem ? (
+              <QtyControls
+                quantity={cartItem.quantity}
+                quantityAvailable={availableStock}
+                onIncrease={() => increaseQuantity(productSlugForCart)}
+                onDecrease={() => decreaseQuantity(productSlugForCart)}
+              />
+            ) : (
+              <button
+                type="button"
+                className="btn btn-primary w-100 product-add-btn"
+                onClick={handleAddToCart}
+                disabled={!canAddToCart}
               >
-                {badgeText}
-              </span>
+                Aggiungi al carrello
+              </button>
             )}
-          </div>
-
-          <div className="card-body d-flex flex-column p-3">
-            {productName && (
-              <Link to={destination} className="card-name-link">
-                <h5 className="card-title d-flex justify-content-between align-items-start gap-2">
-                  <span>{productName}</span>
-                  <i className={`bi ${icon} fs-5 flex-shrink-0`} aria-hidden />
-                </h5>
-              </Link>
-            )}
-            {productShortDescr && (
-              <p className="card-text text-truncate">{productShortDescr}</p>
-            )}
-            {productPrice && <p className="card-price">€{productPrice}</p>}
-
-            <button
-              className="btn btn-primary w-100 mt-auto"
-              type="button"
-              onClick={handleAddToCart}
-            >
-              Aggiungi al carrello
-            </button>
           </div>
         </div>
       </div>
-
-      {showToast && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "20px",
-            right: "20px",
-            backgroundColor: "#28a745",
-            color: "white",
-            padding: "12px 20px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-            zIndex: 9999,
-          }}
-        >
-          Prodotto aggiunto al carrello!
-        </div>
-      )}
-    </>
+    </div>
   );
 }
