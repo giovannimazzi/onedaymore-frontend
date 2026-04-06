@@ -1,108 +1,124 @@
-/* ================================================
-   PALETTE
-   ================================================ */
+/*PALETTE*/
 :root {
-  --odm-sandstone:  #e2ddd0;   /* sfondo pagina — più chiaro e desaturato */
-  --odm-card-bg:    #f8f4ec;   /* area immagine card                      */
-  --odm-card-body:  #b8ad8a;   /* area testo card — beige scuro           */
-  --odm-olive:      #5f7c3b;
-  --odm-midnight:   #1f2b38;
-  --odm-gold:       #e8bd2e;
+  /* sfondo pagina — più chiaro e desaturato */
+  --odm-sandstone: #e2ddd0;
+  /* area immagine card */
+  --odm-card-bg: #f8f4ec;
+  /* area testo card — beige scuro */
+  --odm-card-body: #b8ad8a;
+  --odm-olive: #5f7c3b;
+  --odm-midnight: #1f2b38;
+  --odm-gold: #e8bd2e;
 }
 
-/* ================================================
-   SCALA TIPOGRAFICA  (rapporto 1.333 — quarta perfetta)
-   ================================================ */
+/*SCALA TIPOGRAFICA*/
 :root {
-  --text-xs:   0.75rem;                    /*  12px — badge, label, nav link, bottone */
-  --text-sm:   0.875rem;                   /*  14px — descrizioni, testo secondario   */
-  --text-base: 1rem;                       /*  16px — corpo                           */
-  --text-md:   1.125rem;                   /*  18px — lead, sottotitoli               */
-  --text-lg:   1.5rem;                     /*  24px — prezzo card, loader             */
-  --text-xl:   2rem;                       /*  32px — brand navbar                    */
-  --text-2xl:  2.5rem;                     /*  40px — section heading                 */
-  --text-hero: clamp(3rem, 7vw, 5.5rem);   /*  48–88px — hero h1                      */
+  /* badge, label, nav link, bottone */
+  --text-xs: 12px;
+  /* descrizioni, testo secondario */
+  --text-sm: 14px;
+  /* corpo */
+  --text-base: 16px;
+  /* lead, sottotitoli*/
+  --text-md: 18px;
+  /* prezzo card, loader */
+  --text-lg: 24px;
+  /* brand navbar */
+  --text-xl: 32px;
+  /* section heading */
+  --text-2xl: 40px;
+  /* hero h1 responsive*/
+  --text-hero: clamp(48px, 7vw, 88px);
 }
 
 /* ================================================
    BOOTSTRAP OVERRIDE
    ================================================ */
 :root {
-  --bs-primary:          var(--odm-gold);
-  --bs-primary-rgb:      232, 189, 46;
-  --bs-success:          var(--odm-olive);   /* usato da bg-success nella sezione Nuovi arrivi */
-  --bs-success-rgb:      95, 124, 59;
-  --bs-dark:             var(--odm-midnight);
-  --bs-dark-rgb:         31, 43, 56;
-  --bs-body-bg:          var(--odm-sandstone);
-  --bs-body-color:       var(--odm-midnight);
+  --bs-primary: var(--odm-gold);
+  --bs-primary-rgb: 232, 189, 46;
+  --bs-success: var(--odm-olive);
+  /* usato da bg-success nella sezione Nuovi arrivi */
+  --bs-success-rgb: 95, 124, 59;
+  --bs-dark: var(--odm-midnight);
+  --bs-dark-rgb: 31, 43, 56;
+  --bs-body-bg: var(--odm-sandstone);
+  --bs-body-color: var(--odm-midnight);
   --bs-body-font-family: 'Inter', system-ui, sans-serif;
-  --bs-link-color:       var(--odm-olive);
+  --bs-link-color: var(--odm-olive);
   --bs-link-hover-color: var(--odm-midnight);
 }
 
 /* Gold è chiaro: testo midnight sui bottoni primari */
 .btn-primary {
-  --bs-btn-bg:                  var(--odm-gold);
-  --bs-btn-border-color:        var(--odm-gold);
-  --bs-btn-color:               var(--odm-midnight);
-  --bs-btn-hover-bg:            #d4ab27;
-  --bs-btn-hover-border-color:  #d4ab27;
-  --bs-btn-hover-color:         var(--odm-midnight);
-  --bs-btn-active-bg:           #c9a224;
+  --bs-btn-bg: var(--odm-gold);
+  --bs-btn-border-color: var(--odm-gold);
+  --bs-btn-color: var(--odm-midnight);
+  --bs-btn-hover-bg: #d4ab27;
+  --bs-btn-hover-border-color: #d4ab27;
+  --bs-btn-hover-color: var(--odm-midnight);
+  --bs-btn-active-bg: #c9a224;
   --bs-btn-active-border-color: #c9a224;
-  --bs-btn-active-color:        var(--odm-midnight);
-  font-size:      var(--text-xs);
-  font-weight:    600;
+  --bs-btn-active-color: var(--odm-midnight);
+  font-size: var(--text-xs);
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  border-radius:  2px;
+  border-radius: 2px;
 }
 
 .btn-outline-light,
 .btn-outline-dark,
 .btn-outline-secondary {
-  font-size:      var(--text-xs);
-  font-weight:    600;
+  font-size: var(--text-xs);
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  border-radius:  2px;
+  border-radius: 2px;
 }
 
 /* ================================================
    TIPOGRAFIA
    ================================================ */
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family:    'Barlow Condensed', system-ui, sans-serif;
-  font-weight:    700;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-weight: 700;
   letter-spacing: 0.02em;
-  color:          var(--odm-midnight);
+  color: var(--odm-midnight);
 }
 
-/* ================================================
-   NAVBAR
-   ================================================ */
+/* NAVBAR */
 .navbar {
   border-bottom: 2px solid var(--odm-gold);
 }
 
 .navbar-brand {
-  font-family:    'Barlow Condensed', system-ui, sans-serif;
-  font-size:      var(--text-xl);
-  font-weight:    700;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: var(--text-xl);
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color:          white !important;
+  color: white !important;
 }
 
 .navbar-dark .nav-link {
-  font-size:      var(--text-xs);
-  font-weight:    500;
+  font-size: var(--text-xs);
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color:          rgba(255, 255, 255, 0.7) !important;
-  transition:     color 0.2s;
+  color: rgba(255, 255, 255, 0.7) !important;
+  transition: color 0.2s;
 }
 
 .navbar-dark .nav-link:hover,
@@ -114,20 +130,20 @@ h1, h2, h3, h4, h5, h6,
    LOADER OVERLAY
    ================================================ */
 .overlay-loading {
-  position:         fixed;
-  inset:            0;
-  z-index:          100;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   background-color: rgba(31, 43, 56, 0.55);
-  backdrop-filter:  blur(4px);
-  display:          flex;
-  justify-content:  center;
-  align-items:      center;
-  color:            var(--odm-sandstone);
-  font-family:      'Barlow Condensed', system-ui, sans-serif;
-  font-size:        var(--text-lg);
-  font-weight:      600;
-  letter-spacing:   0.2em;
-  text-transform:   uppercase;
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--odm-sandstone);
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 /* ================================================
@@ -139,61 +155,55 @@ main {
 }
 
 .full-width {
-  width:       100vw;
+  width: 100vw;
   margin-left: calc(-50vw + 50%);
 }
 
-/* ================================================
-   HERO
-   ================================================ */
-/* TODO: sostituire hero-bg.png con l'immagine definitiva in public/ */
+
+/* HERO */
 .hero {
-  min-height:       88vh;
-  padding:          60px 60px 80px;
-  display:          flex;
-  flex-direction:   column;
-  justify-content:  flex-end;
-  color:            white;
+  min-height: 88vh;
+  padding: 60px 60px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: white;
   background-color: var(--odm-midnight);
   background-image:
-    linear-gradient(
-      to top,
+    linear-gradient(to top,
       rgba(31, 43, 56, 0.92) 0%,
       rgba(31, 43, 56, 0.45) 55%,
-      rgba(31, 43, 56, 0.15) 100%
-    ),
+      rgba(31, 43, 56, 0.15) 100%),
     url("/hero-bg.png");
-  background-size:     cover;
+  background-size: cover;
   background-position: center;
-  background-repeat:   no-repeat;
+  background-repeat: no-repeat;
 }
 
 .hero h1 {
-  font-size:     var(--text-hero);
-  line-height:   1.0;
-  color:         white;
+  font-size: var(--text-hero);
+  line-height: 1.0;
+  color: white;
   margin-bottom: 1.25rem;
 }
 
 .hero p {
-  font-size:     var(--text-md);
-  color:         rgba(255, 255, 255, 0.75);
-  max-width:     580px;
-  line-height:   1.75;
+  font-size: var(--text-md);
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 580px;
+  line-height: 1.75;
   margin-bottom: 2.5rem;
 }
 
-/* ================================================
-   SEZIONI PRODOTTI
-   ================================================ */
+/* SEZIONI PRODOTTI */
 .section-heading {
-  font-size:      var(--text-2xl);
+  font-size: var(--text-2xl);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .section-subtitle {
-  font-size:   var(--text-md);
+  font-size: var(--text-md);
   font-weight: 400;
 }
 
@@ -202,23 +212,23 @@ main {
    ================================================ */
 .card {
   background-color: var(--odm-card-bg);
-  border:           none;
-  border-radius:    2px;
-  min-height:       300px;
+  border: none;
+  border-radius: 2px;
+  min-height: 300px;
 }
 
 /* Link immagine — cursore pointer già di default su <a>, nessuno stile extra */
 .card-img-link {
   display: block;
-  cursor:  pointer;
+  cursor: pointer;
 }
 
 /* Link nome prodotto */
 .card-name-link {
   text-decoration: none;
-  color:           inherit;
-  cursor:          pointer;
-  transition:      color 0.2s;
+  color: inherit;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
 .card-name-link:hover .card-title {
@@ -232,23 +242,23 @@ main {
 
 /* Badge default — beige scuro (stesso colore del card-body, discreto) */
 .card-badge {
-  position:         absolute;
-  top:              12px;
-  left:             0;
+  position: absolute;
+  top: 12px;
+  left: 0;
   background-color: var(--odm-card-body);
-  color:            var(--odm-midnight);
-  font-family:      'Barlow Condensed', system-ui, sans-serif;
-  font-size:        var(--text-xs);
-  font-weight:      700;
-  letter-spacing:   0.12em;
-  text-transform:   uppercase;
-  padding:          5px 12px;
+  color: var(--odm-midnight);
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 12px;
 }
 
 /* Badge gold — per Best seller e simili */
 .card-badge--gold {
   background-color: var(--odm-gold);
-  color:            var(--odm-midnight);
+  color: var(--odm-midnight);
 }
 
 .card-body {
@@ -256,26 +266,26 @@ main {
 }
 
 .card-price {
-  font-family:   'Barlow Condensed', system-ui, sans-serif;
-  font-size:     var(--text-lg);
-  font-weight:   700;
-  color:         var(--odm-midnight);
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--odm-midnight);
   margin-bottom: 0.2rem;
-  line-height:   1;
+  line-height: 1;
 }
 
 .card-title {
-  font-family:    'Barlow Condensed', system-ui, sans-serif;
-  font-size:      var(--text-md);
-  font-weight:    600;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: var(--text-md);
+  font-weight: 600;
   letter-spacing: 0.02em;
-  margin-bottom:  0.5rem;
-  color:          var(--odm-midnight);
+  margin-bottom: 0.5rem;
+  color: var(--odm-midnight);
 }
 
 .card-text {
   font-size: var(--text-sm);
-  color:     rgba(31, 43, 56, 0.65);
+  color: rgba(31, 43, 56, 0.65);
 }
 
 /* ================================================
@@ -283,23 +293,23 @@ main {
    ================================================ */
 .form-control,
 .form-select {
-  border-radius:    2px;
+  border-radius: 2px;
   background-color: var(--odm-card-bg);
-  border-color:     rgba(31, 43, 56, 0.2);
-  color:            var(--odm-midnight);
+  border-color: rgba(31, 43, 56, 0.2);
+  color: var(--odm-midnight);
 }
 
 .form-control:focus,
 .form-select:focus {
   background-color: #fff;
-  border-color:     var(--odm-midnight);
-  box-shadow:       0 0 0 0.2rem rgba(31, 43, 56, 0.12);
+  border-color: var(--odm-midnight);
+  box-shadow: 0 0 0 0.2rem rgba(31, 43, 56, 0.12);
 }
 
 .form-label {
-  font-size:      var(--text-xs);
-  font-weight:    500;
+  font-size: var(--text-xs);
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color:          rgba(31, 43, 56, 0.65);
+  color: rgba(31, 43, 56, 0.65);
 }
