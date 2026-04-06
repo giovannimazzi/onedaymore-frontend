@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
+import { categoryIconHandler } from "../utils/categoryIconHandler";
 
 export default function ProductCard({
   productName,
@@ -13,6 +14,7 @@ export default function ProductCard({
 }) {
   const fallbackImage = getCategoryFallbackImage(productCategorySlug);
   const [imageSrc, setImageSrc] = useState(productImage || fallbackImage);
+  const icon = categoryIconHandler(productCategorySlug);
 
   useEffect(() => {
     setImageSrc(productImage || fallbackImage);
@@ -37,7 +39,13 @@ export default function ProductCard({
 
           {productPrice && <h5 className="h3 mb-3">€{productPrice}</h5>}
 
-          {productName && <h5 className="card-title">{productName}</h5>}
+          <div>
+            {productName && (
+              <h5 className="card-title d-flex justify-content-between">
+                {productName} <i className={`bi ${icon} fs-5`} />
+              </h5>
+            )}
+          </div>
 
           {productShortDescr && (
             <p className="card-text text-truncate">{productShortDescr}</p>

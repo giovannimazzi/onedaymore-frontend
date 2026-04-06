@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { productsEndpoint } from "../utils/api";
+import { categoryIconHandler } from "../utils/categoryIconHandler";
 
 export default function ProductDetailPage() {
   const { startLoading, endLoading } = useLoaderContext();
@@ -77,13 +78,13 @@ export default function ProductDetailPage() {
             {product.badge || "Prodotto"}
           </span>
 
-          <h1 className="mb-0">{product.name}</h1>
+          <h1 className="mb-0">
+            {product.name}{" "}
+            <i
+              className={`bi ${categoryIconHandler(product.category_slug)}`}
+            />
+          </h1>
           <div className="my-2">
-            {/* BADGE CATEGORIA */}
-            <span className="badge bg-secondary mb-2">
-              {product.category_name}
-            </span>
-
             {/* DESCRIZIONE CATEGORIA */}
             {product.category_description && (
               <p className="small text-muted mb-0">
