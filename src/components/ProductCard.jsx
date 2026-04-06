@@ -6,7 +6,6 @@ import { categoryIconHandler } from "../utils/categoryIconHandler";
 export default function ProductCard({
   productName,
   productImage,
-  productCategoryId,
   productCategorySlug,
   badgeText,
   productPrice,
@@ -15,7 +14,7 @@ export default function ProductCard({
 }) {
   const fallbackImage = getCategoryFallbackImage(productCategorySlug);
   const [imageSrc, setImageSrc] = useState(productImage || fallbackImage);
-  const icon = categoryIconHandler(productCategoryId);
+  const icon = categoryIconHandler(productCategorySlug);
 
   useEffect(() => {
     setImageSrc(productImage || fallbackImage);

@@ -1,10 +1,10 @@
-export function categoryIconHandler(categoryId) {
-  const iconMap = {
-    1: "bi-box-seam", // Pasti Liofilizzati
-    2: "bi-cup-hot", // Colazioni e Snack
-    3: "bi-lightning-charge", // Alta densità calorica
-    4: "bi-cup-straw", // Bevande e reintegro
-  };
+const ICON_BY_SLUG = {
+  "pasti-liofilizzati": "bi-box-seam",
+  "colazioni-e-snack": "bi-cup-hot",
+  "razioni-alta-densita-calorica": "bi-lightning-charge",
+  "bevande-e-reintegro": "bi-cup-straw",
+};
 
-  return iconMap[categoryId] || "bi-question-diamond-fill";
+export function categoryIconHandler(categorySlug) {
+  return ICON_BY_SLUG[categorySlug] ?? "bi-question-diamond-fill";
 }

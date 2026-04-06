@@ -80,7 +80,9 @@ export default function ProductDetailPage() {
 
           <h1 className="mb-0">
             {product.name}{" "}
-            <i className={`bi ${categoryIconHandler(product.category_id)}`} />
+            <i
+              className={`bi ${categoryIconHandler(product.category_slug)}`}
+            />
           </h1>
           <div className="my-2">
             {/* DESCRIZIONE CATEGORIA */}
