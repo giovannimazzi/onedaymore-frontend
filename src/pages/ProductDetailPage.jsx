@@ -15,8 +15,6 @@ export default function ProductDetailPage() {
   const fallbackImage = getCategoryFallbackImage(product?.category_slug);
   const [imageSrc, setImageSrc] = useState(fallbackImage);
   const { addToCart } = useCartContext();
-
-  // Stato per il pop-up di conferma
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
@@ -43,7 +41,6 @@ export default function ProductDetailPage() {
     setImageSrc(product?.image_url || fallbackImage);
   }, [product, fallbackImage]);
 
-  // Funzione per aggiungere al carrello con pop-up
   const handleAddToCart = () => {
     addToCart({
       id: product.slug,
@@ -52,7 +49,7 @@ export default function ProductDetailPage() {
       image_url: product.image_url,
     });
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 2500); // sparisce dopo 2,5s
+    setTimeout(() => setShowToast(false), 2500);
   };
 
   if (isLoading) {
@@ -77,7 +74,6 @@ export default function ProductDetailPage() {
   return (
     <div className="container my-5">
       <div className="row">
-        {/* IMMAGINE */}
         <div className="col-md-6">
           <img
             src={imageSrc}
@@ -87,67 +83,66 @@ export default function ProductDetailPage() {
           />
         </div>
 
-        {/* DETTAGLI */}
         <div className="col-md-6 d-flex flex-column justify-content-center">
           <span className="badge bg-primary mb-3 px-3 py-2">
-            <span className="badge bg-primary mb-3 px-3 py-2">
-              {product.badge || "Prodotto"}
-            </span>
+            {product.badge || "Prodotto"}
+          </span>
 
-            <h1 className="mb-0">
-              {product.name}{" "}
-              <i
-                className={`bi ${categoryIconHandler(product.category_slug)}`}
-              />
-            </h1>
-            <div className="my-2">
-              {/* DESCRIZIONE CATEGORIA */}
-              {product.category_description && (
-                <p className="small text-muted mb-0">
-                  {" "}
-                  <em>{product.category_description}</em>
-                </p>
-              )}
-            </div>
-            <p className="card-price mb-3">€{product.price}</p>
+          <h1 className="mb-0">
+            {product.name}{" "}
+            <i
+              className={`bi ${categoryIconHandler(product.category_slug)}`}
+              aria-hidden
+            />
+          </h1>
 
-            <p className="mb-4">
-              {product.description ||
-                product.short_description ||
-                "Nessuna descrizione disponibile."}
-            </p>
-
-            <button className="btn btn-primary w-100 py-3 mb-3" onClick={handleAddToCart}>
-
-              Aggiungi al carrello
-
-            </button>
-
-            <Link to="/" className="btn btn-outline-dark w-100">
-              <Link to="/" className="btn btn-outline-dark w-100">
-                Torna alla home
-              </Link>
-            </div>
-        </div>
-
-        {/* TOAST POP-UP */}
-        {showToast && (
-          <div
-            style={{
-              position: "fixed",
-              bottom: "20px",
-              right: "20px",
-              backgroundColor: "#28a745",
-              color: "white",
-              padding: "12px 20px",
-              borderRadius: "8px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-              zIndex: 9999,
-            }}
-          >
-            Prodotto aggiunto al carrello!
+          <div className="my-2">
+            {product.category_description && (
+              <p className="small text-muted mb-0">
+                <em>{product.category_description}</em>
+              </p>
+            )}
           </div>
-        )}
+
+          <p className="card-price mb-3">€{product.price}</p>
+
+          <p className="mb-4">
+            {product.description ||
+              product.short_description ||
+              "Nessuna descrizione disponibile."}
+          </p>
+
+          <button
+            type="button"
+            className="btn btn-primary w-100 py-3 mb-3"
+            onClick={handleAddToCart}
+          >
+            Aggiungi al carrello
+          </button>
+
+          <Link to="/" className="btn btn-outline-dark w-100">
+            Torna alla home
+          </Link>
+        </div>
       </div>
-      );
+
+      {showToast && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            backgroundColor: "#28a745",
+            color: "white",
+            padding: "12px 20px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+            zIndex: 9999,
+          }}
+        >
+          Prodotto aggiunto al carrello!
+        </div>
+      )}
+    </div>
+  );
 }
