@@ -89,7 +89,7 @@ export default function ProductDetailPage() {
 
         {/* DETTAGLI */}
         <div className="col-md-6 d-flex flex-column justify-content-center">
-          <span className="badge bg-success p-2 mb-3">
+          <span className="badge bg-primary mb-3 px-3 py-2">
             {product.badge || "Prodotto"}
           </span>
 
@@ -108,7 +108,7 @@ export default function ProductDetailPage() {
               </p>
             )}
           </div>
-          <h3 className="mb-3">€{product.price}</h3>
+          <p className="card-price mb-3">€{product.price}</p>
 
           <p className="mb-4">
             {product.description ||
@@ -116,11 +116,13 @@ export default function ProductDetailPage() {
               "Nessuna descrizione disponibile."}
           </p>
 
-          <button className="btn btn-success mb-3" onClick={handleAddToCart}>
+          <button className="btn btn-primary w-100 py-3 mb-3" onClick={handleAddToCart}>
+
             Aggiungi al carrello
+
           </button>
 
-          <Link to="/" className="btn btn-outline-secondary">
+          <Link to="/" className="btn btn-outline-dark w-100">
             Torna alla home
           </Link>
         </div>

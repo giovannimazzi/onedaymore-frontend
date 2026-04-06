@@ -54,36 +54,35 @@ export default function HomePage() {
             ad andare avanti.
           </p>
         </div>
-        <button className="btn btn-primary">Call To Action</button>
+        <Link to="/products" className="btn btn-primary btn-lg px-5 py-3" style={{ alignSelf: "flex-start" }}>
+          Scopri i prodotti
+        </Link>
       </section>
 
-      <div className="mt-5">
+      {/* BEST SELLERS */}
+      <section className="py-5 mt-4">
         <div className="container">
-          <div className="row">
-            <div>
-              <h2 className="h1 text-center">Prodotti più venduti</h2>
-              <p className="text-center fs-3">
-                le soluzioni più apprezzate per prepararsi agli imprevisti
-              </p>
-            </div>
+          <div className="text-center mb-5">
+            <h2 className="section-heading">Prodotti più venduti</h2>
+            <p className="section-subtitle">
+              Le soluzioni più apprezzate per prepararsi agli imprevisti
+            </p>
           </div>
 
-          <div className="row g-5 py-4" style={{ placeContent: "center" }}>
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4 justify-content-center">
             {isLoadingSections && (
-              <p className="text-center fs-5 mb-0">Caricamento prodotti...</p>
+              <p className="text-center">Caricamento prodotti...</p>
             )}
             {!isLoadingSections && hasSectionsError && (
-              <p className="text-center fs-5 mb-0">
+              <p className="text-center">
                 Non siamo riusciti a caricare i best seller.
               </p>
             )}
-            {!isLoadingSections &&
-              !hasSectionsError &&
-              bestSellers.length === 0 && (
-                <p className="text-center fs-5 mb-0">
-                  Nessun best seller disponibile al momento.
-                </p>
-              )}
+            {!isLoadingSections && !hasSectionsError && bestSellers.length === 0 && (
+              <p className="text-center">
+                Nessun best seller disponibile al momento.
+              </p>
+            )}
             {!isLoadingSections &&
               !hasSectionsError &&
               bestSellers.map((product) => (
@@ -93,53 +92,46 @@ export default function HomePage() {
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
                   productPrice={product.price}
-                  productShortDescr={
-                    product.short_description || product.description
-                  }
+                  productShortDescr={product.short_description || product.description}
                   badgeText="Best seller"
-                  productLink={
-                    product.slug ? `/products/${product.slug}` : "/products"
-                  }
+                  badgeVariant="gold"
+                  productLink={product.slug ? `/products/${product.slug}` : "/products"}
                 />
               ))}
           </div>
 
-          <div className="text-center">
-            <Link to="/products" className="btn btn-success text-center py-3">
+          <div className="text-center mt-5">
+            <Link to="/products" className="btn btn-primary px-5 py-3">
               Visualizza tutti i prodotti
             </Link>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* NUOVI ARRIVI */}
-      <div className="mt-5 py-5 bg-success full-width">
+      <section className="py-5 bg-success full-width">
         <div className="container">
-          <div className="row">
-            <div className="text-light">
-              <h2 className="h1 text-center">Nuovi arrivi</h2>
-              <p className="text-center fs-3">
-                Appena arrivati, pronti per ogni domani
-              </p>
-            </div>
+          <div className="text-center mb-5">
+            <h2 className="section-heading text-white">Nuovi arrivi</h2>
+            <p className="section-subtitle text-white" style={{ opacity: 0.75 }}>
+              Appena arrivati, pronti per ogni domani
+            </p>
           </div>
 
-          <div className="row g-5 py-4" style={{ placeContent: "center" }}>
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4 justify-content-center">
             {isLoadingSections && (
-              <p className="text-center fs-5 mb-0">Caricamento prodotti...</p>
+              <p className="text-center">Caricamento prodotti...</p>
             )}
             {!isLoadingSections && hasSectionsError && (
-              <p className="text-center fs-5 mb-0">
+              <p className="text-center">
                 Non siamo riusciti a caricare i nuovi arrivi.
               </p>
             )}
-            {!isLoadingSections &&
-              !hasSectionsError &&
-              newArrivals.length === 0 && (
-                <p className="text-center fs-5 mb-0">
-                  Nessun nuovo arrivo disponibile al momento.
-                </p>
-              )}
+            {!isLoadingSections && !hasSectionsError && newArrivals.length === 0 && (
+              <p className="text-center">
+                Nessun nuovo arrivo disponibile al momento.
+              </p>
+            )}
             {!isLoadingSections &&
               !hasSectionsError &&
               newArrivals.map((product) => (
@@ -149,24 +141,20 @@ export default function HomePage() {
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
                   productPrice={product.price}
-                  productShortDescr={
-                    product.short_description || product.description
-                  }
-                  badgeText="Nuovo prodotto"
-                  productLink={
-                    product.slug ? `/products/${product.slug}` : "/products"
-                  }
+                  productShortDescr={product.short_description || product.description}
+                  badgeText="Nuovo arrivo"
+                  productLink={product.slug ? `/products/${product.slug}` : "/products"}
                 />
               ))}
           </div>
 
-          <div className="text-center">
-            <Link to="/products" className="btn btn-dark text-center py-3">
+          <div className="text-center mt-5">
+            <Link to="/products" className="btn btn-outline-light px-5 py-3">
               Visualizza tutti i prodotti
             </Link>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 }

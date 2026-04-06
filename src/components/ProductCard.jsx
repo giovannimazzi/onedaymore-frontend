@@ -8,6 +8,7 @@ export default function ProductCard({
   productImage,
   productCategorySlug,
   badgeText,
+  badgeVariant,
   productPrice,
   productShortDescr,
   productLink,
@@ -20,43 +21,40 @@ export default function ProductCard({
     setImageSrc(productImage || fallbackImage);
   }, [productImage, fallbackImage]);
 
+  const destination = productLink || "/products";
+
   return (
-    <div className="col" style={{ width: "20rem" }}>
-      <div className="card my-2">
-        <img
-          src={imageSrc}
-          className="card-img-top"
-          alt={productName || "immagine-prodotto"}
-          onError={() => {
-            setImageSrc(fallbackImage);
-          }}
-        />
-
-        <div className="card-body">
+    <div className="col">
+      <div className="card my-2 h-100">
+        <div className="card-img-wrapper">
+          <Link to={destination} className="card-img-link">
+            <img
+              src={imageSrc}
+              className="card-img-top"
+              alt={productName || "immagine-prodotto"}
+              onError={() => setImageSrc(fallbackImage)}
+            />
+          </Link>
           {badgeText && (
-            <span className="badge bg-success p-2 mb-3">{badgeText}</span>
+            <span className={`card-badge${badgeVariant === "gold" ? " card-badge--gold" : ""}`}>
+              {badgeText}
+            </span>
           )}
+        </div>
 
-          {productPrice && <h5 className="h3 mb-3">€{productPrice}</h5>}
-
-          <div>
-            {productName && (
-              <h5 className="card-title d-flex justify-content-between">
-                {productName} <i className={`bi ${icon} fs-5`} />
-              </h5>
-            )}
-          </div>
-
+        <div className="card-body d-flex flex-column p-3">
+          {productPrice && <p className="card-price">€{productPrice}</p>}
+          {productName && (
+            <Link to={destination} className="card-name-link">
+              <h5 className="card-title">{productName}</h5>
+            </Link>
+          )}
           {productShortDescr && (
             <p className="card-text text-truncate">{productShortDescr}</p>
           )}
-
-          <Link
-            to={productLink || "/products"}
-            className="btn btn-primary mb-4"
-          >
-            Vai al prodotto
-          </Link>
+          <button className="btn btn-primary w-100 mt-auto" disabled>
+            Aggiungi al carrello
+          </button>
         </div>
       </div>
     </div>
