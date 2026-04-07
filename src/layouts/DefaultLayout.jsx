@@ -9,11 +9,6 @@ export default function DefaultLayout() {
   const { notification, hideNotification } = useNotificationContext();
   const { cart } = useCartContext();
 
-  const cartTotal = cart.reduce(
-    (sum, line) => sum + line.price * (line.quantity || 1),
-    0,
-  );
-
   const cartItemCount = cart.reduce(
     (total, line) => total + (line.quantity || 1),
     0,
@@ -45,10 +40,7 @@ export default function DefaultLayout() {
             id="navbarNav"
           >
             <ul className="navbar-nav ms-lg-auto align-items-lg-center pe-lg-2">
-              <li className="nav-item w-100 mt-auto mb-2 me-5 list-unstyled">
-                <ShippingInfo cartTotal={cartTotal} />
-              </li>
-              <li className="nav-item ms-5">
+              <li className="nav-item">
                 <NavLink to="/" className="nav-link">
                   Home
                 </NavLink>
