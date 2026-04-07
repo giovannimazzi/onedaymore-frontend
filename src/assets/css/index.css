@@ -342,6 +342,22 @@ main {
   color: #fff !important;
 }
 
+.site-footer-crafted {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.site-footer-team-logo {
+  display: block;
+  height: 1.75rem;
+  width: auto;
+  object-fit: contain;
+}
+
 /* ================================================
    HERO & SEZIONI HOME
    ================================================ */

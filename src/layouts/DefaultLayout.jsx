@@ -97,14 +97,8 @@ export default function DefaultLayout() {
       </main>
       <footer className="bg-dark text-light py-4">
         <div className="container">
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <img
-              src="/ecommerce-logo.webp"
-              alt="Ecommerce Logo"
-              style={{ height: "100px" }}
-            />
-
-            <div className="text-center flex-grow-1">
+          <div className="d-flex justify-content-center flex-wrap gap-3">
+            <div className="text-center">
               <h5 className="site-footer-brand mb-2">
                 OneDay<span className="odm-brand-gold">More</span>
               </h5>
@@ -138,17 +132,16 @@ export default function DefaultLayout() {
                 riservati
               </small>
 
-              <small className="d-block text-secondary">
-                Crafted by{" "}
+              <small className="site-footer-crafted text-secondary">
+                <span>Crafted by</span>
+                <img
+                  src="/team-logo.webp"
+                  alt=""
+                  className="site-footer-team-logo"
+                />
                 <span className="fw-semibold text-light">Last Byte</span>
               </small>
             </div>
-
-            <img
-              src="/team-logo.webp"
-              alt="Team Logo"
-              style={{ height: "100px" }}
-            />
           </div>
         </div>
       </footer>
