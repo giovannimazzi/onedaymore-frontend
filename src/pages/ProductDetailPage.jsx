@@ -10,6 +10,7 @@ import { useAvailability } from "../hooks/useAvailability";
 import { getProductBadges } from "../utils/productBadges";
 import AvailabilityIndicator from "../components/AvailabilityIndicator";
 import ProductBadges from "../components/ProductBadges";
+import ProductImage from "../components/ProductImage";
 import QtyControls from "../components/QtyControls";
 
 const CATEGORY_LABEL = {
@@ -48,8 +49,9 @@ export default function ProductDetailPage() {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const fallbackImage = getCategoryFallbackImage(product?.category_slug);
-  const [imageSrc, setImageSrc] = useState(fallbackImage);
+  const [imageSrc, setImageSrc] = useState(() =>
+    getCategoryFallbackImage(undefined),
+  );
   const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCartContext();
   const [showToast, setShowToast] = useState(false);
 
@@ -75,10 +77,6 @@ export default function ProductDetailPage() {
         endLoading();
       });
   }, [slug]);
-
-  useEffect(() => {
-    setImageSrc(product?.image_url || fallbackImage);
-  }, [product, fallbackImage]);
 
   const cartItem = cart.find((line) => line.slug === product?.slug);
 
@@ -146,11 +144,12 @@ export default function ProductDetailPage() {
       <div className="row g-4 align-items-start">
         <div className="col-12 col-md-5 col-lg-5">
           <div className="product-detail-media">
-            <img
-              src={imageSrc}
+            <ProductImage
+              src={product.image_url}
+              categorySlug={product.category_slug}
               alt={product.name}
               className="product-detail-img"
-              onError={() => setImageSrc(fallbackImage)}
+              onDisplaySrcChange={setImageSrc}
             />
           </div>
         </div>

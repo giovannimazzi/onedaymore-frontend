@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useCartContext } from "../contexts/CartContext";
-import { getCategoryFallbackImage } from "../utils/productImage";
 import AvailabilityIndicator from "../components/AvailabilityIndicator";
+import ProductImage from "../components/ProductImage";
 import QtyControls from "../components/QtyControls";
 
 function formatMoney(value) {
@@ -52,12 +52,10 @@ export default function CartPage() {
               <div className="cart-line-inner">
                 <div className="cart-line-media">
                   <div className="cart-line-thumb">
-                    <img
-                      src={
-                        line.image_url ||
-                        getCategoryFallbackImage(line.category_slug)
-                      }
-                      alt={line.name || ""}
+                    <ProductImage
+                      src={line.image_url}
+                      categorySlug={line.category_slug}
+                      alt={line.name}
                       className="cart-line-image"
                     />
                   </div>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
 import { useCartContext } from "../contexts/CartContext";
@@ -6,6 +6,7 @@ import { useNotificationContext } from "../contexts/NotificationContext";
 import { useAvailability } from "../hooks/useAvailability";
 import QtyControls from "./QtyControls";
 import ProductBadges from "./ProductBadges";
+import ProductImage from "./ProductImage";
 
 function getProductSlugFromLink(productLink) {
   const slugMatch = String(productLink || "").match(/\/products\/([^/?#]+)/);
@@ -28,7 +29,7 @@ export default function ProductCard({
   const { showNotification } = useNotificationContext();
 
   const fallbackImage = getCategoryFallbackImage(productCategorySlug);
-  const [imageSrc, setImageSrc] = useState(productImage || fallbackImage);
+  const [imageSrc, setImageSrc] = useState(() => productImage || fallbackImage);
 
   const destination = productLink || "/products";
   const productSlugForCart = useMemo(
@@ -39,10 +40,6 @@ export default function ProductCard({
     () => cart.find((line) => line.slug === productSlugForCart),
     [cart, productSlugForCart],
   );
-
-  useEffect(() => {
-    setImageSrc(productImage || fallbackImage);
-  }, [productImage, fallbackImage]);
 
   const availableStock =
     productQuantityAvailable ?? cartItem?.quantity_available ?? null;
@@ -70,11 +67,12 @@ export default function ProductCard({
       <div className="card h-100">
         <div className="card-img-wrapper">
           <Link to={destination} className="card-img-link">
-            <img
-              src={imageSrc}
-              className="card-img-top"
+            <ProductImage
+              src={productImage}
+              categorySlug={productCategorySlug}
               alt={productName || "immagine-prodotto"}
-              onError={() => setImageSrc(fallbackImage)}
+              className="card-img-top"
+              onDisplaySrcChange={setImageSrc}
             />
           </Link>
           <ProductBadges badges={badges} />
