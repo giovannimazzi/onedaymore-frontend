@@ -123,7 +123,7 @@ export default function CartPage() {
               </Link>
 
               <button type="button" className="btn btn-primary w-100 mt-2">
-                Completa il pagamento
+                Vai al Checkout
               </button>
 
               <div className="cart-payment-methods">
