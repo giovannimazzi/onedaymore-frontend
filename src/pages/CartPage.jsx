@@ -118,7 +118,11 @@ export default function CartPage() {
 
               <ShippingInfo cartTotal={total} className="mb-4" />
 
-              <button type="button" className="btn btn-primary w-100">
+              <Link to="/products" className="cart-link">
+                <small>Aggiungi altri articoli</small>
+              </Link>
+
+              <button type="button" className="btn btn-primary w-100 mt-2">
                 Completa il pagamento
               </button>
 

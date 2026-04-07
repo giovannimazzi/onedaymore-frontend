@@ -1189,6 +1189,14 @@ main {
   opacity: 0.9;
 }
 
+.cart-link {
+  color: var(--odm-gold);
+}
+
+.cart-link:hover {
+  color: var(--odm-gold-hover);
+}
+
 /* ================================================
    PAGINA PRODOTTI (filtri e griglia)
    ================================================ */
