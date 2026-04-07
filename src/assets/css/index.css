@@ -17,8 +17,8 @@
   --odm-availability-out: #e05555;
 
   /* Font */
-  --odm-font-body: 'Inter', system-ui, sans-serif;
-  --odm-font-condensed: 'Barlow Condensed', system-ui, sans-serif;
+  --odm-font-body: "Inter", system-ui, sans-serif;
+  --odm-font-condensed: "Barlow Condensed", system-ui, sans-serif;
 
   /* Scala tipografica */
   --text-xs: 12px;
@@ -330,6 +330,66 @@ main {
 }
 
 /* ================================================
+   SHIPPING INFO COMPONENT
+   ================================================ */
+
+.shipping-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+/* contenitore testi */
+.shipping-info__content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+/* messaggio base (SEMPRE visibile) */
+.shipping-info__base {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: whitesmoke;
+}
+
+/* messaggio dinamico */
+.shipping-info__secondary {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--odm-sandstone);
+}
+
+/* stato "gratis" raggiunto */
+.shipping-info__secondary--success {
+  color: var(--odm-gold);
+  font-weight: 600;
+}
+
+/* progress bar */
+.shipping-info__progress {
+  width: 100%;
+  height: 0.22rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(226, 221, 208, 0.18);
+}
+
+/* riempimento barra */
+.shipping-info__progress-bar {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--odm-gold);
+  transition: width 0.25s ease;
+}
+
+/* ================================================
    FOOTER
    ================================================ */
 /* Footer: l'h5 eredita il colore titoli (midnight), qui serve il bianco */
@@ -370,10 +430,12 @@ main {
   color: white;
   background-color: var(--odm-midnight);
   background-image:
-    linear-gradient(to top,
+    linear-gradient(
+      to top,
       rgba(31, 43, 56, 0.92) 0%,
       rgba(31, 43, 56, 0.45) 55%,
-      rgba(31, 43, 56, 0.15) 100%),
+      rgba(31, 43, 56, 0.15) 100%
+    ),
     url("/hero-bg.png");
   background-size: cover;
   background-position: center;
@@ -382,7 +444,7 @@ main {
 
 .hero h1 {
   font-size: var(--text-hero);
-  line-height: 1.0;
+  line-height: 1;
   color: white;
   margin-bottom: 1.25rem;
 }
@@ -553,7 +615,8 @@ main {
   --product-quantity-control-height: 2.5rem;
   --product-quantity-button-size: 2.65rem;
   display: grid;
-  grid-template-columns: var(--product-quantity-button-size) minmax(2.75rem, 1fr)
+  grid-template-columns:
+    var(--product-quantity-button-size) minmax(2.75rem, 1fr)
     var(--product-quantity-button-size);
   align-items: stretch;
   gap: 0;
@@ -1203,7 +1266,10 @@ main {
   font-weight: 500;
   color: rgba(31, 43, 56, 0.75);
   cursor: pointer;
-  transition: background-color 0.12s, color 0.12s, border-color 0.12s;
+  transition:
+    background-color 0.12s,
+    color 0.12s,
+    border-color 0.12s;
   line-height: 1.35;
 }
 
@@ -1247,6 +1313,7 @@ main {
 }
 .products-filters-input[type="number"] {
   -moz-appearance: textfield;
+  appearance: same-value;
 }
 
 .products-active-filters {

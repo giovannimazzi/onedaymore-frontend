@@ -12,6 +12,7 @@ import AvailabilityIndicator from "../components/AvailabilityIndicator";
 import ProductBadges from "../components/ProductBadges";
 import ProductImage from "../components/ProductImage";
 import QtyControls from "../components/QtyControls";
+import ShippingInfo from "../components/ShippingInfo";
 
 const CATEGORY_LABEL = {
   "pasti-liofilizzati": "Pasti liofilizzati",
@@ -33,7 +34,9 @@ const PREP_LABEL = {
 function formatPrepType(value) {
   if (!value) return null;
   if (PREP_LABEL[value]) return PREP_LABEL[value];
-  return value.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+  return value
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function formatWeight(grams) {
@@ -52,7 +55,8 @@ export default function ProductDetailPage() {
   const [imageSrc, setImageSrc] = useState(() =>
     getCategoryFallbackImage(undefined),
   );
-  const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCartContext();
+  const { cart, addToCart, increaseQuantity, decreaseQuantity } =
+    useCartContext();
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
@@ -62,8 +66,7 @@ export default function ProductDetailPage() {
     axios
       .get(`${productsEndpoint}/${slug}`)
       .then((response) => {
-        const payload =
-          response?.data?.result ?? response?.data ?? null;
+        const payload = response?.data?.result ?? response?.data ?? null;
         const productFromResponse = Array.isArray(payload)
           ? payload[0]
           : payload;
@@ -104,10 +107,22 @@ export default function ProductDetailPage() {
 
   const stats = product
     ? [
-        product.calories != null && { label: "Calorie", value: `${product.calories} kcal` },
-        product.weight_grams != null && { label: "Peso netto", value: formatWeight(product.weight_grams) },
-        product.servings != null && { label: "Porzioni", value: product.servings },
-        product.preparation_type && { label: "Preparazione", value: formatPrepType(product.preparation_type) },
+        product.calories != null && {
+          label: "Calorie",
+          value: `${product.calories} kcal`,
+        },
+        product.weight_grams != null && {
+          label: "Peso netto",
+          value: formatWeight(product.weight_grams),
+        },
+        product.servings != null && {
+          label: "Porzioni",
+          value: product.servings,
+        },
+        product.preparation_type && {
+          label: "Preparazione",
+          value: formatPrepType(product.preparation_type),
+        },
       ].filter(Boolean)
     : [];
 
@@ -155,7 +170,10 @@ export default function ProductDetailPage() {
         </div>
 
         <div className="col-12 col-md-7 col-lg-4 product-detail-body">
-          <ProductBadges badges={badgesForDetail} className="product-detail-badges" />
+          <ProductBadges
+            badges={badgesForDetail}
+            className="product-detail-badges"
+          />
 
           <h1 className="product-detail-heading mb-1">{product.name}</h1>
 
@@ -169,19 +187,27 @@ export default function ProductDetailPage() {
             </span>
           </div>
           {product.category_description && (
-            <p className="product-detail-category-desc">{product.category_description}</p>
+            <p className="product-detail-category-desc">
+              {product.category_description}
+            </p>
           )}
 
           <p className="product-detail-desc mt-3 mb-3">
-            {product.description || product.short_description || "Nessuna descrizione disponibile."}
+            {product.description ||
+              product.short_description ||
+              "Nessuna descrizione disponibile."}
           </p>
 
           {stats.length > 0 && (
             <ul className="product-detail-stats">
               {stats.map((statRow) => (
                 <li key={statRow.label} className="product-detail-stat">
-                  <span className="product-detail-stat-label">{statRow.label}</span>
-                  <span className="product-detail-stat-value">{statRow.value}</span>
+                  <span className="product-detail-stat-label">
+                    {statRow.label}
+                  </span>
+                  <span className="product-detail-stat-value">
+                    {statRow.value}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -201,11 +227,15 @@ export default function ProductDetailPage() {
 
             <AvailabilityIndicator remaining={remaining} />
 
+            <ShippingInfo className="product-detail-shipping-info" />
+
             <hr className="product-detail-purchase-separator" />
 
             {cartItem ? (
               <div className="mb-3">
-                <p className="product-detail-purchase-quantity-label">Nel carrello</p>
+                <p className="product-detail-purchase-quantity-label">
+                  Nel carrello
+                </p>
                 <QtyControls
                   quantity={cartItem.quantity}
                   quantityAvailable={product.quantity_available}
@@ -225,17 +255,28 @@ export default function ProductDetailPage() {
             )}
 
             {cartItem && (
-              <Link to="/cart" className="btn btn-outline-secondary w-100 product-detail-goto-cart mb-3">
+              <Link
+                to="/cart"
+                className="btn btn-outline-secondary w-100 product-detail-goto-cart mb-3"
+              >
                 Vai al carrello
               </Link>
             )}
 
             <ul className="product-detail-purchase-trust">
-              <li><i className="bi bi-shield-check me-2" aria-hidden />Qualità garantita</li>
-              <li><i className="bi bi-arrow-counterclockwise me-2" aria-hidden />Reso semplificato</li>
-              <li><i className="bi bi-lock me-2" aria-hidden />Pagamento sicuro</li>
+              <li>
+                <i className="bi bi-shield-check me-2" aria-hidden />
+                Qualità garantita
+              </li>
+              <li>
+                <i className="bi bi-arrow-counterclockwise me-2" aria-hidden />
+                Reso semplificato
+              </li>
+              <li>
+                <i className="bi bi-lock me-2" aria-hidden />
+                Pagamento sicuro
+              </li>
             </ul>
-
           </div>
         </div>
       </div>
