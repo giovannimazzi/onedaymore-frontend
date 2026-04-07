@@ -1,19 +1,19 @@
+import { useCartContext } from "../contexts/CartContext";
+import { useAvailability } from "../hooks/useAvailability";
+
 export default function AvailabilityIndicator({
-  remaining,
-  showWhenAvailable = true,
+  slug,
+  quantityAvailable,
   className = "",
 }) {
-  if (remaining === null) {
-    if (!showWhenAvailable) return null;
-    return (
-      <p className={`availability-indicator ${className}`.trim()}>
-        <i className="bi bi-check-circle-fill me-1" aria-hidden />
-        Disponibile
-      </p>
-    );
-  }
+  const { cart } = useCartContext();
+  
+  const cartItem = cart.find((line) => line.slug === slug);
+  const quantityInCart = cartItem?.quantity ?? 0;
 
-  if (remaining <= 0) {
+  const { remaining } = useAvailability(quantityAvailable, quantityInCart);
+
+  if (remaining !== null && remaining <= 0) {
     return (
       <p className={`availability-indicator availability-indicator--out ${className}`.trim()}>
         <i className="bi bi-x-circle-fill me-1" aria-hidden />
@@ -22,7 +22,7 @@ export default function AvailabilityIndicator({
     );
   }
 
-  if (remaining <= 10) {
+  if (remaining !== null && remaining <= 10) {
     return (
       <p className={`availability-indicator availability-indicator--low ${className}`.trim()}>
         <i className="bi bi-check-circle-fill me-1" aria-hidden />
@@ -30,8 +30,6 @@ export default function AvailabilityIndicator({
       </p>
     );
   }
-
-  if (!showWhenAvailable) return null;
 
   return (
     <p className={`availability-indicator ${className}`.trim()}>

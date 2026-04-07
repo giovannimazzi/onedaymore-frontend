@@ -328,6 +328,7 @@ export default function ProductsPage() {
                   productName={product.name}
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
+                  productQuantityAvailable={product.quantity_available}
                   badges={productBadges}
                   productPrice={product.price}
                   productLink={

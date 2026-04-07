@@ -102,6 +102,7 @@ export default function HomePage() {
                   productName={product.name}
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
+                  productQuantityAvailable={product.quantity_available}
                   productPrice={product.price}
                   badges={getProductBadges(product)}
                   productLink={

@@ -4,6 +4,7 @@ import { getCategoryFallbackImage } from "../utils/productImage";
 import { useCartContext } from "../contexts/CartContext";
 import { useNotificationContext } from "../contexts/NotificationContext";
 import { useAvailability } from "../hooks/useAvailability";
+import AvailabilityIndicator from "./AvailabilityIndicator";
 import QtyControls from "./QtyControls";
 import ProductBadges from "./ProductBadges";
 import ProductImage from "./ProductImage";
@@ -94,6 +95,13 @@ export default function ProductCard({
               <span className="card-stat-value">{statValue}</span>
             </p>
           )}
+
+          <AvailabilityIndicator 
+            slug={productSlugForCart}
+            quantityAvailable={availableStock}
+            showWhenAvailable={true}
+            className="mb-3"
+          />
 
           <div className="product-card-cart mt-auto w-100">
             {cartItem ? (

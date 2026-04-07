@@ -68,12 +68,9 @@ export default function CartPage() {
                       </div>
 
                       <AvailabilityIndicator
-                        remaining={
-                          line.quantity_available != null
-                            ? line.quantity_available - line.quantity
-                            : null
-                        }
-                        showWhenAvailable={false}
+                        slug={line.slug}
+                        quantityAvailable={line.quantity_available}
+                        showWhenAvailable={true}
                         className="cart-line-availability mb-2 mt-0"
                       />
 

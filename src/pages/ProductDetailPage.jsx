@@ -199,7 +199,10 @@ export default function ProductDetailPage() {
               </p>
             )}
 
-            <AvailabilityIndicator remaining={remaining} />
+            <AvailabilityIndicator 
+              slug={product.slug} 
+              quantityAvailable={product.quantity_available} 
+            />
 
             <hr className="product-detail-purchase-separator" />
 
