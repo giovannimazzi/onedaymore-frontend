@@ -3,6 +3,7 @@ import { useCartContext } from "../contexts/CartContext";
 import AvailabilityIndicator from "../components/AvailabilityIndicator";
 import ProductImage from "../components/ProductImage";
 import QtyControls from "../components/QtyControls";
+import ShippingInfo from "../components/ShippingInfo";
 
 function formatMoney(value) {
   const numericValue = Number(value);
@@ -24,7 +25,7 @@ export default function CartPage() {
     useCartContext();
 
   const total = cart.reduce(
-    (runningTotal, line) => runningTotal + line.price * line.quantity,
+    (runningTotal, line) => runningTotal + line.price * (line.quantity || 1),
     0,
   );
 
@@ -111,15 +112,20 @@ export default function CartPage() {
               <h2>Riepilogo</h2>
               <p className="cart-summary-total mb-0">€{formatMoney(total)}</p>
               <p className="small mb-4 text-dim">
-                {cart.reduce((count, line) => count + line.quantity, 0)} articoli nel carrello
+                {cart.reduce((count, line) => count + line.quantity, 0)}{" "}
+                articoli nel carrello
               </p>
+
+              <ShippingInfo cartTotal={total} className="mb-4" />
+
               <button type="button" className="btn btn-primary w-100">
                 Completa il pagamento
               </button>
 
               <div className="cart-payment-methods">
                 <p className="cart-payment-methods-title">
-                  Pagamenti accettati <span className="text-uppercase">(demo)</span>
+                  Pagamenti accettati{" "}
+                  <span className="text-uppercase">(demo)</span>
                 </p>
                 <ul className="cart-payment-methods-list" role="list">
                   {DEMO_PAYMENT_ICONS.map(({ slug, label }) => (

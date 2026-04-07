@@ -2,11 +2,17 @@ import { Link, NavLink, Outlet } from "react-router";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { useNotificationContext } from "../contexts/NotificationContext";
 import { useCartContext } from "../contexts/CartContext";
+import ShippingInfo from "../components/ShippingInfo";
 
 export default function DefaultLayout() {
   const { isLoading } = useLoaderContext();
   const { notification, hideNotification } = useNotificationContext();
   const { cart } = useCartContext();
+
+  const cartTotal = cart.reduce(
+    (sum, line) => sum + line.price * (line.quantity || 1),
+    0,
+  );
 
   const cartItemCount = cart.reduce(
     (total, line) => total + (line.quantity || 1),
@@ -39,7 +45,10 @@ export default function DefaultLayout() {
             id="navbarNav"
           >
             <ul className="navbar-nav ms-lg-auto align-items-lg-center pe-lg-2">
-              <li className="nav-item">
+              <li className="nav-item w-100 mt-auto mb-2 me-5 list-unstyled">
+                <ShippingInfo cartTotal={cartTotal} />
+              </li>
+              <li className="nav-item ms-5">
                 <NavLink to="/" className="nav-link">
                   Home
                 </NavLink>
