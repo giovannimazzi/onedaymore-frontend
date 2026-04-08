@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useCartContext } from "../contexts/CartContext";
 import ShippingInfo from "../components/ShippingInfo";
 import { Link } from "react-router";
+import axios from "axios";
 
 function formatMoney(value) {
   const numericValue = Number(value);
@@ -12,8 +13,58 @@ function formatMoney(value) {
 export default function CheckoutPage() {
   const { cart } = useCartContext();
 
+  // DISCOUNT STATE
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountData, setDiscountData] = useState(null);
+  const [discountError, setDiscountError] = useState("");
+  const [isChecking, setIsChecking] = useState(false);
+
+  const FREE_SHIPPING_THRESHOLD = 49;
+  const SHIPPING_COST = 6.9;
+
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
+  // APPLY DISCOUNT
+  const handleApplyDiscount = async () => {
+    if (!discountCode.trim()) return;
+
+    setIsChecking(true);
+    setDiscountError("");
+
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/discount-codes/${discountCode}`,
+      );
+
+      const data = res.data?.result ?? res.data;
+      setDiscountData(data);
+    } catch {
+      setDiscountData(null);
+      setDiscountError("Codice non valido");
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
+  //  CALCOLI
+  let discountAmount = 0;
+
+  if (discountData) {
+    if (discountData.discount_type === "percentage") {
+      discountAmount = (total * discountData.discount_value) / 100;
+    } else {
+      discountAmount = discountData.discount_value;
+    }
+  }
+
+  const subtotalAfterDiscount = total - discountAmount;
+
+  const shippingCost =
+    subtotalAfterDiscount >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+
+  const finalTotal = subtotalAfterDiscount + shippingCost;
+
+  // FORM
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -40,7 +91,8 @@ export default function CheckoutPage() {
     console.log("ORDINE:", {
       customer: formData,
       cart,
-      total,
+      total: finalTotal,
+      discount: discountData,
     });
 
     alert("Ordine inviato");
@@ -178,6 +230,30 @@ export default function CheckoutPage() {
           <div className="card p-4">
             <h4>Riepilogo ordine</h4>
 
+            {/* CODICE SCONTO */}
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control mb-2"
+                placeholder="Codice sconto"
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value)}
+              />
+
+              <button
+                className="btn btn-outline-primary w-100"
+                onClick={handleApplyDiscount}
+                disabled={isChecking}
+              >
+                {isChecking ? "Verifica..." : "Applica codice"}
+              </button>
+
+              {discountError && (
+                <p className="text-danger small mt-2">{discountError}</p>
+              )}
+            </div>
+
+            {/* PRODOTTI */}
             {cart.map((item) => (
               <div
                 key={item.id}
@@ -192,7 +268,34 @@ export default function CheckoutPage() {
 
             <hr />
 
-            <h5>Totale: €{formatMoney(total)}</h5>
+            {/* TOTALI */}
+            <p className="d-flex justify-content-between">
+              <span>Subtotale</span>
+              <span>€{formatMoney(total)}</span>
+            </p>
+
+            {discountData && (
+              <p className="d-flex justify-content-between text-success">
+                <span>Sconto ({discountData.code})</span>
+                <span>-€{formatMoney(discountAmount)}</span>
+              </p>
+            )}
+
+            <p className="d-flex justify-content-between">
+              <span>Spedizione</span>
+              <span>
+                {shippingCost === 0
+                  ? "Gratis 🎉"
+                  : `€${formatMoney(shippingCost)}`}
+              </span>
+            </p>
+
+            <hr />
+
+            <p className="d-flex justify-content-between">
+              <span>Totale</span>
+              <span>€{formatMoney(finalTotal)}</span>
+            </p>
 
             <ShippingInfo cartTotal={total} className="mt-3" />
           </div>
