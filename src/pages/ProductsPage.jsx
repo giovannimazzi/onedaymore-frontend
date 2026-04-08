@@ -100,9 +100,8 @@ export default function ProductsPage() {
         <div className="col-12 px-3 px-md-4 px-xxl-5">
           <div className="products-page-header d-flex flex-column flex-xl-row justify-content-between align-items-xl-end gap-3">
             <h1 className="mb-0">I nostri prodotti</h1>
-            {/* 👉 BLOCCO DESTRO */}
+
             <div className="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
-              {/* 👉 TOGGLE PRIMA */}
               <div className="d-flex gap-2">
                 <button
                   type="button"
@@ -128,7 +127,6 @@ export default function ProductsPage() {
                 </button>
               </div>
 
-              {/* 👉 SEARCH DOPO */}
               <form
                 className="products-search d-flex flex-column flex-sm-row gap-2"
                 onSubmit={handleSearchSubmit}
