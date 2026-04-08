@@ -1393,3 +1393,38 @@ main {
   text-transform: uppercase;
   color: rgba(31, 43, 56, 0.65);
 }
+
+/* ================================================
+   404 - NOT FOUND
+   ================================================ */
+.not-found-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 22 / 9;
+  object-fit: cover;
+  display: block;
+  background-image:
+    linear-gradient(
+      to top,
+      rgba(106, 128, 151, 0.2) 20%
+    ); 
+    backdrop-filter: blur(1px);
+}
+
+.not-found-texts {
+  position: absolute;
+  z-index: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 1);
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.not-found-texts p {
+  border-bottom: 1px solid white;  
+}
+
+.not-found-texts a {
+  text-decoration: none;
+  color: white;
+}
