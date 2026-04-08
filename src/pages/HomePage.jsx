@@ -120,7 +120,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-5 bg-success full-width">
+      <section className="py-5 bg-success">
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="section-heading text-white">Nuovi arrivi</h2>
