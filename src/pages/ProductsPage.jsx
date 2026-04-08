@@ -1,46 +1,47 @@
-import { useEffect, useRef, useState } from "react";
-import ProductCard from "../components/ProductCard";
-import { useLoaderContext } from "../contexts/LoaderContext";
-import { useProductFilters } from "../hooks/useProductFilters";
-import { useCategories } from "../hooks/useCategories";
-import { getProductBadges } from "../utils/productBadges";
+import { useEffect, useRef, useState } from 'react';
+import ProductCard from '../components/ProductCard';
+import { useLoaderContext } from '../contexts/LoaderContext';
+import { useProductFilters } from '../hooks/useProductFilters';
+import { useCategories } from '../hooks/useCategories';
+import { getProductBadges } from '../utils/productBadges';
+import ProductListItem from '../components/ProductListItem';
 
 const SORT_OPTIONS = [
-  { value: "created_at", label: "Più recenti" },
-  { value: "name", label: "Nome" },
-  { value: "price", label: "Prezzo" },
-  { value: "calories", label: "Calorie" },
-  { value: "weight_grams", label: "Peso" },
-  { value: "servings", label: "Porzioni" },
-  { value: "total_sold", label: "Più venduti" },
+  { value: 'created_at', label: 'Più recenti' },
+  { value: 'name', label: 'Nome' },
+  { value: 'price', label: 'Prezzo' },
+  { value: 'calories', label: 'Calorie' },
+  { value: 'weight_grams', label: 'Peso' },
+  { value: 'servings', label: 'Porzioni' },
+  { value: 'total_sold', label: 'Più venduti' },
 ];
 
 const PREP_OPTIONS = [
-  { value: "", label: "Tutti i tipi" },
-  { value: "ready_to_eat", label: "Pronto al consumo" },
-  { value: "add_hot_water", label: "Acqua calda" },
-  { value: "add_cold_water", label: "Acqua fredda" },
+  { value: '', label: 'Tutti i tipi' },
+  { value: 'ready_to_eat', label: 'Pronto al consumo' },
+  { value: 'add_hot_water', label: 'Acqua calda' },
+  { value: 'add_cold_water', label: 'Acqua fredda' },
 ];
 
 function getCardStat(product, sort) {
   switch (sort) {
-    case "calories":
+    case 'calories':
       if (product.calories == null) return null;
-      return { label: "Kcal", value: `${product.calories}` };
-    case "weight_grams": {
+      return { label: 'Kcal', value: `${product.calories}` };
+    case 'weight_grams': {
       if (product.weight_grams == null) return null;
       const w = product.weight_grams;
       return {
-        label: "Peso",
+        label: 'Peso',
         value: w >= 1000 ? `${(w / 1000).toFixed(1)} kg` : `${w} g`,
       };
     }
-    case "servings":
+    case 'servings':
       if (product.servings == null) return null;
-      return { label: "Porzioni", value: `${product.servings}` };
-    case "total_sold":
+      return { label: 'Porzioni', value: `${product.servings}` };
+    case 'total_sold':
       if (product.total_sold == null) return null;
-      return { label: "Venduti", value: `${product.total_sold}` };
+      return { label: 'Venduti', value: `${product.total_sold}` };
     default:
       return null;
   }
@@ -48,15 +49,24 @@ function getCardStat(product, sort) {
 
 export default function ProductsPage() {
   const { startLoading, endLoading } = useLoaderContext();
-  const { products, isLoading, hasError, filters, setFilter, setFilters, clearFilters } =
-    useProductFilters();
+  const {
+    products,
+    isLoading,
+    hasError,
+    filters,
+    setFilter,
+    setFilters,
+    clearFilters,
+  } = useProductFilters();
   const { categories } = useCategories();
 
-  const [searchInput, setSearchInput] = useState(filters.search ?? "");
+  const [searchInput, setSearchInput] = useState(filters.search ?? '');
   const searchInputRef = useRef(null);
 
+  const [viewMode, setViewMode] = useState('grid');
+
   useEffect(() => {
-    setSearchInput(filters.search ?? "");
+    setSearchInput(filters.search ?? '');
   }, [filters.search]);
 
   useEffect(() => {
@@ -66,11 +76,11 @@ export default function ProductsPage() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setFilter("search", searchInput.trim());
+    setFilter('search', searchInput.trim());
   };
 
   const handleClearFilters = () => {
-    setSearchInput("");
+    setSearchInput('');
     clearFilters();
     searchInputRef.current?.focus();
   };
@@ -81,8 +91,8 @@ export default function ProductsPage() {
     filters.preparation_type ||
     filters.min_price ||
     filters.max_price ||
-    filters.sort !== "created_at" ||
-    filters.order !== "desc";
+    filters.sort !== 'created_at' ||
+    filters.order !== 'desc';
 
   return (
     <div className="container-fluid my-4 products-page ps-0 pe-3 pe-md-4 pe-xxl-5">
@@ -90,22 +100,52 @@ export default function ProductsPage() {
         <div className="col-12 px-3 px-md-4 px-xxl-5">
           <div className="products-page-header d-flex flex-column flex-xl-row justify-content-between align-items-xl-end gap-3">
             <h1 className="mb-0">I nostri prodotti</h1>
-            <form
-              className="products-search d-flex flex-column flex-sm-row gap-2"
-              onSubmit={handleSearchSubmit}
-            >
-              <input
-                ref={searchInputRef}
-                type="text"
-                className="form-control"
-                placeholder="Cerca prodotto..."
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-              />
-              <button type="submit" className="btn btn-primary">
-                Cerca
-              </button>
-            </form>
+            {/* 👉 BLOCCO DESTRO */}
+            <div className="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
+              {/* 👉 TOGGLE PRIMA */}
+              <div className="d-flex gap-2">
+                <button
+                  type="button"
+                  className={`btn ${
+                    viewMode === 'grid'
+                      ? 'btn-primary'
+                      : 'btn-outline-secondary'
+                  }`}
+                  onClick={() => setViewMode('grid')}
+                >
+                  🔲 Griglia
+                </button>
+                <button
+                  type="button"
+                  className={`btn ${
+                    viewMode === 'list'
+                      ? 'btn-primary'
+                      : 'btn-outline-secondary'
+                  }`}
+                  onClick={() => setViewMode('list')}
+                >
+                  📋 Lista
+                </button>
+              </div>
+
+              {/* 👉 SEARCH DOPO */}
+              <form
+                className="products-search d-flex flex-column flex-sm-row gap-2"
+                onSubmit={handleSearchSubmit}
+              >
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  className="form-control"
+                  placeholder="Cerca prodotto..."
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+                <button type="submit" className="btn btn-primary">
+                  Cerca
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -124,8 +164,8 @@ export default function ProductsPage() {
                 <li>
                   <button
                     type="button"
-                    className={`products-filter-option${filters.category === "" ? " is-active" : ""}`}
-                    onClick={() => setFilter("category", "")}
+                    className={`products-filter-option${filters.category === '' ? ' is-active' : ''}`}
+                    onClick={() => setFilter('category', '')}
                   >
                     Tutte le categorie
                   </button>
@@ -134,8 +174,8 @@ export default function ProductsPage() {
                   <li key={cat.slug}>
                     <button
                       type="button"
-                      className={`products-filter-option${filters.category === cat.slug ? " is-active" : ""}`}
-                      onClick={() => setFilter("category", cat.slug)}
+                      className={`products-filter-option${filters.category === cat.slug ? ' is-active' : ''}`}
+                      onClick={() => setFilter('category', cat.slug)}
                     >
                       {cat.name}
                     </button>
@@ -151,8 +191,8 @@ export default function ProductsPage() {
                   <li key={opt.value}>
                     <button
                       type="button"
-                      className={`products-filter-option${filters.preparation_type === opt.value ? " is-active" : ""}`}
-                      onClick={() => setFilter("preparation_type", opt.value)}
+                      className={`products-filter-option${filters.preparation_type === opt.value ? ' is-active' : ''}`}
+                      onClick={() => setFilter('preparation_type', opt.value)}
                     >
                       {opt.label}
                     </button>
@@ -171,7 +211,7 @@ export default function ProductsPage() {
                   min={0}
                   step="0.01"
                   value={filters.min_price}
-                  onChange={(e) => setFilter("min_price", e.target.value)}
+                  onChange={(e) => setFilter('min_price', e.target.value)}
                   aria-label="Prezzo minimo"
                 />
                 <span className="products-filters-range-separator">—</span>
@@ -182,7 +222,7 @@ export default function ProductsPage() {
                   min={0}
                   step="0.01"
                   value={filters.max_price}
-                  onChange={(e) => setFilter("max_price", e.target.value)}
+                  onChange={(e) => setFilter('max_price', e.target.value)}
                   aria-label="Prezzo massimo"
                 />
               </div>
@@ -196,7 +236,7 @@ export default function ProductsPage() {
                 id="filter-sort"
                 className="form-select products-filters-select"
                 value={filters.sort}
-                onChange={(e) => setFilter("sort", e.target.value)}
+                onChange={(e) => setFilter('sort', e.target.value)}
               >
                 {SORT_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -214,7 +254,7 @@ export default function ProductsPage() {
                 id="filter-order"
                 className="form-select products-filters-select"
                 value={filters.order}
-                onChange={(e) => setFilter("order", e.target.value)}
+                onChange={(e) => setFilter('order', e.target.value)}
               >
                 <option value="asc">↑ Crescente</option>
                 <option value="desc">↓ Decrescente</option>
@@ -241,7 +281,7 @@ export default function ProductsPage() {
                   <button
                     type="button"
                     className="products-filter-chip-remove"
-                    onClick={() => setFilter("search", "")}
+                    onClick={() => setFilter('search', '')}
                     aria-label="Rimuovi filtro ricerca"
                   >
                     ×
@@ -255,7 +295,7 @@ export default function ProductsPage() {
                   <button
                     type="button"
                     className="products-filter-chip-remove"
-                    onClick={() => setFilter("category", "")}
+                    onClick={() => setFilter('category', '')}
                     aria-label="Rimuovi filtro categoria"
                   >
                     ×
@@ -264,12 +304,13 @@ export default function ProductsPage() {
               )}
               {filters.preparation_type && (
                 <span className="products-filter-chip">
-                  {PREP_OPTIONS.find((p) => p.value === filters.preparation_type)
-                    ?.label ?? filters.preparation_type}
+                  {PREP_OPTIONS.find(
+                    (p) => p.value === filters.preparation_type,
+                  )?.label ?? filters.preparation_type}
                   <button
                     type="button"
                     className="products-filter-chip-remove"
-                    onClick={() => setFilter("preparation_type", "")}
+                    onClick={() => setFilter('preparation_type', '')}
                     aria-label="Rimuovi filtro preparazione"
                   >
                     ×
@@ -278,11 +319,11 @@ export default function ProductsPage() {
               )}
               {(filters.min_price || filters.max_price) && (
                 <span className="products-filter-chip">
-                  €{filters.min_price || "0"} – €{filters.max_price || "∞"}
+                  €{filters.min_price || '0'} – €{filters.max_price || '∞'}
                   <button
                     type="button"
                     className="products-filter-chip-remove"
-                    onClick={() => setFilters({ min_price: "", max_price: "" })}
+                    onClick={() => setFilters({ min_price: '', max_price: '' })}
                     aria-label="Rimuovi filtro prezzo"
                   >
                     ×
@@ -292,7 +333,13 @@ export default function ProductsPage() {
             </div>
           )}
 
-          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 gx-4 gy-0 products-page-grid my-0">
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 gx-4 gy-0 products-page-grid my-0'
+                : 'products-page-list d-flex flex-column gap-3 my-0'
+            }
+          >
             {hasError && (
               <div className="col-12">
                 <p className="text-center fs-5 py-4">
@@ -306,7 +353,7 @@ export default function ProductsPage() {
                   Nessun prodotto trovato.
                   {hasActiveFilters && (
                     <>
-                      {" "}
+                      {' '}
                       <button
                         type="button"
                         className="btn btn-link p-0 align-baseline"
@@ -322,7 +369,7 @@ export default function ProductsPage() {
             {products.map((product) => {
               const productBadges = getProductBadges(product);
               const cardStatFromSort = getCardStat(product, filters.sort);
-              return (
+              return viewMode === 'grid' ? (
                 <ProductCard
                   key={product.slug}
                   productName={product.name}
@@ -332,7 +379,19 @@ export default function ProductsPage() {
                   badges={productBadges}
                   productPrice={product.price}
                   productLink={
-                    product.slug ? `/products/${product.slug}` : "/products"
+                    product.slug ? `/products/${product.slug}` : '/products'
+                  }
+                  statLabel={cardStatFromSort?.label}
+                  statValue={cardStatFromSort?.value}
+                />
+              ) : (
+                <ProductListItem
+                  key={product.slug}
+                  product={product}
+                  badges={productBadges}
+                  productPrice={product.price}
+                  productLink={
+                    product.slug ? `/products/${product.slug}` : '/products'
                   }
                   statLabel={cardStatFromSort?.label}
                   statValue={cardStatFromSort?.value}
