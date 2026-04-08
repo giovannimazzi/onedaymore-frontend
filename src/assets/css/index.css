@@ -1428,3 +1428,36 @@ main {
   text-decoration: none;
   color: white;
 }
+
+@media (max-width: 768px) {
+  .not-found-container {
+    height: 100vh;
+  }
+
+  .not-found-img {
+    height: 100%;
+    object-fit: cover;
+    object-position: 68%;
+  }
+
+  .not-found-texts {
+    bottom: 10%;
+    width: 100%;
+    padding: 0 16px;
+  }
+
+  .not-found-texts h2 {
+    font-size: 1.8rem;
+  }
+
+  .not-found-texts p {
+    font-size: 1rem;
+    border-bottom: none;
+  }
+
+  .not-found-texts a {
+    font-size: 1.2rem;
+    display: inline-block;
+    margin-top: 10px;
+  }
+}
