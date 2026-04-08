@@ -12,6 +12,7 @@ import { NotificationContextProvider } from "./contexts/NotificationContext";
 
 import { CartContextProvider } from "./contexts/CartContext";
 import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 export default function App() {
   return (
@@ -31,6 +32,8 @@ export default function App() {
                 </Route>
                 {/* cart */}
                 <Route path="cart" element={<CartPage />} />
+                {/* checkout */}
+                <Route path="/checkout" Component={CheckoutPage} />
                 {/* NOT FOUND */}
                 <Route path="*" element={<NotFoundPage />} />
               </Route>

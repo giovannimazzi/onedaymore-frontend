@@ -122,9 +122,9 @@ export default function CartPage() {
                 <small>Aggiungi altri articoli</small>
               </Link>
 
-              <button type="button" className="btn btn-primary w-100 mt-2">
+              <Link to="/checkout" className="btn btn-primary w-100 mt-2">
                 Vai al Checkout
-              </button>
+              </Link>
 
               <div className="cart-payment-methods">
                 <p className="cart-payment-methods-title">
