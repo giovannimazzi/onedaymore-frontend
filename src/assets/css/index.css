@@ -468,6 +468,25 @@ main {
   font-weight: 400;
 }
 
+
+
+@media (max-width: 576px) {
+  .hero {
+    min-height: 50vh;
+    background-position: 65%;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  .hero p {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+}
+
 /* ================================================
    CARD PRODOTTO
    ================================================ */
