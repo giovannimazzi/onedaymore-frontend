@@ -103,6 +103,7 @@ export default function HomePage() {
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
                   productQuantityAvailable={product.quantity_available}
+                  compareProduct={product}
                   productPrice={product.price}
                   badges={getProductBadges(product)}
                   productLink={
@@ -154,6 +155,7 @@ export default function HomePage() {
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
                   productPrice={product.price}
+                  compareProduct={product}
                   badges={getProductBadges(product)}
                   productLink={
                     product.slug ? `/products/${product.slug}` : "/products"

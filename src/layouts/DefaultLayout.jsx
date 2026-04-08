@@ -2,12 +2,15 @@ import { Link, NavLink, Outlet } from "react-router";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { useNotificationContext } from "../contexts/NotificationContext";
 import { useCartContext } from "../contexts/CartContext";
-import ShippingInfo from "../components/ShippingInfo";
+import { useCompareContext } from "../contexts/CompareContext";
 
 export default function DefaultLayout() {
   const { isLoading } = useLoaderContext();
   const { notification, hideNotification } = useNotificationContext();
   const { cart } = useCartContext();
+  const { compareItems } = useCompareContext();
+
+  const compareCount = compareItems.length;
 
   const cartItemCount = cart.reduce(
     (total, line) => total + (line.quantity || 1),
@@ -48,6 +51,16 @@ export default function DefaultLayout() {
               <li className="nav-item">
                 <NavLink to="/products" className="nav-link">
                   Prodotti
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/compare" className="nav-link">
+                  Confronta
+                  {compareCount > 0 && (
+                    <span className="badge rounded-pill text-bg-light ms-2">
+                      {compareCount}
+                    </span>
+                  )}
                 </NavLink>
               </li>
             </ul>

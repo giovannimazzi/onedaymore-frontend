@@ -48,8 +48,15 @@ function getCardStat(product, sort) {
 
 export default function ProductsPage() {
   const { startLoading, endLoading } = useLoaderContext();
-  const { products, isLoading, hasError, filters, setFilter, setFilters, clearFilters } =
-    useProductFilters();
+  const {
+    products,
+    isLoading,
+    hasError,
+    filters,
+    setFilter,
+    setFilters,
+    clearFilters,
+  } = useProductFilters();
   const { categories } = useCategories();
 
   const [searchInput, setSearchInput] = useState(filters.search ?? "");
@@ -264,8 +271,9 @@ export default function ProductsPage() {
               )}
               {filters.preparation_type && (
                 <span className="products-filter-chip">
-                  {PREP_OPTIONS.find((p) => p.value === filters.preparation_type)
-                    ?.label ?? filters.preparation_type}
+                  {PREP_OPTIONS.find(
+                    (p) => p.value === filters.preparation_type,
+                  )?.label ?? filters.preparation_type}
                   <button
                     type="button"
                     className="products-filter-chip-remove"
@@ -329,6 +337,7 @@ export default function ProductsPage() {
                   productImage={product.image_url}
                   productCategorySlug={product.category_slug}
                   productQuantityAvailable={product.quantity_available}
+                  compareProduct={product}
                   badges={productBadges}
                   productPrice={product.price}
                   productLink={

@@ -8,6 +8,7 @@ import AvailabilityIndicator from "./AvailabilityIndicator";
 import QtyControls from "./QtyControls";
 import ProductBadges from "./ProductBadges";
 import ProductImage from "./ProductImage";
+import CompareToggleButton from "./CompareToggleButton";
 
 function getProductSlugFromLink(productLink) {
   const slugMatch = String(productLink || "").match(/\/products\/([^/?#]+)/);
@@ -24,6 +25,7 @@ export default function ProductCard({
   statLabel,
   statValue,
   productQuantityAvailable,
+  compareProduct,
 }) {
   const { cart, addToCart, increaseQuantity, decreaseQuantity } =
     useCartContext();
@@ -96,7 +98,7 @@ export default function ProductCard({
             </p>
           )}
 
-          <AvailabilityIndicator 
+          <AvailabilityIndicator
             slug={productSlugForCart}
             quantityAvailable={availableStock}
             showWhenAvailable={true}
@@ -120,6 +122,14 @@ export default function ProductCard({
               >
                 Aggiungi al carrello
               </button>
+            )}
+
+            {compareProduct && (
+              <CompareToggleButton
+                product={compareProduct}
+                className="mt-2"
+                fullWidth
+              />
             )}
           </div>
         </div>

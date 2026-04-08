@@ -390,6 +390,183 @@ main {
 }
 
 /* ================================================
+   COMPARE PAGE
+   ================================================ */
+
+.compare-page-empty {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.compare-page-header {
+  margin-bottom: 2rem;
+}
+
+.compare-page-header h1 {
+  margin-bottom: 0.25rem;
+}
+
+.compare-table {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 52rem;
+  vertical-align: middle;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid rgba(232, 189, 46, 0.18);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: #1f2b38;
+  box-shadow: none;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+  border-right: 1px solid rgba(232, 189, 46, 0.1);
+  border-bottom: 1px solid rgba(232, 189, 46, 0.1);
+}
+
+.compare-table th:last-child,
+.compare-table td:last-child {
+  border-right: none;
+}
+
+.compare-table tbody tr:last-child th,
+.compare-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.compare-table thead th {
+  background-color: #1f2b38;
+  vertical-align: top;
+}
+
+.compare-table__label-col {
+  width: 14rem;
+}
+
+.compare-table tbody th {
+  width: 14rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--odm-gold);
+  background-color: #243340;
+}
+
+.compare-table__product-col {
+  text-align: center;
+  vertical-align: top;
+}
+
+.compare-table__product-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.compare-table__image-link {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.compare-table__image {
+  display: block;
+  width: 8rem;
+  height: 8rem;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.compare-table__product-name {
+  display: block;
+  max-width: 20rem;
+  margin: 0 auto;
+  font-weight: 700;
+  line-height: 1.35;
+  text-decoration: none;
+  color: var(--odm-gold);
+}
+
+.compare-table__product-name:hover {
+  color: #ffd45a;
+  text-decoration: underline;
+}
+
+.compare-table tbody td {
+  color: #ffffff;
+  word-break: break-word;
+}
+
+/* ================================================
+   COMPARE TABLE - ZEBRA COLUMNS
+   ================================================ */
+
+/* Colonna 2 e 4: blu base */
+.compare-table th:nth-child(2),
+.compare-table td:nth-child(2),
+.compare-table th:nth-child(4),
+.compare-table td:nth-child(4) {
+  background-color: #1f2b38;
+}
+
+/* Colonna 3: blu leggermente più chiaro */
+.compare-table th:nth-child(3),
+.compare-table td:nth-child(3) {
+  background-color: #243340;
+}
+
+/* Hover su celle */
+.compare-table tbody td:hover,
+.compare-table tbody th:hover {
+  background-color: rgba(232, 189, 46, 0.12);
+  transition: background-color 0.15s ease;
+}
+
+/* Hover riga leggera */
+.compare-table tbody tr:hover td {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Link eventuali dentro la tabella */
+.compare-table a:not(.compare-table__product-name) {
+  color: inherit;
+}
+
+@media (max-width: 767.98px) {
+  .compare-page-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .compare-table {
+    min-width: 42rem;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    padding: 0.75rem 0.625rem;
+  }
+
+  .compare-table__label-col,
+  .compare-table tbody th {
+    width: 10rem;
+  }
+
+  .compare-table__image {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+
+  .compare-table__product-name {
+    max-width: 9rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* ================================================
    FOOTER
    ================================================ */
 /* Footer: l'h5 eredita il colore titoli (midnight), qui serve il bianco */

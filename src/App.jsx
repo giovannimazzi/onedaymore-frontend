@@ -13,31 +13,38 @@ import { NotificationContextProvider } from "./contexts/NotificationContext";
 import { CartContextProvider } from "./contexts/CartContext";
 import CartPage from "./pages/CartPage";
 
+import { CompareContextProvider } from "./contexts/CompareContext";
+import ComparePage from "./pages/ComparePage";
+
 export default function App() {
   return (
-    <CartContextProvider>
-      <NotificationContextProvider>
-        <LoaderContextProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<DefaultLayout />}>
-                {/* HOME */}
-                <Route index element={<HomePage />} />
+    <CompareContextProvider>
+      <CartContextProvider>
+        <NotificationContextProvider>
+          <LoaderContextProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<DefaultLayout />}>
+                  {/* HOME */}
+                  <Route index element={<HomePage />} />
 
-                {/* PRODUCT ROUTES */}
-                <Route path="products">
-                  <Route index element={<ProductsPage />} />
-                  <Route path=":slug" element={<ProductDetailPage />} />
+                  {/* PRODUCT ROUTES */}
+                  <Route path="products">
+                    <Route index element={<ProductsPage />} />
+                    <Route path=":slug" element={<ProductDetailPage />} />
+                  </Route>
+                  {/* cart */}
+                  <Route path="cart" element={<CartPage />} />
+                  {/* Compare */}
+                  <Route path="compare" element={<ComparePage />} />
+                  {/* NOT FOUND */}
+                  <Route path="*" element={<NotFoundPage />} />
                 </Route>
-                {/* cart */}
-                <Route path="cart" element={<CartPage />} />
-                {/* NOT FOUND */}
-                <Route path="*" element={<NotFoundPage />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </LoaderContextProvider>
-      </NotificationContextProvider>
-    </CartContextProvider>
+              </Routes>
+            </BrowserRouter>
+          </LoaderContextProvider>
+        </NotificationContextProvider>
+      </CartContextProvider>
+    </CompareContextProvider>
   );
 }

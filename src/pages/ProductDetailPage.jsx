@@ -13,6 +13,7 @@ import ProductBadges from "../components/ProductBadges";
 import ProductImage from "../components/ProductImage";
 import QtyControls from "../components/QtyControls";
 import ShippingInfo from "../components/ShippingInfo";
+import CompareToggleButton from "../components/CompareToggleButton";
 
 const CATEGORY_LABEL = {
   "pasti-liofilizzati": "Pasti liofilizzati",
@@ -225,9 +226,9 @@ export default function ProductDetailPage() {
               </p>
             )}
 
-            <AvailabilityIndicator 
-              slug={product.slug} 
-              quantityAvailable={product.quantity_available} 
+            <AvailabilityIndicator
+              slug={product.slug}
+              quantityAvailable={product.quantity_available}
             />
 
             <ShippingInfo className="product-detail-shipping-info" />
@@ -265,6 +266,8 @@ export default function ProductDetailPage() {
                 Vai al carrello
               </Link>
             )}
+
+            <CompareToggleButton product={product} className="mb-3" fullWidth />
 
             <ul className="product-detail-purchase-trust">
               <li>
