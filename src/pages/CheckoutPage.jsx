@@ -3,6 +3,7 @@ import { useCartContext } from "../contexts/CartContext";
 import ShippingInfo from "../components/ShippingInfo";
 import { Link } from "react-router";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 function formatMoney(value) {
   const numericValue = Number(value);
@@ -11,7 +12,8 @@ function formatMoney(value) {
 }
 
 export default function CheckoutPage() {
-  const { cart } = useCartContext();
+  const { cart, clearCart } = useCartContext();
+  const navigate = useNavigate();
 
   // DISCOUNT STATE
   const [discountCode, setDiscountCode] = useState("");
@@ -46,7 +48,7 @@ export default function CheckoutPage() {
     }
   };
 
-  //  CALCOLI
+  // CALCOLI
   let discountAmount = 0;
 
   if (discountData) {
@@ -58,14 +60,12 @@ export default function CheckoutPage() {
   }
 
   const subtotalAfterDiscount = total - discountAmount;
-
   const shippingCost =
     subtotalAfterDiscount >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-
   const finalTotal = subtotalAfterDiscount + shippingCost;
 
   // FORM
-  const [formData, setFormData] = useState({
+  const [billingData, setBillingData] = useState({
     name: "",
     surname: "",
     email: "",
@@ -77,25 +77,85 @@ export default function CheckoutPage() {
     notes: "",
   });
 
-  const handleChange = (e) => {
+  const [useDifferentShipping, setUseDifferentShipping] = useState(false);
+
+  const [shippingData, setShippingData] = useState({
+    name: "",
+    surname: "",
+    phone: "",
+    address: "",
+    city: "",
+    zip: "",
+    province: "",
+  });
+
+  const handleBillingChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setBillingData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleShippingChange = (e) => {
+    const { name, value } = e.target;
+    setShippingData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("ORDINE:", {
-      customer: formData,
-      cart,
-      total: finalTotal,
-      discount: discountData,
-    });
+    const confirmOrder = window.confirm(
+      "Sei sicuro di voler completare l'ordine?",
+    );
+    if (!confirmOrder) return;
 
-    alert("Ordine inviato");
+    try {
+      const response = await axios.post("http://localhost:3000/orders", {
+        customer_email: billingData.email,
+        customer_first_name: billingData.name,
+        customer_last_name: billingData.surname,
+        phone: billingData.phone,
+
+        billing_address_line1: billingData.address,
+        billing_city: billingData.city,
+        billing_postal_code: billingData.zip,
+        billing_province: billingData.province,
+        billing_country: "IT",
+
+        shipping_address_line1: useDifferentShipping
+          ? shippingData.address
+          : billingData.address,
+        shipping_city: useDifferentShipping
+          ? shippingData.city
+          : billingData.city,
+        shipping_postal_code: useDifferentShipping
+          ? shippingData.zip
+          : billingData.zip,
+        shipping_province: useDifferentShipping
+          ? shippingData.province
+          : billingData.province,
+        shipping_country: "IT",
+
+        items: cart.map((item) => ({
+          slug: item.id,
+          quantity: item.quantity,
+        })),
+
+        discount_code: discountData?.code || null,
+      });
+
+      console.log("SUCCESSO:", response.data);
+      alert("Ordine completato!");
+      clearCart();
+      navigate("/products");
+    } catch (error) {
+      console.error(error.response?.data || error);
+      alert("Errore nell'ordine");
+    }
   };
 
   if (cart.length === 0) {
@@ -117,8 +177,7 @@ export default function CheckoutPage() {
         {/* FORM */}
         <div className="col-lg-7">
           <form onSubmit={handleSubmit} className="card p-4">
-            <h4 className="mb-3">Dati cliente</h4>
-
+            <p className="mb-3">Dati di fatturazione</p>
             <div className="row g-3">
               <div className="col-md-6">
                 <input
@@ -127,7 +186,7 @@ export default function CheckoutPage() {
                   placeholder="Nome"
                   className="form-control"
                   required
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
 
@@ -138,7 +197,7 @@ export default function CheckoutPage() {
                   placeholder="Cognome"
                   className="form-control"
                   required
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
 
@@ -149,7 +208,7 @@ export default function CheckoutPage() {
                   placeholder="Email"
                   className="form-control"
                   required
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
 
@@ -160,7 +219,7 @@ export default function CheckoutPage() {
                   placeholder="Telefono"
                   className="form-control"
                   required
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
 
@@ -171,7 +230,7 @@ export default function CheckoutPage() {
                   placeholder="Indirizzo"
                   className="form-control"
                   required
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
 
@@ -182,7 +241,7 @@ export default function CheckoutPage() {
                   placeholder="Città"
                   className="form-control"
                   required
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
 
@@ -193,7 +252,7 @@ export default function CheckoutPage() {
                   placeholder="CAP"
                   className="form-control"
                   required
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
 
@@ -204,7 +263,7 @@ export default function CheckoutPage() {
                   placeholder="Provincia"
                   className="form-control"
                   required
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
 
@@ -214,10 +273,109 @@ export default function CheckoutPage() {
                   placeholder="Note (opzionale)"
                   className="form-control"
                   rows="3"
-                  onChange={handleChange}
+                  onChange={handleBillingChange}
                 />
               </div>
             </div>
+
+            {/* CHECKBOX PER SHIPPING DIVERSO */}
+            <div className="form-check my-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="differentShipping"
+                checked={useDifferentShipping}
+                onChange={(e) => setUseDifferentShipping(e.target.checked)}
+              />
+              <label className="form-check-label" htmlFor="differentShipping">
+                I dati di consegna sono diversi dai dati di fatturazione
+              </label>
+            </div>
+
+            {/* FORM CONSEGNA */}
+            {useDifferentShipping && (
+              <>
+                <p className="mb-3 mt-3">Dati di consegna</p>
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Nome"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="surname"
+                      placeholder="Cognome"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="Telefono"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-12">
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="Indirizzo"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      name="city"
+                      placeholder="Città"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      name="zip"
+                      placeholder="CAP"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      name="province"
+                      placeholder="Provincia"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             <button type="submit" className="btn btn-success mt-4 w-100">
               Completa ordine

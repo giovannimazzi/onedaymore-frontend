@@ -13,6 +13,7 @@ import { NotificationContextProvider } from "./contexts/NotificationContext";
 import { CartContextProvider } from "./contexts/CartContext";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 
 export default function App() {
   return (
@@ -34,6 +35,8 @@ export default function App() {
                 <Route path="cart" element={<CartPage />} />
                 {/* checkout */}
                 <Route path="/checkout" Component={CheckoutPage} />
+                {/* ordersuccess */}
+                <Route path="/order-success/:id" Component={OrderSuccessPage} />
                 {/* NOT FOUND */}
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
