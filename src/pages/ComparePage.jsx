@@ -92,13 +92,13 @@ export default function ComparePage() {
         </div>
 
         <div className="d-flex flex-column flex-sm-row gap-2">
-          <Link to="/products" className="btn btn-outline-secondary">
-            Prodotti
+          <Link to="/products" className="btn btn-secondary">
+            Vai ai prodotti
           </Link>
 
           <button
             type="button"
-            className="btn btn-outline-danger"
+            className="btn btn-danger"
             onClick={clearCompare}
           >
             Svuota confronto
