@@ -32,36 +32,96 @@ export default function CheckoutPage() {
 
     setIsChecking(true);
     setDiscountError("");
+    setDiscountData(null);
 
     try {
       const res = await axios.get(
         `http://localhost:3000/discount-codes/${discountCode}`,
       );
 
-      const data = res.data?.result ?? res.data;
-      setDiscountData(data);
-    } catch {
-      setDiscountData(null);
-      setDiscountError("Codice non valido");
+      const discount = res.data.result;
+
+      if (!discount) {
+        setDiscountError("Codice sconto inesistente");
+        return;
+      }
+
+      const now = new Date();
+      const startDate = new Date(discount.starts_at);
+      const endDate = new Date(discount.ends_at);
+
+      //  NON ATTIVO
+      if (!discount.is_active) {
+        setDiscountError("Questo codice non è attivo");
+        return;
+      }
+
+      //  NON ANCORA ATTIVO
+      if (startDate > now) {
+        setDiscountError(
+          `Questo codice sarà attivo dal ${startDate.toLocaleDateString(
+            "it-IT",
+          )}`,
+        );
+        return;
+      }
+
+      //  SCADUTO
+      if (endDate < now) {
+        setDiscountError("Questo codice è scaduto");
+        return;
+      }
+
+      //  MINIMO ORDINE
+      if (
+        discount.min_order_amount &&
+        total < Number(discount.min_order_amount)
+      ) {
+        setDiscountError(
+          `Ordine minimo €${formatMoney(discount.min_order_amount)}`,
+        );
+        return;
+      }
+
+      //  CALCOLO SCONTO
+      let discountAmount = 0;
+
+      if (discount.discount_type === "percentage") {
+        discountAmount = (total * discount.discount_value) / 100;
+      } else {
+        discountAmount = discount.discount_value;
+      }
+
+      if (discountAmount > total) {
+        discountAmount = total;
+      }
+
+      setDiscountData({
+        code: discount.code,
+        discount_type: discount.discount_type,
+        discount_value: discount.discount_value,
+        discount_amount: discountAmount,
+      });
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setDiscountError("Codice sconto inesistente");
+      } else {
+        setDiscountError("Errore nella verifica del codice");
+      }
     } finally {
       setIsChecking(false);
     }
   };
 
   // CALCOLI
-  let discountAmount = 0;
 
-  if (discountData) {
-    if (discountData.discount_type === "percentage") {
-      discountAmount = (total * discountData.discount_value) / 100;
-    } else {
-      discountAmount = discountData.discount_value;
-    }
-  }
+  const discountAmount = discountData?.discount_amount || 0;
 
   const subtotalAfterDiscount = total - discountAmount;
-  const shippingCost =
-    subtotalAfterDiscount >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+
+  const shippingCost = total >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+
+  // totale finale
   const finalTotal = subtotalAfterDiscount + shippingCost;
 
   // FORM
@@ -263,16 +323,6 @@ export default function CheckoutPage() {
                   placeholder="Provincia"
                   className="form-control"
                   required
-                  onChange={handleBillingChange}
-                />
-              </div>
-
-              <div className="col-12">
-                <textarea
-                  name="notes"
-                  placeholder="Note (opzionale)"
-                  className="form-control"
-                  rows="3"
                   onChange={handleBillingChange}
                 />
               </div>
