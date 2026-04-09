@@ -5,6 +5,12 @@ import { Link } from "react-router";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
+// Importa le variabili dal file utils/shipping
+import {
+  FREE_SHIPPING_THRESHOLD,
+  STANDARD_SHIPPING_COST,
+} from "../utils/shipping";
+
 function formatMoney(value) {
   const numericValue = Number(value);
   if (Number.isNaN(numericValue)) return "—";
@@ -20,9 +26,6 @@ export default function CheckoutPage() {
   const [discountData, setDiscountData] = useState(null);
   const [discountError, setDiscountError] = useState("");
   const [isChecking, setIsChecking] = useState(false);
-
-  const FREE_SHIPPING_THRESHOLD = 49;
-  const SHIPPING_COST = 6.9;
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
@@ -50,29 +53,23 @@ export default function CheckoutPage() {
       const startDate = new Date(discount.starts_at);
       const endDate = new Date(discount.ends_at);
 
-      //  NON ATTIVO
       if (!discount.is_active) {
         setDiscountError("Questo codice non è attivo");
         return;
       }
 
-      //  NON ANCORA ATTIVO
       if (startDate > now) {
         setDiscountError(
-          `Questo codice sarà attivo dal ${startDate.toLocaleDateString(
-            "it-IT",
-          )}`,
+          `Questo codice sarà attivo dal ${startDate.toLocaleDateString("it-IT")}`,
         );
         return;
       }
 
-      //  SCADUTO
       if (endDate < now) {
         setDiscountError("Questo codice è scaduto");
         return;
       }
 
-      //  MINIMO ORDINE
       if (
         discount.min_order_amount &&
         total < Number(discount.min_order_amount)
@@ -83,7 +80,6 @@ export default function CheckoutPage() {
         return;
       }
 
-      //  CALCOLO SCONTO
       let discountAmount = 0;
 
       if (discount.discount_type === "percentage") {
@@ -114,14 +110,10 @@ export default function CheckoutPage() {
   };
 
   // CALCOLI
-
   const discountAmount = discountData?.discount_amount || 0;
-
   const subtotalAfterDiscount = total - discountAmount;
-
-  const shippingCost = total >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-
-  // totale finale
+  const shippingCost =
+    total >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_COST;
   const finalTotal = subtotalAfterDiscount + shippingCost;
 
   // FORM
@@ -174,21 +166,28 @@ export default function CheckoutPage() {
     if (!confirmOrder) return;
 
     try {
-      const response = await axios.post("http://localhost:3000/orders", {
+      const itemsToSend = cart.map((item) => ({
+        slug: item.slug,
+        quantity: item.quantity,
+      }));
+
+      const payload = {
         customer_email: billingData.email,
         customer_first_name: billingData.name,
         customer_last_name: billingData.surname,
-        phone: billingData.phone,
+        phone: billingData.phone || "",
 
         billing_address_line1: billingData.address,
+        billing_address_line2: null,
         billing_city: billingData.city,
         billing_postal_code: billingData.zip,
-        billing_province: billingData.province,
+        billing_province: billingData.province || null,
         billing_country: "IT",
 
         shipping_address_line1: useDifferentShipping
           ? shippingData.address
           : billingData.address,
+        shipping_address_line2: null,
         shipping_city: useDifferentShipping
           ? shippingData.city
           : billingData.city,
@@ -196,25 +195,31 @@ export default function CheckoutPage() {
           ? shippingData.zip
           : billingData.zip,
         shipping_province: useDifferentShipping
-          ? shippingData.province
-          : billingData.province,
+          ? shippingData.province || null
+          : billingData.province || null,
         shipping_country: "IT",
 
-        items: cart.map((item) => ({
-          slug: item.id,
-          quantity: item.quantity,
-        })),
+        items: itemsToSend,
 
         discount_code: discountData?.code || null,
-      });
+      };
+
+      const response = await axios.post(
+        "http://localhost:3000/orders",
+        payload,
+      );
 
       console.log("SUCCESSO:", response.data);
       alert("Ordine completato!");
+      const orderNumber = response.data.result.order_number;
       clearCart();
-      navigate("/products");
+      navigate(`/order-success/${orderNumber}`);
     } catch (error) {
       console.error(error.response?.data || error);
-      alert("Errore nell'ordine");
+      alert(
+        "Errore nell'ordine: " +
+          (error.response?.data?.message || "Controlla i dati inseriti"),
+      );
     }
   };
 
@@ -426,7 +431,6 @@ export default function CheckoutPage() {
                 </div>
               </>
             )}
-
             <button type="submit" className="btn btn-success mt-4 w-100">
               Completa ordine
             </button>
@@ -438,7 +442,6 @@ export default function CheckoutPage() {
           <div className="card p-4">
             <h4>Riepilogo ordine</h4>
 
-            {/* CODICE SCONTO */}
             <div className="mb-3">
               <input
                 type="text"
@@ -461,7 +464,6 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            {/* PRODOTTI */}
             {cart.map((item) => (
               <div
                 key={item.id}
@@ -475,8 +477,6 @@ export default function CheckoutPage() {
             ))}
 
             <hr />
-
-            {/* TOTALI */}
             <p className="d-flex justify-content-between">
               <span>Subtotale</span>
               <span>€{formatMoney(total)}</span>
@@ -499,7 +499,6 @@ export default function CheckoutPage() {
             </p>
 
             <hr />
-
             <p className="d-flex justify-content-between">
               <span>Totale</span>
               <span>€{formatMoney(finalTotal)}</span>
