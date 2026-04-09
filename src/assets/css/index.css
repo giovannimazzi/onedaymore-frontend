@@ -645,6 +645,25 @@ main {
   font-weight: 400;
 }
 
+
+
+@media (max-width: 576px) {
+  .hero {
+    min-height: 50vh;
+    background-position: 65%;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  .hero p {
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+}
+
 /* ================================================
    CARD PRODOTTO
    ================================================ */
@@ -1569,4 +1588,72 @@ main {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: rgba(31, 43, 56, 0.65);
+}
+
+/* ================================================
+   404 - NOT FOUND
+   ================================================ */
+.not-found-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 22 / 9;
+  object-fit: cover;
+  display: block;
+  background-image:
+    linear-gradient(
+      to top,
+      rgba(106, 128, 151, 0.2) 20%
+    ); 
+    backdrop-filter: blur(1px);
+}
+
+.not-found-texts {
+  position: absolute;
+  z-index: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 1);
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.not-found-texts p {
+  border-bottom: 1px solid white;  
+}
+
+.not-found-texts a {
+  text-decoration: none;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .not-found-container {
+    height: 100vh;
+  }
+
+  .not-found-img {
+    height: 100%;
+    object-fit: cover;
+    object-position: 68%;
+  }
+
+  .not-found-texts {
+    bottom: 10%;
+    width: 100%;
+    padding: 0 16px;
+  }
+
+  .not-found-texts h2 {
+    font-size: 1.8rem;
+  }
+
+  .not-found-texts p {
+    font-size: 1rem;
+    border-bottom: none;
+  }
+
+  .not-found-texts a {
+    font-size: 1.2rem;
+    display: inline-block;
+    margin-top: 10px;
+  }
 }
