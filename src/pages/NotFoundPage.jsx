@@ -6,7 +6,7 @@ export default function NotFoundPage() {
       <div className="not-found-container">
         <img
           className="not-found-img"
-          src="src\assets\css\img\404.png"
+          src="src/assets/css/img/404.png"
           alt="404 - Not Found"
         />
         <div className="not-found-texts">
