@@ -1,7 +1,9 @@
-import { Link } from 'react-router';
-import ProductImage from './ProductImage';
-import ProductBadges from './ProductBadges';
-import AvailabilityIndicator from './AvailabilityIndicator';
+import { Link } from "react-router";
+import ProductImage from "./ProductImage";
+import ProductBadges from "./ProductBadges";
+import AvailabilityIndicator from "./AvailabilityIndicator";
+import { useCartContext } from "../contexts/CartContext";
+import { useNotificationContext } from "../contexts/NotificationContext";
 
 export default function ProductListItem({
   product,
@@ -11,7 +13,10 @@ export default function ProductListItem({
   statLabel,
   statValue,
 }) {
-  const destination = productLink || '/products';
+  const destination = productLink || "/products";
+  const { cart, addToCart, increaseQuantity, decreaseQuantity } =
+    useCartContext();
+  const { showNotification } = useNotificationContext();
 
   return (
     <article className="product-list-item">
@@ -20,7 +25,7 @@ export default function ProductListItem({
           <ProductImage
             src={product.image_url}
             categorySlug={product.category_slug}
-            alt={product.name || 'immagine-prodotto'}
+            alt={product.name || "immagine-prodotto"}
             className="product-list-item__image"
           />
         </Link>
@@ -54,7 +59,7 @@ export default function ProductListItem({
       </div>
 
       <div className="product-list-item__actions">
-        {productPrice != null && productPrice !== '' && (
+        {productPrice != null && productPrice !== "" && (
           <div className="product-list-item__price">€{productPrice}</div>
         )}
 
@@ -64,6 +69,21 @@ export default function ProductListItem({
         >
           Vedi prodotto
         </Link>
+        <div className="d-flex gap-2 mt-2">
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => addToCart(product)}
+          >
+            Aggiungi al carrello
+          </button>
+
+          <button
+            className="btn btn-outline-secondary btn-sm"
+            onClick={() => handleCompare(product)}
+          >
+            Confronta
+          </button>
+        </div>
       </div>
     </article>
   );
