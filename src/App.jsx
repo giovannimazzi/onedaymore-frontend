@@ -15,36 +15,60 @@ import CartPage from "./pages/CartPage";
 
 import { CompareContextProvider } from "./contexts/CompareContext";
 import ComparePage from "./pages/ComparePage";
+import CheckoutPage from "./pages/CheckoutPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 
 export default function App() {
-  return (
-    <CompareContextProvider>
-      <CartContextProvider>
-        <NotificationContextProvider>
-          <LoaderContextProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route element={<DefaultLayout />}>
-                  {/* HOME */}
-                  <Route index element={<HomePage />} />
+    return (
+        <CompareContextProvider>
+            <CartContextProvider>
+                <NotificationContextProvider>
+                    <LoaderContextProvider>
+                        <BrowserRouter>
+                            <Routes>
+                                <Route element={<DefaultLayout />}>
+                                    {/* HOME */}
+                                    <Route index element={<HomePage />} />
 
-                  {/* PRODUCT ROUTES */}
-                  <Route path="products">
-                    <Route index element={<ProductsPage />} />
-                    <Route path=":slug" element={<ProductDetailPage />} />
-                  </Route>
-                  {/* cart */}
-                  <Route path="cart" element={<CartPage />} />
-                  {/* Compare */}
-                  <Route path="compare" element={<ComparePage />} />
-                  {/* NOT FOUND */}
-                  <Route path="*" element={<NotFoundPage />} />
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </LoaderContextProvider>
-        </NotificationContextProvider>
-      </CartContextProvider>
-    </CompareContextProvider>
-  );
+                                    {/* PRODUCT ROUTES */}
+                                    <Route path="products">
+                                        <Route
+                                            index
+                                            element={<ProductsPage />}
+                                        />
+                                        <Route
+                                            path=":slug"
+                                            element={<ProductDetailPage />}
+                                        />
+                                    </Route>
+                                    {/* cart */}
+                                    <Route path="cart" element={<CartPage />} />
+                                    {/* Compare */}
+                                    <Route
+                                        path="compare"
+                                        element={<ComparePage />}
+                                    />
+                                    {/* checkout */}
+                                    <Route
+                                        path="/checkout"
+                                        Component={CheckoutPage}
+                                    />
+                                    {/* ordersuccess */}
+                                    <Route
+                                        path="/order-success/:id"
+                                        Component={OrderSuccessPage}
+                                    />
+                                    {/* NOT FOUND */}
+                                    <Route
+                                        path="*"
+                                        element={<NotFoundPage />}
+                                    />
+                                </Route>
+                            </Routes>
+                        </BrowserRouter>
+                    </LoaderContextProvider>
+                </NotificationContextProvider>
+            </CartContextProvider>
+        </CompareContextProvider>
+    );
 }

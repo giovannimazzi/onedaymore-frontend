@@ -1,0 +1,464 @@
+import { useState } from "react";
+import { useCartContext } from "../contexts/CartContext";
+import ShippingInfo from "../components/ShippingInfo";
+import { Link } from "react-router";
+import axios from "axios";
+import { useNavigate } from "react-router";
+
+function formatMoney(value) {
+  const numericValue = Number(value);
+  if (Number.isNaN(numericValue)) return "—";
+  return numericValue.toFixed(2);
+}
+
+export default function CheckoutPage() {
+  const { cart, clearCart } = useCartContext();
+  const navigate = useNavigate();
+
+  // DISCOUNT STATE
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountData, setDiscountData] = useState(null);
+  const [discountError, setDiscountError] = useState("");
+  const [isChecking, setIsChecking] = useState(false);
+
+  const FREE_SHIPPING_THRESHOLD = 49;
+  const SHIPPING_COST = 6.9;
+
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  // APPLY DISCOUNT
+  const handleApplyDiscount = async () => {
+    if (!discountCode.trim()) return;
+
+    setIsChecking(true);
+    setDiscountError("");
+
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/discount-codes/${discountCode}`,
+      );
+
+      const data = res.data?.result ?? res.data;
+      setDiscountData(data);
+    } catch {
+      setDiscountData(null);
+      setDiscountError("Codice non valido");
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
+  // CALCOLI
+  let discountAmount = 0;
+
+  if (discountData) {
+    if (discountData.discount_type === "percentage") {
+      discountAmount = (total * discountData.discount_value) / 100;
+    } else {
+      discountAmount = discountData.discount_value;
+    }
+  }
+
+  const subtotalAfterDiscount = total - discountAmount;
+  const shippingCost =
+    subtotalAfterDiscount >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+  const finalTotal = subtotalAfterDiscount + shippingCost;
+
+  // FORM
+  const [billingData, setBillingData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    zip: "",
+    province: "",
+    notes: "",
+  });
+
+  const [useDifferentShipping, setUseDifferentShipping] = useState(false);
+
+  const [shippingData, setShippingData] = useState({
+    name: "",
+    surname: "",
+    phone: "",
+    address: "",
+    city: "",
+    zip: "",
+    province: "",
+  });
+
+  const handleBillingChange = (e) => {
+    const { name, value } = e.target;
+    setBillingData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleShippingChange = (e) => {
+    const { name, value } = e.target;
+    setShippingData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const confirmOrder = window.confirm(
+      "Sei sicuro di voler completare l'ordine?",
+    );
+    if (!confirmOrder) return;
+
+    try {
+      const response = await axios.post("http://localhost:3000/orders", {
+        customer_email: billingData.email,
+        customer_first_name: billingData.name,
+        customer_last_name: billingData.surname,
+        phone: billingData.phone,
+
+        billing_address_line1: billingData.address,
+        billing_city: billingData.city,
+        billing_postal_code: billingData.zip,
+        billing_province: billingData.province,
+        billing_country: "IT",
+
+        shipping_address_line1: useDifferentShipping
+          ? shippingData.address
+          : billingData.address,
+        shipping_city: useDifferentShipping
+          ? shippingData.city
+          : billingData.city,
+        shipping_postal_code: useDifferentShipping
+          ? shippingData.zip
+          : billingData.zip,
+        shipping_province: useDifferentShipping
+          ? shippingData.province
+          : billingData.province,
+        shipping_country: "IT",
+
+        items: cart.map((item) => ({
+          slug: item.id,
+          quantity: item.quantity,
+        })),
+
+        discount_code: discountData?.code || null,
+      });
+
+      console.log("SUCCESSO:", response.data);
+      alert("Ordine completato!");
+      clearCart();
+      navigate("/products");
+    } catch (error) {
+      console.error(error.response?.data || error);
+      alert("Errore nell'ordine");
+    }
+  };
+
+  if (cart.length === 0) {
+    return (
+      <div className="container py-5 text-center">
+        <h2>Il carrello è vuoto</h2>
+        <Link to="/products" className="btn btn-primary mt-3">
+          Vai ai prodotti
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container py-5">
+      <h1 className="mb-4">Checkout</h1>
+
+      <div className="row g-4">
+        {/* FORM */}
+        <div className="col-lg-7">
+          <form onSubmit={handleSubmit} className="card p-4">
+            <p className="mb-3">Dati di fatturazione</p>
+            <div className="row g-3">
+              <div className="col-md-6">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Nome"
+                  className="form-control"
+                  required
+                  onChange={handleBillingChange}
+                />
+              </div>
+
+              <div className="col-md-6">
+                <input
+                  type="text"
+                  name="surname"
+                  placeholder="Cognome"
+                  className="form-control"
+                  required
+                  onChange={handleBillingChange}
+                />
+              </div>
+
+              <div className="col-md-6">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  className="form-control"
+                  required
+                  onChange={handleBillingChange}
+                />
+              </div>
+
+              <div className="col-md-6">
+                <input
+                  type="text"
+                  name="phone"
+                  placeholder="Telefono"
+                  className="form-control"
+                  required
+                  onChange={handleBillingChange}
+                />
+              </div>
+
+              <div className="col-12">
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="Indirizzo"
+                  className="form-control"
+                  required
+                  onChange={handleBillingChange}
+                />
+              </div>
+
+              <div className="col-md-4">
+                <input
+                  type="text"
+                  name="city"
+                  placeholder="Città"
+                  className="form-control"
+                  required
+                  onChange={handleBillingChange}
+                />
+              </div>
+
+              <div className="col-md-4">
+                <input
+                  type="text"
+                  name="zip"
+                  placeholder="CAP"
+                  className="form-control"
+                  required
+                  onChange={handleBillingChange}
+                />
+              </div>
+
+              <div className="col-md-4">
+                <input
+                  type="text"
+                  name="province"
+                  placeholder="Provincia"
+                  className="form-control"
+                  required
+                  onChange={handleBillingChange}
+                />
+              </div>
+
+              <div className="col-12">
+                <textarea
+                  name="notes"
+                  placeholder="Note (opzionale)"
+                  className="form-control"
+                  rows="3"
+                  onChange={handleBillingChange}
+                />
+              </div>
+            </div>
+
+            {/* CHECKBOX PER SHIPPING DIVERSO */}
+            <div className="form-check my-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="differentShipping"
+                checked={useDifferentShipping}
+                onChange={(e) => setUseDifferentShipping(e.target.checked)}
+              />
+              <label className="form-check-label" htmlFor="differentShipping">
+                I dati di consegna sono diversi dai dati di fatturazione
+              </label>
+            </div>
+
+            {/* FORM CONSEGNA */}
+            {useDifferentShipping && (
+              <>
+                <p className="mb-3 mt-3">Dati di consegna</p>
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Nome"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="surname"
+                      placeholder="Cognome"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="Telefono"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-12">
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="Indirizzo"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      name="city"
+                      placeholder="Città"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      name="zip"
+                      placeholder="CAP"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      name="province"
+                      placeholder="Provincia"
+                      className="form-control"
+                      required
+                      onChange={handleShippingChange}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <button type="submit" className="btn btn-success mt-4 w-100">
+              Completa ordine
+            </button>
+          </form>
+        </div>
+
+        {/* RIEPILOGO */}
+        <div className="col-lg-5">
+          <div className="card p-4">
+            <h4>Riepilogo ordine</h4>
+
+            {/* CODICE SCONTO */}
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control mb-2"
+                placeholder="Codice sconto"
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value)}
+              />
+
+              <button
+                className="btn btn-outline-primary w-100"
+                onClick={handleApplyDiscount}
+                disabled={isChecking}
+              >
+                {isChecking ? "Verifica..." : "Applica codice"}
+              </button>
+
+              {discountError && (
+                <p className="text-danger small mt-2">{discountError}</p>
+              )}
+            </div>
+
+            {/* PRODOTTI */}
+            {cart.map((item) => (
+              <div
+                key={item.id}
+                className="d-flex justify-content-between mb-2"
+              >
+                <span>
+                  {item.name} x{item.quantity}
+                </span>
+                <span>€{formatMoney(item.price * item.quantity)}</span>
+              </div>
+            ))}
+
+            <hr />
+
+            {/* TOTALI */}
+            <p className="d-flex justify-content-between">
+              <span>Subtotale</span>
+              <span>€{formatMoney(total)}</span>
+            </p>
+
+            {discountData && (
+              <p className="d-flex justify-content-between text-success">
+                <span>Sconto ({discountData.code})</span>
+                <span>-€{formatMoney(discountAmount)}</span>
+              </p>
+            )}
+
+            <p className="d-flex justify-content-between">
+              <span>Spedizione</span>
+              <span>
+                {shippingCost === 0
+                  ? "Gratis 🎉"
+                  : `€${formatMoney(shippingCost)}`}
+              </span>
+            </p>
+
+            <hr />
+
+            <p className="d-flex justify-content-between">
+              <span>Totale</span>
+              <span>€{formatMoney(finalTotal)}</span>
+            </p>
+
+            <ShippingInfo cartTotal={total} className="mt-3" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
