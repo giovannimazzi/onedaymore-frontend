@@ -15,6 +15,7 @@
   --odm-availability-ok: #8ec459;
   --odm-availability-low: #e8a22e;
   --odm-availability-out: #e05555;
+  --odm-availability-cart-limit: #5a6d82;
 
   /* Font */
   --odm-font-body: "Inter", system-ui, sans-serif;
@@ -1319,6 +1320,10 @@ main {
 
 .availability-indicator--out {
   color: var(--odm-availability-out);
+}
+
+.availability-indicator--cart-limit {
+  color: var(--odm-availability-cart-limit);
 }
 
 .cart-line-availability {

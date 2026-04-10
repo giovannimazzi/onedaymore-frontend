@@ -259,7 +259,7 @@ export default function ProductDetailPage() {
                 onClick={handleAddToCart}
                 disabled={isOutOfStock}
               >
-                {isOutOfStock ? "Prodotto esaurito" : "Aggiungi al carrello"}
+                {isOutOfStock ? "Esaurito in magazzino" : "Aggiungi al carrello"}
               </button>
             )}
 
