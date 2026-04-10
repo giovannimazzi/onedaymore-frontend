@@ -13,6 +13,8 @@ const SORT_OPTIONS = [
     { value: "calories", label: "Calorie" },
     { value: "weight_grams", label: "Peso" },
     { value: "servings", label: "Porzioni" },
+    { value: "storage_life_months", label: "Conservazione" },
+    { value: "water_needed_ml", label: "Acqua necessaria" },
     { value: "total_sold", label: "Più venduti" },
 ];
 
@@ -51,6 +53,24 @@ const RANGE_FILTERS = [
         step: 1,
         min: 0,
     },
+    {
+        label: "Conservazione (mesi)",
+        minKey: "min_storage_life_months",
+        maxKey: "max_storage_life_months",
+        chipLabel: "Conservazione",
+        unit: "mesi",
+        step: 1,
+        min: 0,
+    },
+    {
+        label: "Acqua necessaria (ml)",
+        minKey: "min_water_needed_ml",
+        maxKey: "max_water_needed_ml",
+        chipLabel: "Acqua",
+        unit: "ml",
+        step: 1,
+        min: 0,
+    },
 ];
 
 function getCardStat(product, sort) {
@@ -69,6 +89,18 @@ function getCardStat(product, sort) {
         case "servings":
             if (product.servings == null) return null;
             return { label: "Porzioni", value: `${product.servings}` };
+        case "storage_life_months":
+            if (product.storage_life_months == null) return null;
+            return {
+                label: "Conserv.",
+                value: `${product.storage_life_months} mesi`,
+            };
+        case "water_needed_ml":
+            if (product.water_needed_ml == null) return null;
+            return {
+                label: "Acqua",
+                value: `${product.water_needed_ml} ml`,
+            };
         case "total_sold":
             if (product.total_sold == null) return null;
             return { label: "Venduti", value: `${product.total_sold}` };
@@ -127,6 +159,12 @@ export default function ProductsPage() {
         filters.max_weight_grams ||
         filters.min_servings ||
         filters.max_servings ||
+        filters.min_storage_life_months ||
+        filters.max_storage_life_months ||
+        filters.min_water_needed_ml ||
+        filters.max_water_needed_ml ||
+        filters.min_quantity_available ||
+        filters.max_quantity_available ||
         filters.sort !== "created_at" ||
         filters.order !== "desc";
 
@@ -255,6 +293,28 @@ export default function ProductsPage() {
                                     </li>
                                 ))}
                             </ul>
+                        </div>
+
+                        <div className="mb-4">
+                            <p className="form-label mb-2">Disponibilità</p>
+                            <label className="products-filter-checkbox">
+                                <input
+                                    type="checkbox"
+                                    className="products-filter-checkbox-input"
+                                    checked={
+                                        filters.min_quantity_available === "1"
+                                    }
+                                    onChange={(e) =>
+                                        setFilter(
+                                            "min_quantity_available",
+                                            e.target.checked ? "1" : "",
+                                        )
+                                    }
+                                />
+                                <span className="products-filter-checkbox-label">
+                                    Mostra solo disponibili
+                                </span>
+                            </label>
                         </div>
 
                         <div className="mb-4">
@@ -453,6 +513,24 @@ export default function ProductsPage() {
                                             setFilter("preparation_type", "")
                                         }
                                         aria-label="Rimuovi filtro preparazione"
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            )}
+                            {filters.min_quantity_available === "1" && (
+                                <span className="products-filter-chip">
+                                    Solo disponibili
+                                    <button
+                                        type="button"
+                                        className="products-filter-chip-remove"
+                                        onClick={() =>
+                                            setFilter(
+                                                "min_quantity_available",
+                                                "",
+                                            )
+                                        }
+                                        aria-label="Rimuovi filtro solo disponibili"
                                     >
                                         ×
                                     </button>

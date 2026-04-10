@@ -19,6 +19,12 @@ function parseParams(searchParams) {
     max_weight_grams: readParam("max_weight_grams"),
     min_servings: readParam("min_servings"),
     max_servings: readParam("max_servings"),
+    min_storage_life_months: readParam("min_storage_life_months"),
+    max_storage_life_months: readParam("max_storage_life_months"),
+    min_water_needed_ml: readParam("min_water_needed_ml"),
+    max_water_needed_ml: readParam("max_water_needed_ml"),
+    min_quantity_available: readParam("min_quantity_available"),
+    max_quantity_available: readParam("max_quantity_available"),
   };
 }
 
