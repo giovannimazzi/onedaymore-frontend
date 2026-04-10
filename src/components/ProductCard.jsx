@@ -59,11 +59,26 @@ export default function ProductCard({
       category_slug: productCategorySlug,
       quantity_available: availableStock,
     });
-    showNotification("Prodotto aggiunto al carrello!", "success");
+    showNotification("Prodotto aggiunto al carrello!", "success", {
+      duration: 3200,
+      pointer: "cart",
+    });
   };
 
   const canAddToCart =
     Boolean(productSlugForCart && productName != null) && !isOutOfStock;
+
+  const handleDecreaseQty = () => {
+    if (!productSlugForCart || !cartItem) return;
+    if (cartItem.quantity <= 1) {
+      const label = (productName && String(productName).trim()) || "Prodotto";
+      showNotification(`${label} rimosso dal carrello`, "muted", {
+        duration: 3200,
+        pointer: "cart",
+      });
+    }
+    decreaseQuantity(productSlugForCart);
+  };
 
   return (
     <div className="col">
@@ -79,6 +94,12 @@ export default function ProductCard({
             />
           </Link>
           <ProductBadges badges={badges} />
+          {compareProduct && (
+            <CompareToggleButton
+              product={compareProduct}
+              variant="cardChip"
+            />
+          )}
         </div>
 
         <div className="card-body d-flex flex-column p-3">
@@ -111,7 +132,8 @@ export default function ProductCard({
                 quantity={cartItem.quantity}
                 quantityAvailable={availableStock}
                 onIncrease={() => increaseQuantity(productSlugForCart)}
-                onDecrease={() => decreaseQuantity(productSlugForCart)}
+                onDecrease={handleDecreaseQty}
+                trashWhenLast
               />
             ) : (
               <button
@@ -122,14 +144,6 @@ export default function ProductCard({
               >
                 Aggiungi al carrello
               </button>
-            )}
-
-            {compareProduct && (
-              <CompareToggleButton
-                product={compareProduct}
-                className="mt-2"
-                fullWidth
-              />
             )}
           </div>
         </div>
