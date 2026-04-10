@@ -26,6 +26,10 @@ export default function CheckoutPage() {
 
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [entrySyncOpen, setEntrySyncOpen] = useState(false);
+  const [entrySyncMessage, setEntrySyncMessage] = useState("");
+  const [preSubmitSyncOpen, setPreSubmitSyncOpen] = useState(false);
+  const [preSubmitSyncMessage, setPreSubmitSyncMessage] = useState("");
 
   const [errors, setErrors] = useState({});
 
@@ -35,7 +39,21 @@ export default function CheckoutPage() {
   const [isChecking, setIsChecking] = useState(false);
 
   useEffect(() => {
-    refreshCartAvailability();
+    let cancelled = false;
+    (async () => {
+      const result = await refreshCartAvailability({ silent: true });
+      if (cancelled || !result?.changed) return;
+      const body =
+        result.noticeMessage?.trim() ||
+        "Il carrello è stato aggiornato in base alla disponibilità attuale.";
+      setEntrySyncMessage(
+        `${body}\n\nControlla il riepilogo. Puoi continuare il checkout o tornare al carrello per modificare.`,
+      );
+      setEntrySyncOpen(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [refreshCartAvailability]);
 
   // TOTAL
@@ -299,7 +317,34 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      const itemsToSend = cart.map((item) => ({
+      const syncResult = await refreshCartAvailability({ silent: true });
+      if (syncResult === undefined) {
+        showNotification(
+          "Non è stato possibile verificare le disponibilità. Riprova tra un attimo.",
+          "warning",
+          { duration: 5200 },
+        );
+        return;
+      }
+
+      if (syncResult.changed) {
+        const body =
+          syncResult.noticeMessage?.trim() ||
+          "Il carrello è stato aggiornato in base alla disponibilità attuale.";
+        setPreSubmitSyncMessage(
+          `${body}\n\nPrima di concludere, controlla il riepilogo aggiornato. Se va bene, usa di nuovo «Completa ordine».`,
+        );
+        setPreSubmitSyncOpen(true);
+        return;
+      }
+
+      const cartSnapshot = syncResult.cart ?? cart;
+      if (!Array.isArray(cartSnapshot) || cartSnapshot.length === 0) {
+        showNotification("Il carrello è vuoto.", "warning");
+        return;
+      }
+
+      const itemsToSend = cartSnapshot.map((item) => ({
         slug: item.slug,
         quantity: item.quantity,
       }));
@@ -583,7 +628,7 @@ export default function CheckoutPage() {
             {/* PRODOTTI */}
             {cart.map((item) => (
               <div
-                key={item.id}
+                key={item.slug}
                 className="d-flex justify-content-between mb-2"
               >
                 <span>
@@ -649,6 +694,34 @@ export default function CheckoutPage() {
         confirmVariant="primary"
         onConfirm={executeOrder}
         onCancel={() => setOrderConfirmOpen(false)}
+      />
+
+      <ConfirmDialog
+        open={entrySyncOpen}
+        title="Carrello aggiornato"
+        message={entrySyncMessage}
+        confirmLabel="Continua il checkout"
+        cancelLabel="Torna al carrello"
+        confirmVariant="primary"
+        onConfirm={() => setEntrySyncOpen(false)}
+        onCancel={() => {
+          setEntrySyncOpen(false);
+          navigate("/cart");
+        }}
+      />
+
+      <ConfirmDialog
+        open={preSubmitSyncOpen}
+        title="Disponibilità cambiata"
+        message={preSubmitSyncMessage}
+        confirmLabel="Ho controllato il riepilogo"
+        cancelLabel="Vai al carrello"
+        confirmVariant="primary"
+        onConfirm={() => setPreSubmitSyncOpen(false)}
+        onCancel={() => {
+          setPreSubmitSyncOpen(false);
+          navigate("/cart");
+        }}
       />
     </div>
   );
