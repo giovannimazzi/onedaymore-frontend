@@ -220,7 +220,9 @@ export default function ProductDetailPage() {
 
         <div className="col-12 col-md-12 col-lg-3">
           <div className="product-detail-purchase">
-            <p className="product-detail-purchase-price">€{product.price}</p>
+            <p className="product-detail-purchase-price">
+              €{product.price.toFixed(2)}
+            </p>
 
             {product.total_sold > 0 && (
               <p className="product-detail-purchase-sold">
@@ -289,7 +291,6 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

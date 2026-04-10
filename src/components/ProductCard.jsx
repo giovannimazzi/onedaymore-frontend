@@ -95,10 +95,7 @@ export default function ProductCard({
           </Link>
           <ProductBadges badges={badges} />
           {compareProduct && (
-            <CompareToggleButton
-              product={compareProduct}
-              variant="cardChip"
-            />
+            <CompareToggleButton product={compareProduct} variant="cardChip" />
           )}
         </div>
 
@@ -109,7 +106,7 @@ export default function ProductCard({
             </Link>
           )}
           {productPrice != null && productPrice !== "" && (
-            <p className="card-price">€{productPrice}</p>
+            <p className="card-price">€{productPrice.toFixed(2)}</p>
           )}
           {statLabel != null && statValue != null && (
             <p className="card-stat">

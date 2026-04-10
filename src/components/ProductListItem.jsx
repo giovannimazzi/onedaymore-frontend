@@ -1,7 +1,7 @@
-import { Link } from 'react-router';
-import ProductImage from './ProductImage';
-import ProductBadges from './ProductBadges';
-import AvailabilityIndicator from './AvailabilityIndicator';
+import { Link } from "react-router";
+import ProductImage from "./ProductImage";
+import ProductBadges from "./ProductBadges";
+import AvailabilityIndicator from "./AvailabilityIndicator";
 
 export default function ProductListItem({
   product,
@@ -11,7 +11,7 @@ export default function ProductListItem({
   statLabel,
   statValue,
 }) {
-  const destination = productLink || '/products';
+  const destination = productLink || "/products";
 
   return (
     <article className="product-list-item">
@@ -20,7 +20,7 @@ export default function ProductListItem({
           <ProductImage
             src={product.image_url}
             categorySlug={product.category_slug}
-            alt={product.name || 'immagine-prodotto'}
+            alt={product.name || "immagine-prodotto"}
             className="product-list-item__image"
           />
         </Link>
@@ -54,8 +54,10 @@ export default function ProductListItem({
       </div>
 
       <div className="product-list-item__actions">
-        {productPrice != null && productPrice !== '' && (
-          <div className="product-list-item__price">€{productPrice}</div>
+        {productPrice != null && productPrice !== "" && (
+          <div className="product-list-item__price">
+            €{productPrice.toFixed(2)}
+          </div>
         )}
 
         <Link
