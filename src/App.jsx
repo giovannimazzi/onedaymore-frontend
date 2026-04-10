@@ -18,57 +18,50 @@ import ComparePage from "./pages/ComparePage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 
-export default function App() {
-    return (
-        <CompareContextProvider>
-            <NotificationContextProvider>
-                <CartContextProvider>
-                    <LoaderContextProvider>
-                        <BrowserRouter>
-                            <Routes>
-                                <Route element={<DefaultLayout />}>
-                                    {/* HOME */}
-                                    <Route index element={<HomePage />} />
+import DevDemoPage from "./pages/DevDemoPage";
 
-                                    {/* PRODUCT ROUTES */}
-                                    <Route path="products">
-                                        <Route
-                                            index
-                                            element={<ProductsPage />}
-                                        />
-                                        <Route
-                                            path=":slug"
-                                            element={<ProductDetailPage />}
-                                        />
-                                    </Route>
-                                    {/* cart */}
-                                    <Route path="cart" element={<CartPage />} />
-                                    {/* Compare */}
-                                    <Route
-                                        path="compare"
-                                        element={<ComparePage />}
-                                    />
-                                    {/* checkout */}
-                                    <Route
-                                        path="/checkout"
-                                        Component={CheckoutPage}
-                                    />
-                                    {/* ordersuccess */}
-                                    <Route
-                                        path="/order-success/:id"
-                                        Component={OrderSuccessPage}
-                                    />
-                                    {/* NOT FOUND */}
-                                    <Route
-                                        path="*"
-                                        element={<NotFoundPage />}
-                                    />
-                                </Route>
-                            </Routes>
-                        </BrowserRouter>
-                    </LoaderContextProvider>
-                </CartContextProvider>
-            </NotificationContextProvider>
-        </CompareContextProvider>
-    );
+export default function App() {
+  return (
+    <CompareContextProvider>
+      <NotificationContextProvider>
+        <CartContextProvider>
+          <LoaderContextProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<DefaultLayout />}>
+                  {/* HOME */}
+                  <Route index element={<HomePage />} />
+
+                  {/* PRODUCT ROUTES */}
+                  <Route path="products">
+                    <Route index element={<ProductsPage />} />
+                    <Route path=":slug" element={<ProductDetailPage />} />
+                  </Route>
+                  {/* cart */}
+                  <Route path="cart" element={<CartPage />} />
+                  {/* Compare */}
+                  <Route path="compare" element={<ComparePage />} />
+                  {/* checkout */}
+                  <Route path="/checkout" Component={CheckoutPage} />
+                  {/* ordersuccess */}
+                  <Route
+                    path="/order-success/:id"
+                    Component={OrderSuccessPage}
+                  />
+
+                  {/* DEV DEMO */}
+                  {import.meta.env.DEV && (
+                    <Route path="dev-demo" element={<DevDemoPage />} />
+                  )}
+
+                  {/* NOT FOUND */}
+                  <Route path="*" element={<NotFoundPage />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </LoaderContextProvider>
+        </CartContextProvider>
+      </NotificationContextProvider>
+    </CompareContextProvider>
+  );
 }
