@@ -1,63 +1,63 @@
-import { Link } from 'react-router';
-import { useCompareContext } from '../contexts/CompareContext';
-import ProductImage from '../components/ProductImage';
+import { Link } from "react-router";
+import { useCompareContext } from "../contexts/CompareContext";
+import ProductImage from "../components/ProductImage";
 
 const compareRows = [
   {
-    label: 'Categoria',
-    key: 'category_name',
-    formatValue: (value) => value || '—',
+    label: "Categoria",
+    key: "category_name",
+    formatValue: (value) => value || "—",
   },
   {
-    label: 'Descrizione',
-    key: 'short_description',
-    formatValue: (value) => value || '—',
+    label: "Descrizione",
+    key: "short_description",
+    formatValue: (value) => value || "—",
   },
   {
-    label: 'Brand',
-    key: 'brand',
-    formatValue: (value) => value || '—',
+    label: "Brand",
+    key: "brand",
+    formatValue: (value) => value || "—",
   },
   {
-    label: 'Prezzo',
-    key: 'price',
+    label: "Prezzo",
+    key: "price",
     formatValue: (value) =>
-      value != null ? `€${Number(value).toFixed(2)}` : '—',
+      value != null ? `€${Number(value).toFixed(2)}` : "—",
   },
   {
-    label: 'Peso',
-    key: 'weight_grams',
-    formatValue: (value) => (value != null ? `${value} g` : '—'),
+    label: "Peso",
+    key: "weight_grams",
+    formatValue: (value) => (value != null ? `${value} g` : "—"),
   },
   {
-    label: 'Porzioni',
-    key: 'servings',
-    formatValue: (value) => (value != null ? value : '—'),
+    label: "Porzioni",
+    key: "servings",
+    formatValue: (value) => (value != null ? value : "—"),
   },
   {
-    label: 'Calorie',
-    key: 'calories',
-    formatValue: (value) => (value != null ? `${value} kcal` : '—'),
+    label: "Calorie",
+    key: "calories",
+    formatValue: (value) => (value != null ? `${value} kcal` : "—"),
   },
   {
-    label: 'Conservazione',
-    key: 'storage_life_months',
-    formatValue: (value) => (value != null ? `${value} mesi` : '—'),
+    label: "Conservazione",
+    key: "storage_life_months",
+    formatValue: (value) => (value != null ? `${value} mesi` : "—"),
   },
   {
-    label: 'Preparazione',
-    key: 'preparation_type',
+    label: "Preparazione",
+    key: "preparation_type",
     formatValue: (value) =>
       value
         ? value
-            .replace(/_/g, ' ')
+            .replace(/_/g, " ")
             .replace(/\b\w/g, (char) => char.toUpperCase())
-        : '—',
+        : "—",
   },
   {
-    label: 'Acqua necessaria',
-    key: 'water_needed_ml',
-    formatValue: (value) => (value != null ? `${value} ml` : '—'),
+    label: "Acqua necessaria",
+    key: "water_needed_ml",
+    formatValue: (value) => (value != null ? `${value} ml` : "—"),
   },
 ];
 
@@ -77,7 +77,7 @@ export default function ComparePage() {
           <div>
             <h2 className="h3 mb-3">Non sai come aggiungerli? Scoprilo qui</h2>
             <p>
-              Per ogni singolo prodotto è possibile vedere{' '}
+              Per ogni singolo prodotto è possibile vedere{" "}
               <b>in alto a destra </b>per ogni card l'icona
               <span
                 class="product-card-compare-toggle__icon mx-2"
