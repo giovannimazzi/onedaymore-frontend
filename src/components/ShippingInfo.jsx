@@ -5,19 +5,22 @@ import {
   getRemainingForFreeShipping,
   hasFreeShipping,
   getFreeShippingProgress,
-} from "../utils/shipping";
+} from '../utils/shipping';
 
-export default function ShippingInfo({ cartTotal, className = "" }) {
+export default function ShippingInfo({ cartTotal, className = '' }) {
   const hasCartTotal = cartTotal !== undefined && cartTotal !== null;
   const numericCartTotal = Number(cartTotal);
   const showCartState =
     hasCartTotal && !Number.isNaN(numericCartTotal) && numericCartTotal > 0;
 
-  const baseMessage = `Spedizione standard €${formatShippingPrice(
-    STANDARD_SHIPPING_COST,
-  )} · gratuita da €${formatShippingPrice(FREE_SHIPPING_THRESHOLD)}`;
+  const baseMessage = (
+    <>
+      Spedizione standard €{formatShippingPrice(STANDARD_SHIPPING_COST)} ·{' '}
+      <b>gratuita da €{formatShippingPrice(FREE_SHIPPING_THRESHOLD)}</b>
+    </>
+  );
 
-  let secondaryMessage = "";
+  let secondaryMessage = '';
   let progress = 0;
   let isFreeShippingReached = false;
 
@@ -25,11 +28,15 @@ export default function ShippingInfo({ cartTotal, className = "" }) {
     isFreeShippingReached = hasFreeShipping(numericCartTotal);
     progress = getFreeShippingProgress(numericCartTotal);
 
-    secondaryMessage = isFreeShippingReached
-      ? "Hai ottenuto la spedizione gratuita"
-      : `Ti mancano ancora €${formatShippingPrice(
-          getRemainingForFreeShipping(numericCartTotal),
-        )} per la spedizione gratuita`;
+    secondaryMessage = isFreeShippingReached ? (
+      'Hai ottenuto la spedizione gratuita'
+    ) : (
+      <>
+        Ti mancano ancora €
+        {formatShippingPrice(getRemainingForFreeShipping(numericCartTotal))} per
+        la <b>spedizione gratuita</b>
+      </>
+    );
   }
 
   return (
@@ -40,7 +47,7 @@ export default function ShippingInfo({ cartTotal, className = "" }) {
         {showCartState && (
           <p
             className={`shipping-info__secondary mb-0${
-              isFreeShippingReached ? " shipping-info__secondary--success" : ""
+              isFreeShippingReached ? ' shipping-info__secondary--success' : ''
             }`}
           >
             {secondaryMessage}
