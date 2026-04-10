@@ -1,5 +1,19 @@
-import { createContext, useContext, useState } from "react";
-import { useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
+import axios from "axios";
+import { productsAvailabilityEndpoint } from "../utils/api";
+import { useNotificationContext } from "./NotificationContext";
+import {
+  mergeAvailabilityIntoCart,
+  diffAvailabilityChanges,
+  buildAvailabilityNotice,
+} from "../utils/cartAvailabilitySync";
 
 const CartContext = createContext();
 
@@ -16,6 +30,8 @@ function migrateCartLinesFromStorage(raw) {
 }
 
 export function CartContextProvider({ children }) {
+  const { showNotification } = useNotificationContext();
+
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem("cart");
     if (!saved) return [];
@@ -26,9 +42,66 @@ export function CartContextProvider({ children }) {
     }
   });
 
+  const cartRef = useRef(cart);
+  useEffect(() => {
+    cartRef.current = cart;
+  }, [cart]);
+
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
+
+  const refreshCartAvailability = useCallback(
+    async (options = {}) => {
+      const { silent = false } = options;
+      const lines = cartRef.current;
+      if (lines.length === 0) return undefined;
+
+      try {
+        const { data } = await axios.post(productsAvailabilityEndpoint, {
+          items: lines.map((line) => ({
+            slug: line.slug,
+            quantity: line.quantity,
+          })),
+        });
+        const rows = data?.result;
+        if (!Array.isArray(rows)) return undefined;
+
+        let merged;
+        let changes = [];
+
+        setCart((prev) => {
+          merged = mergeAvailabilityIntoCart(prev, rows);
+          changes = diffAvailabilityChanges(prev, merged);
+          return merged;
+        });
+
+        let notified = false;
+        const noticeMessage =
+          changes.length > 0
+            ? buildAvailabilityNotice(changes, merged.length === 0)
+            : null;
+
+        if (!silent && noticeMessage) {
+          showNotification(noticeMessage, "warning", {
+            duration: merged.length === 0 ? 6200 : 5200,
+            pointer: "cart",
+          });
+          notified = true;
+        }
+
+        return {
+          cart: merged,
+          notified,
+          changed: changes.length > 0,
+          noticeMessage,
+        };
+      } catch {
+        return undefined;
+      }
+    },
+    [showNotification],
+  );
 
   const addToCart = (product) => {
     setCart((prev) => {
@@ -77,6 +150,14 @@ export function CartContextProvider({ children }) {
     setCart((prev) => prev.filter((line) => line.slug !== productSlug));
   };
 
+  const restoreCartLine = useCallback((line) => {
+    if (!line?.slug) return;
+    setCart((prev) => {
+      const rest = prev.filter((l) => l.slug !== line.slug);
+      return [...rest, { ...line }];
+    });
+  }, []);
+
   const clearCart = () => {
     setCart([]);
   };
@@ -87,9 +168,11 @@ export function CartContextProvider({ children }) {
         cart,
         addToCart,
         removeFromCart,
+        restoreCartLine,
         increaseQuantity,
         decreaseQuantity,
         clearCart,
+        refreshCartAvailability,
       }}
     >
       {children}
