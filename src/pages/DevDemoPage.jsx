@@ -349,6 +349,7 @@ export default function DevDemoPage() {
                 <li>Forzare pagamento fail</li>
                 <li>Forzare pagamento success</li>
                 <li>Aprire pagina 404</li>
+                <li>Mostrare Mail cliente/venditore</li>
               </ol>
             </div>
           </div>
