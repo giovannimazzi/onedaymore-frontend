@@ -23,6 +23,36 @@ const PREP_OPTIONS = [
     { value: "add_cold_water", label: "Acqua fredda" },
 ];
 
+const RANGE_FILTERS = [
+    {
+        label: "Calorie (kcal)",
+        minKey: "min_calories",
+        maxKey: "max_calories",
+        chipLabel: "Calorie",
+        unit: "kcal",
+        step: 1,
+        min: 0,
+    },
+    {
+        label: "Peso netto (g)",
+        minKey: "min_weight_grams",
+        maxKey: "max_weight_grams",
+        chipLabel: "Peso",
+        unit: "g",
+        step: 1,
+        min: 0,
+    },
+    {
+        label: "Porzioni",
+        minKey: "min_servings",
+        maxKey: "max_servings",
+        chipLabel: "Porzioni",
+        unit: "",
+        step: 1,
+        min: 0,
+    },
+];
+
 function getCardStat(product, sort) {
     switch (sort) {
         case "calories":
@@ -91,6 +121,12 @@ export default function ProductsPage() {
         filters.preparation_type ||
         filters.min_price ||
         filters.max_price ||
+        filters.min_calories ||
+        filters.max_calories ||
+        filters.min_weight_grams ||
+        filters.max_weight_grams ||
+        filters.min_servings ||
+        filters.max_servings ||
         filters.sort !== "created_at" ||
         filters.order !== "desc";
 
@@ -157,7 +193,17 @@ export default function ProductsPage() {
                         className="products-filters p-3 p-md-4"
                         onSubmit={(e) => e.preventDefault()}
                     >
-                        <h2 className="h5 mb-3">Filtri</h2>
+                        <div className="products-filters-header d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                            <h2 className="h5 mb-0">Filtri</h2>
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary btn-sm flex-shrink-0"
+                                onClick={handleClearFilters}
+                                disabled={!hasActiveFilters}
+                            >
+                                Rimuovi filtri
+                            </button>
+                        </div>
 
                         <div className="mb-4">
                             <p className="form-label mb-2">Categoria</p>
@@ -212,6 +258,71 @@ export default function ProductsPage() {
                         </div>
 
                         <div className="mb-4">
+                            <label className="form-label" htmlFor="filter-sort">
+                                Ordina per
+                            </label>
+                            <div className="products-filters-sort-row d-flex align-items-stretch gap-2">
+                                <select
+                                    id="filter-sort"
+                                    className="form-select products-filters-select products-filters-sort-select"
+                                    value={filters.sort}
+                                    onChange={(e) =>
+                                        setFilter("sort", e.target.value)
+                                    }
+                                >
+                                    {SORT_OPTIONS.map((opt) => (
+                                        <option
+                                            key={opt.value}
+                                            value={opt.value}
+                                        >
+                                            {opt.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-secondary products-filters-order-toggle"
+                                    onClick={() =>
+                                        setFilter(
+                                            "order",
+                                            filters.order === "asc"
+                                                ? "desc"
+                                                : "asc",
+                                        )
+                                    }
+                                    title={
+                                        filters.order === "asc"
+                                            ? "Passa a ordine decrescente"
+                                            : "Passa a ordine crescente"
+                                    }
+                                    aria-label={
+                                        filters.order === "asc"
+                                            ? "Ordine crescente, passa a decrescente"
+                                            : "Ordine decrescente, passa a crescente"
+                                    }
+                                >
+                                    {filters.order === "asc" ? (
+                                        <>
+                                            <i
+                                                className="bi bi-sort-up"
+                                                aria-hidden
+                                            />
+                                            <span>Crescente</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i
+                                                className="bi bi-sort-down"
+                                                aria-hidden
+                                            />
+                                            <span>Decrescente</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="mb-4">
                             <p className="form-label mb-2">Prezzo (€)</p>
                             <div className="d-flex align-items-center gap-2">
                                 <input
@@ -244,54 +355,54 @@ export default function ProductsPage() {
                             </div>
                         </div>
 
-                        <div className="mb-3">
-                            <label className="form-label" htmlFor="filter-sort">
-                                Ordina per
-                            </label>
-                            <select
-                                id="filter-sort"
-                                className="form-select products-filters-select"
-                                value={filters.sort}
-                                onChange={(e) =>
-                                    setFilter("sort", e.target.value)
-                                }
-                            >
-                                {SORT_OPTIONS.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>
-                                        {opt.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="mb-4">
-                            <label
-                                className="form-label"
-                                htmlFor="filter-order"
-                            >
-                                Direzione
-                            </label>
-                            <select
-                                id="filter-order"
-                                className="form-select products-filters-select"
-                                value={filters.order}
-                                onChange={(e) =>
-                                    setFilter("order", e.target.value)
-                                }
-                            >
-                                <option value="asc">↑ Crescente</option>
-                                <option value="desc">↓ Decrescente</option>
-                            </select>
-                        </div>
-
-                        <button
-                            type="button"
-                            className="btn btn-outline-secondary w-100"
-                            onClick={handleClearFilters}
-                            disabled={!hasActiveFilters}
-                        >
-                            Rimuovi filtri
-                        </button>
+                        {RANGE_FILTERS.map(
+                            ({
+                                label,
+                                minKey,
+                                maxKey,
+                                step,
+                                min,
+                            }) => (
+                                <div key={minKey} className="mb-4">
+                                    <p className="form-label mb-2">{label}</p>
+                                    <div className="d-flex align-items-center gap-2">
+                                        <input
+                                            type="number"
+                                            className="form-control products-filters-input"
+                                            placeholder="Min"
+                                            min={min}
+                                            step={step}
+                                            value={filters[minKey]}
+                                            onChange={(e) =>
+                                                setFilter(
+                                                    minKey,
+                                                    e.target.value,
+                                                )
+                                            }
+                                            aria-label={`${label} minimo`}
+                                        />
+                                        <span className="products-filters-range-separator">
+                                            —
+                                        </span>
+                                        <input
+                                            type="number"
+                                            className="form-control products-filters-input"
+                                            placeholder="Max"
+                                            min={min}
+                                            step={step}
+                                            value={filters[maxKey]}
+                                            onChange={(e) =>
+                                                setFilter(
+                                                    maxKey,
+                                                    e.target.value,
+                                                )
+                                            }
+                                            aria-label={`${label} massimo`}
+                                        />
+                                    </div>
+                                </div>
+                            ),
+                        )}
                     </form>
                 </aside>
 
@@ -365,6 +476,47 @@ export default function ProductsPage() {
                                         ×
                                     </button>
                                 </span>
+                            )}
+                            {RANGE_FILTERS.map(
+                                ({
+                                    minKey,
+                                    maxKey,
+                                    chipLabel,
+                                    unit,
+                                }) => {
+                                    const hasMin = Boolean(
+                                        filters[minKey],
+                                    );
+                                    const hasMax = Boolean(
+                                        filters[maxKey],
+                                    );
+                                    if (!hasMin && !hasMax) return null;
+                                    const lo = filters[minKey] || "—";
+                                    const hi = filters[maxKey] || "—";
+                                    const suffix = unit ? ` ${unit}` : "";
+                                    return (
+                                        <span
+                                            key={minKey}
+                                            className="products-filter-chip"
+                                        >
+                                            {chipLabel}: {lo} – {hi}
+                                            {suffix}
+                                            <button
+                                                type="button"
+                                                className="products-filter-chip-remove"
+                                                onClick={() =>
+                                                    setFilters({
+                                                        [minKey]: "",
+                                                        [maxKey]: "",
+                                                    })
+                                                }
+                                                aria-label={`Rimuovi filtro ${chipLabel.toLowerCase()}`}
+                                            >
+                                                ×
+                                            </button>
+                                        </span>
+                                    );
+                                },
                             )}
                         </div>
                     )}

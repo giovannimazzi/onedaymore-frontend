@@ -13,6 +13,12 @@ function parseParams(searchParams) {
     preparation_type: readParam("preparation_type"),
     min_price: readParam("min_price"),
     max_price: readParam("max_price"),
+    min_calories: readParam("min_calories"),
+    max_calories: readParam("max_calories"),
+    min_weight_grams: readParam("min_weight_grams"),
+    max_weight_grams: readParam("max_weight_grams"),
+    min_servings: readParam("min_servings"),
+    max_servings: readParam("max_servings"),
   };
 }
 
