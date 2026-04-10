@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartContext } from "../contexts/CartContext";
+import { useNotificationContext } from "../contexts/NotificationContext";
+import ConfirmDialog from "../components/ConfirmDialog";
 import ShippingInfo from "../components/ShippingInfo";
 import { Link } from "react-router";
 import axios from "axios";
@@ -18,8 +20,16 @@ function formatMoney(value) {
 }
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCartContext();
+  const { cart, clearCart, refreshCartAvailability } = useCartContext();
+  const { showNotification } = useNotificationContext();
   const navigate = useNavigate();
+
+  const [orderConfirmOpen, setOrderConfirmOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    refreshCartAvailability();
+  }, [refreshCartAvailability]);
 
   // DISCOUNT STATE
   const [discountCode, setDiscountCode] = useState("");
@@ -157,16 +167,30 @@ export default function CheckoutPage() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setOrderConfirmOpen(true);
+  };
 
-    const confirmOrder = window.confirm(
-      "Sei sicuro di voler completare l'ordine?",
-    );
-    if (!confirmOrder) return;
-
+  const executeOrder = async () => {
+    setOrderConfirmOpen(false);
+    setIsSubmitting(true);
     try {
-      const itemsToSend = cart.map((item) => ({
+      const syncResult = await refreshCartAvailability();
+      const orderCart = syncResult?.cart ?? cart;
+      if (orderCart.length === 0) {
+        if (!syncResult?.notified) {
+          showNotification(
+            "Alcuni prodotti non sono più disponibili. Il carrello è stato aggiornato.",
+            "warning",
+            { duration: 5500, pointer: "cart" },
+          );
+        }
+        return;
+      }
+
+      const itemsToSend = orderCart.map((item) => ({
         slug: item.slug,
         quantity: item.quantity,
       }));
@@ -209,17 +233,20 @@ export default function CheckoutPage() {
         payload,
       );
 
-      console.log("SUCCESSO:", response.data);
-      alert("Ordine completato!");
       const orderNumber = response.data.result.order_number;
       clearCart();
       navigate(`/order-success/${orderNumber}`);
     } catch (error) {
-      console.error(error.response?.data || error);
-      alert(
-        "Errore nell'ordine: " +
-          (error.response?.data?.message || "Controlla i dati inseriti"),
-      );
+      const serverMsg = error.response?.data?.message;
+      const detail =
+        typeof serverMsg === "string"
+          ? serverMsg
+          : "Controlla i dati inseriti e riprova.";
+      showNotification(`Errore nell'ordine: ${detail}`, "danger", {
+        duration: 7000,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -241,7 +268,7 @@ export default function CheckoutPage() {
       <div className="row g-4">
         {/* FORM */}
         <div className="col-lg-7">
-          <form onSubmit={handleSubmit} className="card p-4">
+          <form onSubmit={handleFormSubmit} className="card p-4">
             <p className="mb-3">Dati di fatturazione</p>
             <div className="row g-3">
               <div className="col-md-6">
@@ -431,8 +458,12 @@ export default function CheckoutPage() {
                 </div>
               </>
             )}
-            <button type="submit" className="btn btn-success mt-4 w-100">
-              Completa ordine
+            <button
+              type="submit"
+              className="btn btn-success mt-4 w-100"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Invio in corso…" : "Completa ordine"}
             </button>
           </form>
         </div>
@@ -508,6 +539,17 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={orderConfirmOpen}
+        title="Completare l'ordine?"
+        message="Stai per inviare l'ordine con i dati inseriti. Vuoi continuare?"
+        confirmLabel="Conferma ordine"
+        cancelLabel="Annulla"
+        confirmVariant="primary"
+        onConfirm={executeOrder}
+        onCancel={() => setOrderConfirmOpen(false)}
+      />
     </div>
   );
 }

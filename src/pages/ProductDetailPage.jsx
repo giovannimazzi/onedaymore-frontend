@@ -6,6 +6,7 @@ import { useLoaderContext } from "../contexts/LoaderContext";
 import { productsEndpoint } from "../utils/api";
 import { categoryIconHandler } from "../utils/categoryIconHandler";
 import { useCartContext } from "../contexts/CartContext";
+import { useNotificationContext } from "../contexts/NotificationContext";
 import { useAvailability } from "../hooks/useAvailability";
 import { getProductBadges } from "../utils/productBadges";
 import AvailabilityIndicator from "../components/AvailabilityIndicator";
@@ -58,7 +59,7 @@ export default function ProductDetailPage() {
   );
   const { cart, addToCart, increaseQuantity, decreaseQuantity } =
     useCartContext();
-  const [showToast, setShowToast] = useState(false);
+  const { showNotification } = useNotificationContext();
 
   useEffect(() => {
     startLoading();
@@ -100,8 +101,10 @@ export default function ProductDetailPage() {
       category_slug: product.category_slug,
       quantity_available: product.quantity_available,
     });
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2500);
+    showNotification("Prodotto aggiunto al carrello!", "success", {
+      duration: 3200,
+      pointer: "cart",
+    });
   };
 
   const badgesForDetail = getProductBadges(product);
@@ -287,12 +290,6 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {showToast && (
-        <div className="product-detail-toast" role="status" aria-live="polite">
-          <i className="bi bi-cart-check me-2" aria-hidden />
-          Prodotto aggiunto al carrello!
-        </div>
-      )}
     </div>
   );
 }
