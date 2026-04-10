@@ -4,9 +4,11 @@ export default function QtyControls({
   onIncrease,
   onDecrease,
   className = "",
+  trashWhenLast = false,
 }) {
   const isAtMaximumStock =
     quantityAvailable != null && quantity >= quantityAvailable;
+  const showTrash = trashWhenLast && quantity === 1;
 
   return (
     <div
@@ -14,11 +16,15 @@ export default function QtyControls({
     >
       <button
         type="button"
-        className="btn btn-primary product-quantity-button"
+        className={`btn btn-primary product-quantity-button${showTrash ? " product-quantity-button--trash" : ""}`}
         onClick={onDecrease}
-        aria-label="Diminuisci quantità"
+        aria-label={showTrash ? "Rimuovi dal carrello" : "Diminuisci quantità"}
       >
-        −
+        {showTrash ? (
+          <i className="bi bi-trash3" aria-hidden />
+        ) : (
+          "−"
+        )}
       </button>
       <span className="product-quantity-value">{quantity}</span>
       <button

@@ -1,5 +1,8 @@
-import { Link } from "react-router";
+import { useEffect, useState, useCallback } from "react";
+import { Link, useNavigate } from "react-router";
 import { useCartContext } from "../contexts/CartContext";
+import { useNotificationContext } from "../contexts/NotificationContext";
+import ConfirmDialog from "../components/ConfirmDialog";
 import AvailabilityIndicator from "../components/AvailabilityIndicator";
 import ProductImage from "../components/ProductImage";
 import QtyControls from "../components/QtyControls";
@@ -21,8 +24,106 @@ const DEMO_PAYMENT_ICONS = [
 ];
 
 export default function CartPage() {
-  const { cart, removeFromCart, increaseQuantity, decreaseQuantity } =
-    useCartContext();
+  const navigate = useNavigate();
+  const {
+    cart,
+    removeFromCart,
+    restoreCartLine,
+    increaseQuantity,
+    decreaseQuantity,
+    clearCart,
+    refreshCartAvailability,
+  } = useCartContext();
+  const { showNotification } = useNotificationContext();
+
+  const [clearCartOpen, setClearCartOpen] = useState(false);
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [checkoutSyncOpen, setCheckoutSyncOpen] = useState(false);
+  const [checkoutSyncMessage, setCheckoutSyncMessage] = useState("");
+
+  const notifyLineRemoved = useCallback(
+    (snapshot) => {
+      const label =
+        (snapshot.name && String(snapshot.name).trim()) || "Prodotto";
+      showNotification(`${label} rimosso dal carrello`, "muted", {
+        duration: 8000,
+        pointer: "cart",
+        action: {
+          label: "Annulla",
+          onAction: () => restoreCartLine(snapshot),
+        },
+      });
+    },
+    [showNotification, restoreCartLine],
+  );
+
+  const handleDecreaseLine = useCallback(
+    (line) => {
+      if (line.quantity <= 1) {
+        notifyLineRemoved({ ...line });
+      }
+      decreaseQuantity(line.slug);
+    },
+    [decreaseQuantity, notifyLineRemoved],
+  );
+
+  const handleRemoveLine = useCallback(
+    (line) => {
+      notifyLineRemoved({ ...line });
+      removeFromCart(line.slug);
+    },
+    [notifyLineRemoved, removeFromCart],
+  );
+
+  const handleClearCartConfirm = useCallback(() => {
+    clearCart();
+    setClearCartOpen(false);
+  }, [clearCart]);
+
+  const handleClearCartCancel = useCallback(() => {
+    setClearCartOpen(false);
+  }, []);
+
+  const handleCheckoutSyncConfirm = useCallback(() => {
+    setCheckoutSyncOpen(false);
+    navigate("/checkout");
+  }, [navigate]);
+
+  const handleCheckoutSyncCancel = useCallback(() => {
+    setCheckoutSyncOpen(false);
+  }, []);
+
+  useEffect(() => {
+    refreshCartAvailability();
+  }, [refreshCartAvailability]);
+
+  const handleGoCheckout = useCallback(async () => {
+    setCheckoutBusy(true);
+    try {
+      const result = await refreshCartAvailability({ silent: true });
+      if (result === undefined) {
+        showNotification(
+          "Non è stato possibile verificare le disponibilità. Riprova tra un attimo.",
+          "warning",
+          { duration: 5200, pointer: "cart" },
+        );
+        return;
+      }
+      if (result.changed) {
+        const body =
+          result.noticeMessage?.trim() ||
+          "Il carrello è stato aggiornato in base alla disponibilità attuale.";
+        setCheckoutSyncMessage(
+          `${body}\n\nControlla le quantità. Puoi continuare al checkout oppure chiudere e rivedere il carrello.`,
+        );
+        setCheckoutSyncOpen(true);
+        return;
+      }
+      navigate("/checkout");
+    } finally {
+      setCheckoutBusy(false);
+    }
+  }, [navigate, refreshCartAvailability, showNotification]);
 
   const total = cart.reduce(
     (runningTotal, line) => runningTotal + line.price * (line.quantity || 1),
@@ -44,7 +145,38 @@ export default function CartPage() {
 
   return (
     <div className="container cart-page py-4 py-lg-5">
-      <h1>Carrello</h1>
+      <header className="cart-page-header d-flex flex-wrap align-items-center mb-3 mb-lg-4">
+        <h1 className="mb-0">Carrello</h1>
+        <button
+          type="button"
+          className="btn btn-outline-danger btn-sm cart-clear-all-btn flex-shrink-0"
+          onClick={() => setClearCartOpen(true)}
+        >
+          Svuota carrello
+        </button>
+      </header>
+
+      <ConfirmDialog
+        open={clearCartOpen}
+        title="Svuotare il carrello?"
+        message="Tutti gli articoli verranno rimossi. Puoi annullare e tornare indietro."
+        confirmLabel="Svuota carrello"
+        cancelLabel="Annulla"
+        confirmVariant="danger"
+        onConfirm={handleClearCartConfirm}
+        onCancel={handleClearCartCancel}
+      />
+
+      <ConfirmDialog
+        open={checkoutSyncOpen}
+        title="Carrello aggiornato"
+        message={checkoutSyncMessage}
+        confirmLabel="Vai al checkout"
+        cancelLabel="Annulla"
+        confirmVariant="primary"
+        onConfirm={handleCheckoutSyncConfirm}
+        onCancel={handleCheckoutSyncCancel}
+      />
 
       <div className="row g-4">
         <div className="col-lg-8 order-2 order-lg-1">
@@ -80,14 +212,15 @@ export default function CartPage() {
                           quantity={line.quantity}
                           quantityAvailable={line.quantity_available}
                           onIncrease={() => increaseQuantity(line.slug)}
-                          onDecrease={() => decreaseQuantity(line.slug)}
+                          onDecrease={() => handleDecreaseLine(line)}
                           className="cart-line-quantity-controls"
+                          trashWhenLast
                         />
 
                         <button
                           type="button"
                           className="btn btn-link cart-remove-link"
-                          onClick={() => removeFromCart(line.slug)}
+                          onClick={() => handleRemoveLine(line)}
                         >
                           Rimuovi
                         </button>
@@ -122,9 +255,14 @@ export default function CartPage() {
                 <small>Aggiungi altri articoli</small>
               </Link>
 
-              <Link to="/checkout" className="btn btn-primary w-100 mt-2">
-                Vai al Checkout
-              </Link>
+              <button
+                type="button"
+                className="btn btn-primary w-100 mt-2"
+                disabled={checkoutBusy}
+                onClick={handleGoCheckout}
+              >
+                {checkoutBusy ? "Verifica in corso…" : "Vai al Checkout"}
+              </button>
 
               <div className="cart-payment-methods">
                 <p className="cart-payment-methods-title">
