@@ -21,8 +21,8 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 export default function App() {
     return (
         <CompareContextProvider>
-            <CartContextProvider>
-                <NotificationContextProvider>
+            <NotificationContextProvider>
+                <CartContextProvider>
                     <LoaderContextProvider>
                         <BrowserRouter>
                             <Routes>
@@ -67,8 +67,8 @@ export default function App() {
                             </Routes>
                         </BrowserRouter>
                     </LoaderContextProvider>
-                </NotificationContextProvider>
-            </CartContextProvider>
+                </CartContextProvider>
+            </NotificationContextProvider>
         </CompareContextProvider>
     );
 }
