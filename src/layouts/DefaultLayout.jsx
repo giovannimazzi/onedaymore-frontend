@@ -15,6 +15,7 @@ export default function DefaultLayout() {
   const navRef = useRef(null);
   const toastRef = useRef(null);
   const [toastTopPx, setToastTopPx] = useState(TOAST_MIN_TOP_PX);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const compareCount = compareItems.length;
 
@@ -22,6 +23,13 @@ export default function DefaultLayout() {
     (total, line) => total + (line.quantity || 1),
     0,
   );
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   useLayoutEffect(() => {
     if (!notification.visible) return undefined;
@@ -41,9 +49,7 @@ export default function DefaultLayout() {
         return;
       }
 
-      const target = nav.querySelector(
-        `[data-odm-nav-anchor="${pointer}"]`,
-      );
+      const target = nav.querySelector(`[data-odm-nav-anchor="${pointer}"]`);
       if (!target) {
         toast.style.removeProperty("--odm-toast-pointer-x");
         return;
@@ -80,6 +86,22 @@ export default function DefaultLayout() {
     compareCount,
     cartItemCount,
   ]);
+
+  useLayoutEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className="odm-layout">
@@ -175,7 +197,6 @@ export default function DefaultLayout() {
           </NavLink>
         </div>
       </nav>
-
       {notification.visible && (
         <div
           key={notification.seq}
@@ -205,7 +226,6 @@ export default function DefaultLayout() {
           />
         </div>
       )}
-
       <main className="odm-layout-main">
         {isLoading && (
           <div className="overlay-loading">
@@ -264,6 +284,16 @@ export default function DefaultLayout() {
           </div>
         </div>
       </footer>
+      huh
+      {showScrollTop && (
+        <button
+          className="odm-scroll-top-btn"
+          onClick={scrollToTop}
+          aria-label="Torna in alto"
+        >
+          <i className="bi bi-arrow-up"></i>
+        </button>
+      )}
     </div>
   );
 }
