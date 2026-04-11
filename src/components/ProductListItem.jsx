@@ -7,6 +7,7 @@ import { useCartContext } from "../contexts/CartContext";
 import { useAvailability } from "../hooks/useAvailability";
 import { useNotificationContext } from "../contexts/NotificationContext";
 import { useMemo } from "react";
+import CompareToggleButton from "./CompareToggleButton";
 
 function getProductSlugFromLink(productLink) {
   const slugMatch = String(productLink || "").match(/\/products\/([^/?#]+)/);
@@ -132,13 +133,7 @@ export default function ProductListItem({
               Aggiungi al carrello
             </button>
           )}
-
-          <button
-            className="btn btn-outline-secondary btn-sm"
-            onClick={() => handleCompare(product)}
-          >
-            Confronta
-          </button>
+          <CompareToggleButton product={product} className="btn-sm" />
         </div>
       </div>
     </article>
