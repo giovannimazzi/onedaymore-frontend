@@ -220,7 +220,7 @@ export default function DevDemoPage() {
             <li>Andare nel catalogo</li>
             <li>Cercare “acqua”</li>
             <li>Cambiare visualizzazione griglia/lista</li>
-            <li>Applicare filtro quantità minima 5</li>
+            <li>Applicare filtro quantità disponibili</li>
           </ol>
           <p className="mb-3">
             <strong>Responsive:</strong> homepage e catalogo
