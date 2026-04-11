@@ -2,8 +2,16 @@ import { Link } from "react-router";
 import ProductImage from "./ProductImage";
 import ProductBadges from "./ProductBadges";
 import AvailabilityIndicator from "./AvailabilityIndicator";
+import QtyControls from "./QtyControls";
 import { useCartContext } from "../contexts/CartContext";
+import { useAvailability } from "../hooks/useAvailability";
 import { useNotificationContext } from "../contexts/NotificationContext";
+import { useMemo } from "react";
+
+function getProductSlugFromLink(productLink) {
+  const slugMatch = String(productLink || "").match(/\/products\/([^/?#]+)/);
+  return slugMatch ? slugMatch[1] : null;
+}
 
 export default function ProductListItem({
   product,
@@ -13,10 +21,46 @@ export default function ProductListItem({
   statLabel,
   statValue,
 }) {
-  const destination = productLink || "/products";
   const { cart, addToCart, increaseQuantity, decreaseQuantity } =
     useCartContext();
   const { showNotification } = useNotificationContext();
+
+  const destination = productLink || "/products";
+
+  const productSlugForCart = useMemo(
+    () => getProductSlugFromLink(productLink),
+    [productLink],
+  );
+
+  const cartItem = useMemo(
+    () => cart.find((line) => line.slug === productSlugForCart),
+    [cart, productSlugForCart],
+  );
+
+  const availableStock =
+    product.quantity_available ?? cartItem?.quantity_available ?? null;
+
+  const quantityInCart = cartItem?.quantity ?? 0;
+
+  const { isOutOfStock } = useAvailability(availableStock, quantityInCart);
+
+  const canAddToCart =
+    Boolean(productSlugForCart && product?.name) && !isOutOfStock;
+
+  const handleAddToCart = () => {
+    if (!canAddToCart) return;
+
+    addToCart({
+      slug: productSlugForCart,
+      name: product.name,
+      price: Number(productPrice),
+      image_url: product.image_url,
+      category_slug: product.category_slug,
+      quantity_available: availableStock,
+    });
+
+    showNotification("Prodotto aggiunto al carrello!", "success");
+  };
 
   return (
     <article className="product-list-item">
@@ -46,7 +90,7 @@ export default function ProductListItem({
         <div className="product-list-item__meta">
           <AvailabilityIndicator
             slug={product.slug}
-            quantityAvailable={product.quantity_available}
+            quantityAvailable={availableStock}
             showWhenAvailable={true}
           />
 
@@ -69,13 +113,25 @@ export default function ProductListItem({
         >
           Vedi prodotto
         </Link>
+
         <div className="d-flex gap-2 mt-2">
-          <button
-            className="btn btn-primary btn-sm"
-            onClick={() => addToCart(product)}
-          >
-            Aggiungi al carrello
-          </button>
+          {cartItem ? (
+            <QtyControls
+              quantity={cartItem.quantity}
+              quantityAvailable={availableStock}
+              onIncrease={() => increaseQuantity(productSlugForCart)}
+              onDecrease={() => decreaseQuantity(productSlugForCart)}
+            />
+          ) : (
+            <button
+              type="button"
+              className="btn btn-primary w-100 product-add-btn"
+              onClick={handleAddToCart}
+              disabled={!canAddToCart}
+            >
+              Aggiungi al carrello
+            </button>
+          )}
 
           <button
             className="btn btn-outline-secondary btn-sm"
