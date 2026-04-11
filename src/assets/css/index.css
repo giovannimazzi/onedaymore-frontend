@@ -1817,7 +1817,84 @@ main {
 }
 
 .products-page .products-page-grid.row {
-  row-gap: 1.5rem;
+  row-gap: 1rem;
+}
+
+/* Filtri su mobile: disclosure testuale (Filtri + freccia) */
+.products-filters-mobile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+
+@media (max-width: 767.98px) {
+  .products-filters > .products-filters-mobile-row {
+    padding-bottom: 0.65rem;
+    margin-bottom: 0.65rem;
+    border-bottom: 1px solid rgba(31, 43, 56, 0.08);
+  }
+
+  .products-filters-collapsible {
+    padding-top: 0;
+  }
+}
+
+.products-filters-mobile-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.15rem 0;
+  border: none;
+  background: none;
+  color: var(--odm-midnight);
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Stesso titolo del desktop: eredita da .h5 / variabili Bootstrap */
+.products-filters-mobile-trigger .h5 {
+  color: inherit;
+}
+
+.products-filters-mobile-trigger:hover {
+  color: rgba(31, 43, 56, 0.82);
+}
+
+.products-filters-mobile-trigger:focus-visible {
+  outline: 2px solid rgba(31, 43, 56, 0.35);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.products-filters-mobile-trigger__caret {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  opacity: 0.5;
+  margin-top: 0.06rem;
+}
+
+.products-filters-mobile-trigger:hover .products-filters-mobile-trigger__caret {
+  opacity: 0.75;
+}
+
+.products-filters-mobile-trigger__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background-color: rgba(31, 43, 56, 0.1);
+  color: var(--odm-midnight);
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: var(--odm-font-body);
+  line-height: 1;
 }
 
 .products-filters {
@@ -1828,7 +1905,7 @@ main {
   border: 1px solid rgba(31, 43, 56, 0.1);
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .products-filters {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

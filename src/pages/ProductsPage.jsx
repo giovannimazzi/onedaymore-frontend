@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { useLoaderContext } from "../contexts/LoaderContext";
 import { useProductFilters } from "../hooks/useProductFilters";
@@ -126,6 +126,31 @@ export default function ProductsPage() {
     const searchInputRef = useRef(null);
 
     const [viewMode, setViewMode] = useState("grid");
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+    const activeFilterCount = useMemo(() => {
+        let n = 0;
+        if (filters.search?.trim()) n++;
+        if (filters.category) n++;
+        if (filters.preparation_type) n++;
+        if (filters.min_quantity_available === "1") n++;
+        if (filters.min_price || filters.max_price) n++;
+        if (filters.sort !== "created_at" || filters.order !== "desc") n++;
+        for (const { minKey, maxKey } of RANGE_FILTERS) {
+            if (filters[minKey] || filters[maxKey]) n++;
+        }
+        return n;
+    }, [filters]);
+
+    useEffect(() => {
+        const mq = window.matchMedia("(min-width: 768px)");
+        const sync = () => {
+            if (mq.matches) setMobileFiltersOpen(false);
+        };
+        sync();
+        mq.addEventListener("change", sync);
+        return () => mq.removeEventListener("change", sync);
+    }, []);
 
     useEffect(() => {
         setSearchInput(filters.search ?? "");
@@ -169,13 +194,13 @@ export default function ProductsPage() {
         filters.order !== "desc";
 
     return (
-        <div className="container-fluid my-4 products-page ps-0 pe-3 pe-md-4 pe-xxl-5">
+        <div className="container-fluid my-4 products-page px-2 px-md-3 px-xxl-4">
             <div className="row mb-4">
-                <div className="col-12 px-3 px-md-4 px-xxl-5">
-                    <div className="products-page-header d-flex flex-column flex-xl-row justify-content-between align-items-xl-end gap-3">
+                <div className="col-12">
+                    <div className="products-page-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end gap-3">
                         <h1 className="mb-0">I nostri prodotti</h1>
 
-                        <div className="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
+                        <div className="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center ms-md-auto flex-md-shrink-0">
                             <div
                                 className="btn-group"
                                 role="group"
@@ -226,12 +251,51 @@ export default function ProductsPage() {
             </div>
 
             <div className="row gx-0 gy-0 align-items-start products-page-main">
-                <aside className="col-12 col-lg-3 products-page-filters-col px-3 px-lg-0 pe-lg-0 mb-4 mb-lg-0">
+                <aside className="col-12 col-md-4 col-xl-3 products-page-filters-col px-md-0 pe-md-0 mb-4 mb-md-0">
                     <form
-                        className="products-filters p-3 p-md-4"
+                        id="products-filters-form"
+                        className="products-filters p-3 p-md-3"
                         onSubmit={(e) => e.preventDefault()}
                     >
-                        <div className="products-filters-header d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                        <div className="products-filters-mobile-row d-md-none">
+                            <button
+                                type="button"
+                                id="products-filters-mobile-trigger"
+                                className="products-filters-mobile-trigger"
+                                aria-expanded={mobileFiltersOpen}
+                                aria-controls="products-filters-collapsible"
+                                aria-label="Mostra o nascondi altri filtri (preparazione, ordine, prezzo, valori nutrizionali)"
+                                onClick={() =>
+                                    setMobileFiltersOpen((open) => !open)
+                                }
+                            >
+                                <span className="products-filters-mobile-trigger__text h5 mb-0">
+                                    Filtri
+                                </span>
+                                {activeFilterCount > 0 ? (
+                                    <span
+                                        className="products-filters-mobile-trigger__count"
+                                        aria-label={`${activeFilterCount} filtri attivi`}
+                                    >
+                                        {activeFilterCount}
+                                    </span>
+                                ) : null}
+                                <i
+                                    className={`products-filters-mobile-trigger__caret bi${mobileFiltersOpen ? " bi-chevron-up" : " bi-chevron-down"}`}
+                                    aria-hidden
+                                />
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-outline-secondary btn-sm flex-shrink-0"
+                                onClick={handleClearFilters}
+                                disabled={!hasActiveFilters}
+                            >
+                                Rimuovi filtri
+                            </button>
+                        </div>
+
+                        <div className="products-filters-header d-none d-md-flex flex-wrap align-items-center gap-2 mb-3 justify-content-between">
                             <h2 className="h5 mb-0">Filtri</h2>
                             <button
                                 type="button"
@@ -273,6 +337,14 @@ export default function ProductsPage() {
                             </ul>
                         </div>
 
+                        <div
+                            id="products-filters-collapsible"
+                            className={
+                                mobileFiltersOpen
+                                    ? "products-filters-collapsible"
+                                    : "products-filters-collapsible d-none d-md-block"
+                            }
+                        >
                         <div className="mb-4">
                             <p className="form-label mb-2">Preparazione</p>
                             <ul className="products-filter-list" role="list">
@@ -463,10 +535,11 @@ export default function ProductsPage() {
                                 </div>
                             ),
                         )}
+                        </div>
                     </form>
                 </aside>
 
-                <section className="col-12 col-lg-9 products-page-section ps-lg-4">
+                <section className="col-12 col-md-8 col-xl-9 products-page-section ps-md-3 ps-xl-4">
                     {hasActiveFilters && (
                         <div className="products-active-filters mb-3">
                             {filters.search && (
@@ -602,7 +675,7 @@ export default function ProductsPage() {
                     <div
                         className={
                             viewMode === "grid"
-                                ? "row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 gx-4 gy-0 products-page-grid my-0"
+                                ? "row row-cols-2 row-cols-lg-3 row-cols-xl-4 gx-2 gx-md-3 gy-0 products-page-grid my-0"
                                 : "products-page-list d-flex flex-column gap-3 my-0"
                         }
                     >
