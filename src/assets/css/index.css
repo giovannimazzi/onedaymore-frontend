@@ -491,9 +491,7 @@ main {
 .odm-nav-count-badge--compare {
   position: absolute;
   top: var(--odm-nav-count-badge-inset);
-  left: calc(
-    var(--bs-navbar-nav-link-padding-x, 0.5rem) + 1.5rem
-  );
+  left: calc(var(--bs-navbar-nav-link-padding-x, 0.5rem) + 1.5rem);
   z-index: 2;
   margin: 0;
   transform: translateX(-48%);
@@ -2281,4 +2279,33 @@ main {
     display: inline-block;
     margin-top: 10px;
   }
+}
+
+.odm-scroll-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+
+  border: none;
+  background-color: #212529;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.odm-scroll-top-btn:hover {
+  transform: translateY(-3px);
+  background-color: #000;
 }
