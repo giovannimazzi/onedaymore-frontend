@@ -197,7 +197,6 @@ export default function DefaultLayout() {
           </NavLink>
         </div>
       </nav>
-
       {notification.visible && (
         <div
           key={notification.seq}
@@ -227,7 +226,6 @@ export default function DefaultLayout() {
           />
         </div>
       )}
-
       <main className="odm-layout-main">
         {isLoading && (
           <div className="overlay-loading">
@@ -286,10 +284,10 @@ export default function DefaultLayout() {
           </div>
         </div>
       </footer>
-
+      huh
       {showScrollTop && (
         <button
-          className="odm-scroll-top-btn d-lg-none"
+          className="odm-scroll-top-btn"
           onClick={scrollToTop}
           aria-label="Torna in alto"
         >
