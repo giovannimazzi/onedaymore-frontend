@@ -385,10 +385,28 @@ export default function CheckoutPage() {
         payload,
       );
 
-      const orderNumber = response.data.result.order_number;
+      const { order_number, status } = response.data.result;
 
-      clearCart();
-      navigate(`/order-success/${orderNumber}`);
+      // PAGAMENTO OK
+      if (status === "confirmed") {
+        clearCart();
+
+        navigate(`/order-success/${order_number}`);
+        return;
+      }
+
+      //  PAGAMENTO FALLITO
+      if (status === "payment_failed") {
+        showNotification(
+          "Pagamento fallito. Riprova o usa un altro metodo di pagamento.",
+          "danger",
+        );
+
+        // opzionale: puoi mandarlo a una pagina dedicata
+        // navigate(`/order-failed/${order_number}`);
+
+        return;
+      }
     } catch (error) {
       showNotification("Errore nell'ordine", "danger");
     } finally {
