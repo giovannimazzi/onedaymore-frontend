@@ -284,7 +284,6 @@ export default function DefaultLayout() {
           </div>
         </div>
       </footer>
-      huh
       {showScrollTop && (
         <button
           className="odm-scroll-top-btn"
