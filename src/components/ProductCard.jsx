@@ -123,7 +123,7 @@ export default function ProductCard({
             className="mb-3"
           />
 
-          <div className="product-card-cart mt-auto w-100">
+          <div className="product-card-cart product-cart-controls mt-auto w-100">
             {cartItem ? (
               <QtyControls
                 quantity={cartItem.quantity}

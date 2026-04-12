@@ -3,9 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { useCartContext } from "../contexts/CartContext";
 import { useNotificationContext } from "../contexts/NotificationContext";
 import ConfirmDialog from "../components/ConfirmDialog";
-import AvailabilityIndicator from "../components/AvailabilityIndicator";
-import ProductImage from "../components/ProductImage";
-import QtyControls from "../components/QtyControls";
+import ProductRow from "../components/ProductRow";
 import ShippingInfo from "../components/ShippingInfo";
 
 function formatMoney(value) {
@@ -25,55 +23,13 @@ const DEMO_PAYMENT_ICONS = [
 
 export default function CartPage() {
   const navigate = useNavigate();
-  const {
-    cart,
-    removeFromCart,
-    restoreCartLine,
-    increaseQuantity,
-    decreaseQuantity,
-    clearCart,
-    refreshCartAvailability,
-  } = useCartContext();
+  const { cart, clearCart, refreshCartAvailability } = useCartContext();
   const { showNotification } = useNotificationContext();
 
   const [clearCartOpen, setClearCartOpen] = useState(false);
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [checkoutSyncOpen, setCheckoutSyncOpen] = useState(false);
   const [checkoutSyncMessage, setCheckoutSyncMessage] = useState("");
-
-  const notifyLineRemoved = useCallback(
-    (snapshot) => {
-      const label =
-        (snapshot.name && String(snapshot.name).trim()) || "Prodotto";
-      showNotification(`${label} rimosso dal carrello`, "muted", {
-        duration: 8000,
-        pointer: "cart",
-        action: {
-          label: "Annulla",
-          onAction: () => restoreCartLine(snapshot),
-        },
-      });
-    },
-    [showNotification, restoreCartLine],
-  );
-
-  const handleDecreaseLine = useCallback(
-    (line) => {
-      if (line.quantity <= 1) {
-        notifyLineRemoved({ ...line });
-      }
-      decreaseQuantity(line.slug);
-    },
-    [decreaseQuantity, notifyLineRemoved],
-  );
-
-  const handleRemoveLine = useCallback(
-    (line) => {
-      notifyLineRemoved({ ...line });
-      removeFromCart(line.slug);
-    },
-    [notifyLineRemoved, removeFromCart],
-  );
 
   const handleClearCartConfirm = useCallback(() => {
     clearCart();
@@ -130,6 +86,8 @@ export default function CartPage() {
     0,
   );
 
+  const articleCount = cart.reduce((n, line) => n + line.quantity, 0);
+
   if (cart.length === 0) {
     return (
       <div className="container py-5">
@@ -145,16 +103,35 @@ export default function CartPage() {
 
   return (
     <div className="container cart-page py-4 py-lg-5">
-      <header className="cart-page-header d-flex flex-wrap align-items-center mb-3 mb-lg-4">
-        <h1 className="mb-0">Carrello</h1>
-        <button
-          type="button"
-          className="btn btn-outline-danger btn-sm cart-clear-all-btn flex-shrink-0"
-          onClick={() => setClearCartOpen(true)}
-        >
-          Svuota carrello
-        </button>
-      </header>
+      <div className="row g-4 cart-page-header-row mb-3 mb-lg-4">
+        <div className="col-12 col-lg-8">
+          <header className="cart-page-header">
+            <div className="cart-page-header-inner">
+              <div className="cart-page-header-row d-flex flex-wrap align-items-center justify-content-between column-gap-3 row-gap-2">
+                <h1 className="cart-page-header-title mb-0">Carrello</h1>
+                <div className="cart-page-header-actions">
+                  <p className="cart-page-header-meta mb-0" role="status">
+                    {articleCount === 1
+                      ? "1 articolo"
+                      : `${articleCount} articoli`}
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm cart-clear-all-btn flex-shrink-0"
+                    onClick={() => setClearCartOpen(true)}
+                  >
+                    Svuota carrello
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+        <div
+          className="col-lg-4 d-none d-lg-block cart-page-header-grid-spacer"
+          aria-hidden="true"
+        />
+      </div>
 
       <ConfirmDialog
         open={clearCartOpen}
@@ -181,61 +158,7 @@ export default function CartPage() {
       <div className="row g-4">
         <div className="col-lg-8 order-2 order-lg-1">
           {cart.map((line) => (
-            <div key={line.slug} className="cart-line-card mb-3">
-              <div className="cart-line-inner">
-                <div className="cart-line-media">
-                  <div className="cart-line-thumb">
-                    <ProductImage
-                      src={line.image_url}
-                      categorySlug={line.category_slug}
-                      alt={line.name}
-                      className="cart-line-image"
-                    />
-                  </div>
-                </div>
-                <div className="cart-line-main">
-                  <div className="row align-items-center g-3 cart-line-body-row">
-                    <div className="col-12 col-lg-7">
-                      <div className="cart-line-name">
-                        <Link to={`/products/${line.slug}`}>{line.name}</Link>
-                      </div>
-
-                      <AvailabilityIndicator
-                        slug={line.slug}
-                        quantityAvailable={line.quantity_available}
-                        showWhenAvailable={true}
-                        className="cart-line-availability mb-2 mt-0"
-                      />
-
-                      <div className="cart-line-actions">
-                        <QtyControls
-                          quantity={line.quantity}
-                          quantityAvailable={line.quantity_available}
-                          onIncrease={() => increaseQuantity(line.slug)}
-                          onDecrease={() => handleDecreaseLine(line)}
-                          className="cart-line-quantity-controls"
-                          trashWhenLast
-                        />
-
-                        <button
-                          type="button"
-                          className="btn btn-link cart-remove-link"
-                          onClick={() => handleRemoveLine(line)}
-                        >
-                          Rimuovi
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-lg-5 cart-line-col-price">
-                      <p className="cart-line-price mb-0">
-                        €{formatMoney(line.price * line.quantity)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ProductRow key={line.slug} className="mb-3" line={line} />
           ))}
         </div>
 
@@ -245,8 +168,10 @@ export default function CartPage() {
               <h2>Riepilogo</h2>
               <p className="cart-summary-total mb-0">€{formatMoney(total)}</p>
               <p className="small mb-4 text-dim">
-                {cart.reduce((count, line) => count + line.quantity, 0)}{" "}
-                articoli nel carrello
+                {articleCount}{" "}
+                {articleCount === 1
+                  ? "articolo nel carrello"
+                  : "articoli nel carrello"}
               </p>
 
               <ShippingInfo cartTotal={total} className="mb-4" />

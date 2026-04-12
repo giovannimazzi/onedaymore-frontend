@@ -112,23 +112,42 @@ export default function DefaultLayout() {
         <div className="container-fluid odm-navbar-inner d-flex flex-wrap align-items-stretch px-0">
           <Link
             to="/"
-            className="navbar-brand align-self-center ps-3 ps-lg-4 flex-shrink-0"
+            className="navbar-brand align-self-center ps-3 ps-lg-4 flex-shrink-0 order-1"
           >
             OneDay<span className="odm-brand-gold">More</span>
           </Link>
-          <button
-            className="navbar-toggler align-self-center ms-auto me-2 d-lg-none flex-shrink-0"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+          <div className="odm-navbar-trailing-tools d-flex align-items-center ms-auto ms-lg-0 flex-shrink-0 gap-2 pe-2 order-2 order-lg-3">
+            <NavLink
+              to="/cart"
+              data-odm-nav-anchor="cart"
+              className={({ isActive }) =>
+                `nav-link navbar-cart-link navbar-cart-link--edge${isActive ? " active" : ""}`
+              }
+              aria-label={`Carrello${cartItemCount > 0 ? `, ${cartItemCount} articoli` : ""}`}
+            >
+              <span className="navbar-cart-icon-wrap">
+                <i className="bi bi-cart3 navbar-cart-icon" aria-hidden />
+              </span>
+              {cartItemCount > 0 && (
+                <span className="odm-nav-count-badge odm-nav-count-badge--cart">
+                  {cartItemCount > 99 ? "99+" : cartItemCount}
+                </span>
+              )}
+            </NavLink>
+            <button
+              className="navbar-toggler d-lg-none flex-shrink-0"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+          </div>
           <div
-            className="collapse navbar-collapse odm-navbar-collapse flex-lg-grow-1"
+            className="collapse navbar-collapse odm-navbar-collapse flex-lg-grow-1 order-3 order-lg-2"
             id="navbarNav"
           >
             <ul className="navbar-nav ms-lg-auto align-items-lg-center pe-lg-2">
@@ -178,23 +197,6 @@ export default function DefaultLayout() {
               </li>
             </ul>
           </div>
-          <NavLink
-            to="/cart"
-            data-odm-nav-anchor="cart"
-            className={({ isActive }) =>
-              `nav-link navbar-cart-link navbar-cart-link--edge${isActive ? " active" : ""}`
-            }
-            aria-label={`Carrello${cartItemCount > 0 ? `, ${cartItemCount} articoli` : ""}`}
-          >
-            <span className="navbar-cart-icon-wrap">
-              <i className="bi bi-cart3 navbar-cart-icon" aria-hidden />
-            </span>
-            {cartItemCount > 0 && (
-              <span className="odm-nav-count-badge odm-nav-count-badge--cart">
-                {cartItemCount > 99 ? "99+" : cartItemCount}
-              </span>
-            )}
-          </NavLink>
         </div>
       </nav>
       {notification.visible && (

@@ -4,7 +4,7 @@ import { useLoaderContext } from "../contexts/LoaderContext";
 import { useProductFilters } from "../hooks/useProductFilters";
 import { useCategories } from "../hooks/useCategories";
 import { getProductBadges } from "../utils/productBadges";
-import ProductListItem from "../components/ProductListItem";
+import ProductRow from "../components/ProductRow";
 
 const SORT_OPTIONS = [
     { value: "created_at", label: "Più recenti" },
@@ -110,7 +110,6 @@ function getCardStat(product, sort) {
 }
 
 export default function ProductsPage() {
-    const [showFilters, setShowFilters] = useState(false);
     const { startLoading, endLoading } = useLoaderContext();
     const {
         products,
@@ -198,10 +197,10 @@ export default function ProductsPage() {
         <div className="container-fluid my-4 products-page px-2 px-md-3 px-xxl-4">
             <div className="row mb-4">
                 <div className="col-12">
-                    <div className="products-page-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end gap-3">
+                    <div className="products-page-header d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-end gap-3">
                         <h1 className="mb-0">I nostri prodotti</h1>
 
-                        <div className="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center ms-md-auto flex-md-shrink-0">
+                        <div className="products-page-header-tools d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center ms-md-auto flex-md-shrink-0">
                             <div
                                 className="btn-group"
                                 role="group"
@@ -259,20 +258,8 @@ export default function ProductsPage() {
                         onSubmit={(e) => e.preventDefault()}
                     >
                         <div className="products-filters-mobile-row d-md-none">
-                            <button
-                                type="button"
-                                id="products-filters-mobile-trigger"
-                                className="products-filters-mobile-trigger"
-                                aria-expanded={mobileFiltersOpen}
-                                aria-controls="products-filters-collapsible"
-                                aria-label="Mostra o nascondi altri filtri (preparazione, ordine, prezzo, valori nutrizionali)"
-                                onClick={() =>
-                                    setMobileFiltersOpen((open) => !open)
-                                }
-                            >
-                                <span className="products-filters-mobile-trigger__text h5 mb-0">
-                                    Filtri
-                                </span>
+                            <div className="products-filters-mobile-heading d-flex align-items-center gap-2 flex-wrap">
+                                <h2 className="h5 mb-0">Filtri</h2>
                                 {activeFilterCount > 0 ? (
                                     <span
                                         className="products-filters-mobile-trigger__count"
@@ -281,11 +268,7 @@ export default function ProductsPage() {
                                         {activeFilterCount}
                                     </span>
                                 ) : null}
-                                <i
-                                    className={`products-filters-mobile-trigger__caret bi${mobileFiltersOpen ? " bi-chevron-up" : " bi-chevron-down"}`}
-                                    aria-hidden
-                                />
-                            </button>
+                            </div>
                             <button
                                 type="button"
                                 className="btn btn-outline-secondary btn-sm flex-shrink-0"
@@ -336,6 +319,34 @@ export default function ProductsPage() {
                                     </li>
                                 ))}
                             </ul>
+                        </div>
+
+                        <div className="products-filters-more-wrap d-md-none">
+                            <button
+                                type="button"
+                                id="products-filters-more-trigger"
+                                className="products-filters-more-trigger"
+                                aria-expanded={mobileFiltersOpen}
+                                aria-controls="products-filters-collapsible"
+                                aria-label={
+                                    mobileFiltersOpen
+                                        ? "Nascondi preparazione, disponibilità, ordinamento e filtri per intervallo"
+                                        : "Mostra altri filtri: preparazione, disponibilità, ordinamento e intervalli"
+                                }
+                                onClick={() =>
+                                    setMobileFiltersOpen((open) => !open)
+                                }
+                            >
+                                <span className="products-filters-more-trigger__label">
+                                    {mobileFiltersOpen
+                                        ? "Nascondi altri filtri"
+                                        : "Altri filtri"}
+                                </span>
+                                <i
+                                    className={`products-filters-more-trigger__caret bi${mobileFiltersOpen ? " bi-chevron-up" : " bi-chevron-down"}`}
+                                    aria-hidden
+                                />
+                            </button>
                         </div>
 
                         <div
@@ -676,7 +687,7 @@ export default function ProductsPage() {
                     <div
                         className={
                             viewMode === "grid"
-                                ? "row row-cols-2 row-cols-lg-3 row-cols-xl-4 gx-2 gx-md-3 gy-0 products-page-grid my-0"
+                                ? "row row-cols-2 row-cols-lg-3 row-cols-xl-4 gx-3 gy-0 products-page-grid my-0"
                                 : "products-page-list d-flex flex-column gap-3 my-0"
                         }
                     >
@@ -733,7 +744,7 @@ export default function ProductsPage() {
                                     statValue={cardStatFromSort?.value}
                                 />
                             ) : (
-                                <ProductListItem
+                                <ProductRow
                                     key={product.slug}
                                     product={product}
                                     badges={productBadges}
