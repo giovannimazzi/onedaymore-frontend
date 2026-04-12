@@ -73,6 +73,33 @@ const RANGE_FILTERS = [
     },
 ];
 
+function ProductsViewModeToggle({ viewMode, setViewMode, className = "" }) {
+    return (
+        <div
+            className={`btn-group ${className}`.trim()}
+            role="group"
+            aria-label="Visualizzazione prodotti"
+        >
+            <button
+                type="button"
+                className={`btn btn-outline-dark ${viewMode === "grid" ? "active" : ""}`}
+                onClick={() => setViewMode("grid")}
+                title="Visualizzazione a griglia"
+            >
+                <i className="bi bi-grid-3x3-gap-fill"></i>
+            </button>
+            <button
+                type="button"
+                className={`btn btn-outline-dark ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+                title="Visualizzazione a lista"
+            >
+                <i className="bi bi-list-ul"></i>
+            </button>
+        </div>
+    );
+}
+
 function getCardStat(product, sort) {
     switch (sort) {
         case "calories":
@@ -201,28 +228,11 @@ export default function ProductsPage() {
                         <h1 className="mb-0">I nostri prodotti</h1>
 
                         <div className="products-page-header-tools d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center ms-md-auto flex-md-shrink-0">
-                            <div
-                                className="btn-group"
-                                role="group"
-                                aria-label="Visualizzazione prodotti"
-                            >
-                                <button
-                                    type="button"
-                                    className={`btn btn-outline-dark ${viewMode === "grid" ? "active" : ""}`}
-                                    onClick={() => setViewMode("grid")}
-                                    title="Visualizzazione a griglia"
-                                >
-                                    <i className="bi bi-grid-3x3-gap-fill"></i>
-                                </button>
-                                <button
-                                    type="button"
-                                    className={`btn btn-outline-dark ${viewMode === "list" ? "active" : ""}`}
-                                    onClick={() => setViewMode("list")}
-                                    title="Visualizzazione a lista"
-                                >
-                                    <i className="bi bi-list-ul"></i>
-                                </button>
-                            </div>
+                            <ProductsViewModeToggle
+                                viewMode={viewMode}
+                                setViewMode={setViewMode}
+                                className="products-page-view-toggle d-none d-md-inline-flex flex-shrink-0"
+                            />
 
                             <form
                                 className="products-search d-flex flex-column flex-sm-row gap-2"
@@ -561,6 +571,13 @@ export default function ProductsPage() {
                 </aside>
 
                 <section className="col-12 col-md-8 col-xl-9 products-page-section ps-md-3 ps-xl-4">
+                    <div className="products-view-mode-mobile d-md-none">
+                        <ProductsViewModeToggle
+                            viewMode={viewMode}
+                            setViewMode={setViewMode}
+                            className="products-view-mode-mobile__group w-100"
+                        />
+                    </div>
                     {hasActiveFilters && (
                         <div className="products-active-filters mb-3">
                             {filters.search && (

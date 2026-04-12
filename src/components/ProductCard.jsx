@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { getCategoryFallbackImage } from "../utils/productImage";
+import { getProductSlugFromLink, formatProductListPrice } from "../utils/productDisplay";
 import { useCartContext } from "../contexts/CartContext";
 import { useNotificationContext } from "../contexts/NotificationContext";
 import { useAvailability } from "../hooks/useAvailability";
@@ -9,11 +10,6 @@ import QtyControls from "./QtyControls";
 import ProductBadges from "./ProductBadges";
 import ProductImage from "./ProductImage";
 import CompareToggleButton from "./CompareToggleButton";
-
-function getProductSlugFromLink(productLink) {
-  const slugMatch = String(productLink || "").match(/\/products\/([^/?#]+)/);
-  return slugMatch ? slugMatch[1] : null;
-}
 
 export default function ProductCard({
   productName,
@@ -101,18 +97,20 @@ export default function ProductCard({
 
         <div className="card-body d-flex flex-column p-3">
           {productName && (
-            <Link to={destination} className="card-name-link">
-              <h5 className="card-title">{productName}</h5>
+            <Link to={destination} className="product-title-link">
+              <h5 className="product-title">{productName}</h5>
             </Link>
           )}
           {productPrice != null && productPrice !== "" && (
-            <p className="card-price">€{productPrice.toFixed(2)}</p>
+            <p className="product-price-value">
+              €{formatProductListPrice(productPrice)}
+            </p>
           )}
           {statLabel != null && statValue != null && (
-            <p className="card-stat">
-              <span className="card-stat-label">{statLabel}</span>
-              <span className="card-stat-separator">·</span>
-              <span className="card-stat-value">{statValue}</span>
+            <p className="product-stat">
+              <span className="product-stat-label">{statLabel}</span>
+              <span className="product-stat-separator">·</span>
+              <span className="product-stat-value">{statValue}</span>
             </p>
           )}
 

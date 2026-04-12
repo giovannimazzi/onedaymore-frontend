@@ -158,7 +158,7 @@ export default function CartPage() {
       <div className="row g-4">
         <div className="col-lg-8 order-2 order-lg-1">
           {cart.map((line) => (
-            <ProductRow key={line.slug} className="mb-3" line={line} />
+            <ProductRow key={line.slug} className="mb-3" cartLine={line} />
           ))}
         </div>
 

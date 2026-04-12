@@ -1,36 +1,17 @@
-import { useMemo, useState, useCallback } from "react";
 import { Link } from "react-router";
-import { getCategoryFallbackImage } from "../utils/productImage";
 import ProductImage from "./ProductImage";
 import ProductBadges from "./ProductBadges";
 import AvailabilityIndicator from "./AvailabilityIndicator";
 import QtyControls from "./QtyControls";
 import CompareToggleButton from "./CompareToggleButton";
-import { useCartContext } from "../contexts/CartContext";
-import { useAvailability } from "../hooks/useAvailability";
-import { useNotificationContext } from "../contexts/NotificationContext";
+import { useProductRowCart } from "../hooks/useProductRowCart";
 
-function formatMoney(value) {
-  const numericValue = Number(value);
-  if (Number.isNaN(numericValue)) return "—";
-  return numericValue.toFixed(2);
-}
-
-function formatListPrice(productPrice) {
-  const n = Number(productPrice);
-  return Number.isFinite(n) ? n.toFixed(2) : String(productPrice ?? "");
-}
-
-function getProductSlugFromLink(productLink) {
-  const slugMatch = String(productLink || "").match(/\/products\/([^/?#]+)/);
-  return slugMatch ? slugMatch[1] : null;
-}
-
-function ProductRowShell({
+function ProductRowLayout({
   className = "",
   image,
   mediaOverlay = null,
-  title,
+  titleTo,
+  titleText,
   meta = null,
   availabilityIndicator,
   actions,
@@ -38,31 +19,35 @@ function ProductRowShell({
 }) {
   const priceNode =
     typeof price === "string" ? (
-      <p className="cart-line-price mb-0">{price}</p>
+      <p className="product-row-price product-price-value mb-0">{price}</p>
     ) : (
       price
     );
 
   return (
-    <div className={`cart-line-card ${className}`.trim()}>
-      <div className="cart-line-inner">
-        <div className="cart-line-media">
-          <div className="cart-line-thumb">
+    <div className={`product-row ${className}`.trim()}>
+      <div className="product-row-inner">
+        <div className="product-row-media">
+          <div className="product-row-thumb">
             {image}
             {mediaOverlay}
           </div>
         </div>
-        <div className="cart-line-main">
-          <div className="cart-line-body">
-            <div className="cart-line-body-copy">
-              <div className="cart-line-name">{title}</div>
+        <div className="product-row-main">
+          <div className="product-row-body">
+            <div className="product-row-body-copy">
+              {titleText ? (
+                <Link to={titleTo} className="product-title-link">
+                  <h5 className="product-title">{titleText}</h5>
+                </Link>
+              ) : null}
               {meta}
               {availabilityIndicator}
-              <div className="cart-line-actions product-cart-controls">
+              <div className="product-row-actions product-cart-controls">
                 {actions}
               </div>
             </div>
-            <div className="cart-line-col-price">{priceNode}</div>
+            <div className="product-row-col-price">{priceNode}</div>
           </div>
         </div>
       </div>
@@ -72,7 +57,7 @@ function ProductRowShell({
 
 export default function ProductRow({
   className = "",
-  line,
+  cartLine,
   product,
   badges = [],
   productPrice,
@@ -80,131 +65,29 @@ export default function ProductRow({
   statLabel,
   statValue,
 }) {
-  const isCart = line != null;
-
   const {
-    cart,
-    addToCart,
-    removeFromCart,
-    restoreCartLine,
-    increaseQuantity,
-    decreaseQuantity,
-  } = useCartContext();
-  const { showNotification } = useNotificationContext();
-
-  const slug = isCart
-    ? line.slug
-    : product?.slug ?? getProductSlugFromLink(productLink);
-  const name = isCart ? line.name : product?.name;
-  const destination = isCart
-    ? `/products/${line.slug}`
-    : productLink || "/products";
-  const categorySlug = isCart ? line.category_slug : product?.category_slug;
-  const rawImageUrl = isCart ? line.image_url : product?.image_url;
-
-  const cartItem = useMemo(
-    () => (slug ? cart.find((l) => l.slug === slug) : undefined),
-    [cart, slug],
-  );
-
-  const availableStock = isCart
-    ? line.quantity_available
-    : product?.quantity_available ?? cartItem?.quantity_available ?? null;
-
-  const quantityInCart = isCart ? line.quantity : (cartItem?.quantity ?? 0);
-
-  const { isOutOfStock } = useAvailability(availableStock, quantityInCart);
-
-  const fallbackImage = getCategoryFallbackImage(categorySlug);
-  const [imageSrc, setImageSrc] = useState(
-    () => rawImageUrl || fallbackImage,
-  );
-
-  const notifyLineRemovedWithUndo = useCallback(
-    (snapshot) => {
-      const label =
-        (snapshot.name && String(snapshot.name).trim()) || "Prodotto";
-      showNotification(`${label} rimosso dal carrello`, "muted", {
-        duration: 8000,
-        pointer: "cart",
-        action: {
-          label: "Annulla",
-          onAction: () => restoreCartLine(snapshot),
-        },
-      });
-    },
-    [showNotification, restoreCartLine],
-  );
-
-  const handleDecrease = useCallback(() => {
-    if (isCart) {
-      if (line.quantity <= 1) {
-        notifyLineRemovedWithUndo({ ...line });
-      }
-      decreaseQuantity(line.slug);
-      return;
-    }
-    if (!slug || !cartItem) return;
-    if (cartItem.quantity <= 1) {
-      const label = (name && String(name).trim()) || "Prodotto";
-      showNotification(`${label} rimosso dal carrello`, "muted", {
-        duration: 3200,
-        pointer: "cart",
-      });
-    }
-    decreaseQuantity(slug);
-  }, [
-    isCart,
-    line,
-    slug,
-    cartItem,
-    name,
-    decreaseQuantity,
-    notifyLineRemovedWithUndo,
-    showNotification,
-  ]);
-
-  const handleRemove = useCallback(() => {
-    if (!isCart) return;
-    notifyLineRemovedWithUndo({ ...line });
-    removeFromCart(line.slug);
-  }, [isCart, line, notifyLineRemovedWithUndo, removeFromCart]);
-
-  const handleAddToCart = useCallback(() => {
-    if (isCart) return;
-    const canAdd = Boolean(slug && name) && !isOutOfStock;
-    if (!canAdd) return;
-    addToCart({
-      slug,
-      name,
-      price: Number(productPrice),
-      image_url: rawImageUrl || imageSrc,
-      category_slug: categorySlug,
-      quantity_available: availableStock,
-    });
-    showNotification("Prodotto aggiunto al carrello!", "success", {
-      duration: 3200,
-      pointer: "cart",
-    });
-  }, [
     isCart,
     slug,
     name,
-    isOutOfStock,
-    addToCart,
-    productPrice,
-    rawImageUrl,
-    imageSrc,
+    destination,
     categorySlug,
+    rawImageUrl,
+    setImageSrc,
+    availabilitySlug,
+    cartItem,
     availableStock,
-    showNotification,
-  ]);
-
-  const priceLabel = isCart
-    ? `€${formatMoney(line.price * line.quantity)}`
-    : productPrice != null && productPrice !== ""
-      ? `€${formatListPrice(productPrice)}`
-      : "—";
+    isOutOfStock,
+    handleDecrease,
+    handleRemove,
+    handleAddToCart,
+    increaseQuantity,
+    priceLabel,
+  } = useProductRowCart({
+    cartLine,
+    product,
+    productPrice,
+    productLink,
+  });
 
   const description =
     !isCart && product
@@ -216,14 +99,14 @@ export default function ProductRow({
     ((statLabel != null && statValue != null) || description) ? (
       <>
         {statLabel != null && statValue != null ? (
-          <p className="card-stat cart-line-meta-stat mb-2">
-            <span className="card-stat-label">{statLabel}</span>
-            <span className="card-stat-separator">·</span>
-            <span className="card-stat-value">{statValue}</span>
+          <p className="product-stat mb-2">
+            <span className="product-stat-label">{statLabel}</span>
+            <span className="product-stat-separator">·</span>
+            <span className="product-stat-value">{statValue}</span>
           </p>
         ) : null}
         {description ? (
-          <p className="card-text cart-line-lead mb-2">{description}</p>
+          <p className="card-text product-row-lead mb-2">{description}</p>
         ) : null}
       </>
     ) : null;
@@ -234,14 +117,14 @@ export default function ProductRow({
         <ProductBadges badges={badges} />
         <CompareToggleButton product={product} variant="cardChip" />
       </>
-    ) : isCart && line?.slug ? (
-      <CompareToggleButton product={line} variant="cardChip" />
+    ) : isCart && cartLine?.slug ? (
+      <CompareToggleButton product={cartLine} variant="cardChip" />
     ) : null;
 
   const cartRemoveButton = (visibilityClass) => (
     <button
       type="button"
-      className={`btn btn-link cart-remove-link ${visibilityClass}`.trim()}
+      className={`btn btn-link product-row-remove-link ${visibilityClass}`.trim()}
       onClick={handleRemove}
     >
       Rimuovi
@@ -251,13 +134,15 @@ export default function ProductRow({
   const actions = isCart ? (
     <>
       <QtyControls
-        quantity={line.quantity}
-        quantityAvailable={line.quantity_available}
-        onIncrease={() => increaseQuantity(line.slug)}
+        quantity={cartLine.quantity}
+        quantityAvailable={cartLine.quantity_available}
+        onIncrease={() => increaseQuantity(cartLine.slug)}
         onDecrease={handleDecrease}
         trashWhenLast
       />
-      {cartRemoveButton("cart-remove-link--desktop d-none d-sm-inline-block")}
+      {cartRemoveButton(
+        "product-row-remove-link--desktop d-none d-sm-inline-block",
+      )}
     </>
   ) : cartItem ? (
     <QtyControls
@@ -272,54 +157,53 @@ export default function ProductRow({
       type="button"
       className="btn btn-primary product-add-btn"
       onClick={handleAddToCart}
-      disabled={!Boolean(slug && name) || isOutOfStock}
+      disabled={!slug || !name || isOutOfStock}
     >
       Aggiungi al carrello
     </button>
   );
 
-  const availabilitySlug = isCart ? line.slug : product?.slug;
-
   const priceContent =
     isCart ? (
-      <div className="cart-line-price-stack">
-        <p className="cart-line-price mb-0">{priceLabel}</p>
-        {cartRemoveButton("cart-remove-link--mobile d-sm-none")}
+      <div className="product-row-price-stack">
+        <p className="product-row-price mb-0">{priceLabel}</p>
+        {cartRemoveButton("product-row-remove-link--mobile d-sm-none")}
       </div>
     ) : (
       priceLabel
     );
 
   return (
-    <ProductRowShell
-      className={[isCart && "cart-line-card--cart", className]
+    <ProductRowLayout
+      className={[isCart && "product-row--cart", className]
         .filter(Boolean)
         .join(" ")
         .trim()}
       image={
         <Link
           to={destination}
-          className="cart-line-image-link"
+          className="product-row-image-link"
           aria-label={name || "Apri scheda prodotto"}
         >
           <ProductImage
             src={rawImageUrl}
             categorySlug={categorySlug}
             alt={name || "immagine-prodotto"}
-            className="cart-line-image"
+            className="product-row-image"
             onDisplaySrcChange={isCart ? undefined : setImageSrc}
           />
         </Link>
       }
       mediaOverlay={mediaOverlay}
-      title={<Link to={destination}>{name}</Link>}
+      titleTo={destination}
+      titleText={name}
       meta={meta}
       availabilityIndicator={
         <AvailabilityIndicator
           slug={availabilitySlug}
           quantityAvailable={availableStock}
           showWhenAvailable={true}
-          className="cart-line-availability mb-2 mt-0"
+          className="product-row-availability mb-2 mt-0"
         />
       }
       actions={actions}

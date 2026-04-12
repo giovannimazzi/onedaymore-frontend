@@ -135,15 +135,15 @@ export default function DefaultLayout() {
               )}
             </NavLink>
             <button
-              className="navbar-toggler d-lg-none flex-shrink-0"
+              className="navbar-toggler odm-navbar-toggler d-lg-none flex-shrink-0"
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#navbarNav"
               aria-controls="navbarNav"
               aria-expanded="false"
-              aria-label="Toggle navigation"
+              aria-label="Apri o chiudi il menu"
             >
-              <span className="navbar-toggler-icon"></span>
+              <i className="bi bi-list odm-navbar-toggler-icon" aria-hidden />
             </button>
           </div>
           <div
