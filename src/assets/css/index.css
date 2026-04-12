@@ -71,6 +71,10 @@
   --bs-btn-active-bg: var(--odm-gold-active);
   --bs-btn-active-border-color: var(--odm-gold-active);
   --bs-btn-active-color: var(--odm-midnight);
+  --bs-btn-disabled-color: rgba(226, 221, 208, 0.75);
+  --bs-btn-disabled-bg: rgba(42, 54, 66, 0.55);
+  --bs-btn-disabled-border-color: rgba(42, 54, 66, 0.45);
+  --bs-btn-disabled-opacity: 1;
 }
 
 /* ================================================
@@ -1470,7 +1474,6 @@ main {
 }
 
 .product-detail-add-btn:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
 }
 
