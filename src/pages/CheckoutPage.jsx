@@ -670,13 +670,16 @@ export default function CheckoutPage() {
               </p>
             )}
 
-            <p className="d-flex justify-content-between">
+            <p className="d-flex justify-content-between align-items-center">
               <span>Spedizione</span>
-              <span>
-                {shippingCost === 0
-                  ? "Gratis 🎉"
-                  : `€${formatMoney(shippingCost)}`}
-              </span>
+              {shippingCost === 0 ? (
+                <span className="checkout-summary-shipping-free">
+                  <i className="bi bi-truck" aria-hidden />
+                  Gratis
+                </span>
+              ) : (
+                <span>€{formatMoney(shippingCost)}</span>
+              )}
             </p>
 
             <hr />

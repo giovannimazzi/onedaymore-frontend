@@ -15,8 +15,13 @@ export default function ShippingInfo({ cartTotal, className = '' }) {
 
   const baseMessage = (
     <>
-      Spedizione standard €{formatShippingPrice(STANDARD_SHIPPING_COST)} ·{' '}
-      <b>gratuita da €{formatShippingPrice(FREE_SHIPPING_THRESHOLD)}</b>
+      <i className="bi bi-truck shipping-info__lead-icon" aria-hidden />
+      <span>
+        Spedizione standard €{formatShippingPrice(STANDARD_SHIPPING_COST)} ·{' '}
+        <span className="shipping-info__free-tag">
+          Gratuita da €{formatShippingPrice(FREE_SHIPPING_THRESHOLD)}
+        </span>
+      </span>
     </>
   );
 
@@ -29,12 +34,22 @@ export default function ShippingInfo({ cartTotal, className = '' }) {
     progress = getFreeShippingProgress(numericCartTotal);
 
     secondaryMessage = isFreeShippingReached ? (
-      'Hai ottenuto la spedizione gratuita'
+      <span className="shipping-info__success-callout">
+        <i
+          className="bi bi-check-circle-fill shipping-info__success-callout-icon"
+          aria-hidden
+        />
+        Hai ottenuto la spedizione gratuita
+      </span>
     ) : (
       <>
-        Ti mancano ancora €
-        {formatShippingPrice(getRemainingForFreeShipping(numericCartTotal))} per
-        la <b>spedizione gratuita</b>
+        <i className="bi bi-gift shipping-info__secondary-icon" aria-hidden />
+        <span>
+          Ti mancano ancora €
+          {formatShippingPrice(getRemainingForFreeShipping(numericCartTotal))}{' '}
+          per la{' '}
+          <span className="shipping-info__free-inline">spedizione gratuita</span>
+        </span>
       </>
     );
   }
@@ -42,13 +57,18 @@ export default function ShippingInfo({ cartTotal, className = '' }) {
   return (
     <div className={`shipping-info ${className}`.trim()}>
       <div className="shipping-info__content">
-        <p className="shipping-info__base mb-0 me-2">{baseMessage}</p>
+        <p className="shipping-info__base mb-0 me-2 shipping-info__base-row">
+          {baseMessage}
+        </p>
 
         {showCartState && (
           <p
-            className={`shipping-info__secondary mb-0${
-              isFreeShippingReached ? ' shipping-info__secondary--success' : ''
-            }`}
+            className={[
+              'shipping-info__secondary mb-0',
+              isFreeShippingReached
+                ? 'shipping-info__secondary--success'
+                : 'shipping-info__secondary--progress',
+            ].join(' ')}
           >
             {secondaryMessage}
           </p>

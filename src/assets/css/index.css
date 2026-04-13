@@ -717,18 +717,13 @@ main {
   opacity: 0.85;
 }
 
-/* ================================================
-   SHIPPING INFO COMPONENT
-   ================================================ */
-
 .shipping-info {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.45rem;
   width: 100%;
 }
 
-/* contenitore testi */
 .shipping-info__content {
   display: flex;
   flex-wrap: wrap;
@@ -738,43 +733,115 @@ main {
   text-align: center;
 }
 
-/* messaggio base (SEMPRE visibile) */
 .shipping-info__base {
   font-size: 0.75rem;
-  line-height: 1.4;
+  line-height: 1.45;
   color: whitesmoke;
 }
 
-/* messaggio dinamico */
+.shipping-info__base-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.shipping-info__lead-icon,
+.shipping-info__secondary-icon,
+.shipping-info__success-callout-icon {
+  flex-shrink: 0;
+  color: var(--odm-gold);
+}
+
+.shipping-info__lead-icon {
+  font-size: 1rem;
+}
+
+.shipping-info__secondary-icon {
+  margin-top: 0.12rem;
+  font-size: 0.95rem;
+}
+
+.shipping-info__free-tag,
+.shipping-info__free-inline {
+  cursor: default;
+  font-weight: 700;
+  color: var(--odm-gold);
+  border-bottom: 1px dotted rgba(232, 189, 46, 0.5);
+}
+
+.shipping-info__free-inline {
+  white-space: nowrap;
+}
+
 .shipping-info__secondary {
-  font-size: 0.75rem;
-  line-height: 1.4;
-  font-weight: 400;
+  font-size: 0.78rem;
+  line-height: 1.45;
   color: var(--odm-sandstone);
 }
 
-/* stato "gratis" raggiunto */
-.shipping-info__secondary--success {
-  color: var(--odm-gold);
-  font-weight: 600;
+.shipping-info__secondary--progress {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 
-/* progress bar */
+.shipping-info__secondary--success {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.shipping-info__success-callout {
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  padding: 0.35rem 0 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--odm-gold);
+  border-left: 3px solid rgba(232, 189, 46, 0.5);
+}
+
+.shipping-info__success-callout-icon {
+  font-size: 1rem;
+}
+
 .shipping-info__progress {
   width: 100%;
-  height: 0.22rem;
+  height: 0.28rem;
   border-radius: 999px;
   overflow: hidden;
   background: rgba(226, 221, 208, 0.18);
 }
 
-/* riempimento barra */
 .shipping-info__progress-bar {
   display: block;
   height: 100%;
   width: 0;
   background: var(--odm-gold);
   transition: width 0.25s ease;
+}
+
+.checkout-summary-shipping-free {
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--odm-gold);
+}
+
+.checkout-summary-shipping-free .bi {
+  opacity: 0.85;
 }
 
 /* ================================================
